@@ -1,7 +1,32 @@
 plugins {
-    id 'java'
+    id 'application'
+    id 'checkstyle'
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
+mainClassName = 'edu.ncsu.csc540.health.HealthApp'
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Text-IO - for console UI
+    implementation 'org.beryx:text-io:3.3.0'
+
+    // Flyway - for migrating the database schema
+    implementation 'org.flywaydb:flyway-core:6.0.7'
+
+    // JDBI - for executing SQL
+    implementation 'org.jdbi:jdbi3-core:3.10.1'
+    implementation 'org.jdbi:jdbi3-sqlobject:3.10.1'
+
+    // Oracle JDBC driver
+    implementation 'com.oracle.ojdbc:ojdbc8:19.3.0.0'
+}
+
+checkstyle {
+    configFile file('config/checkstyle/checkstyle.xml')
+    toolVersion '8.25'
+}

@@ -26,6 +26,20 @@ During development, a simple way to run the application is to use the following 
 ./gradlew run
 ```
 
+NOTE: The database username and password must be configured. The easiest way is to set the 
+`HEALTH_DB_USER` and `HEALTH_DB_PASSWORD` environment variables.
+
+```
+HEALTH_DB_USER=myuser HEALTH_DB_PASSWORD=mypass ./gradlew run
+```
+
+Alternatively, you can set these in a `config.yml` file and specify the path as the first argument.
+
+```
+./gradlew run myconfig.yml
+```
+
+
 # Code conventions
 Checkstyle is configured to enforce some basic conventions, but we as a group can decide to relax or change these. This
 will automatically be run when building the application, but if you want to run checkstyle explicitly, you can run:

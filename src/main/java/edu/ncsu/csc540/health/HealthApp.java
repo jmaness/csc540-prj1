@@ -1,5 +1,7 @@
 package edu.ncsu.csc540.health;
 
+import edu.ncsu.csc540.health.config.HealthEnvironmentConfiguration;
+import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
@@ -23,16 +25,19 @@ public class HealthApp {
         try {
             Configuration config = loadConfiguration(configFile);
             runDatabaseMigration(config);
-
         } catch (ConfigurationException e) {
             logger.error(String.format("Unable to load configuration file %s", configFile), e);
         }
     }
 
     private Configuration loadConfiguration(URL configFile) throws ConfigurationException {
-        return new FileBasedConfigurationBuilder<>(YAMLConfiguration.class)
+        CompositeConfiguration config = new CompositeConfiguration();
+        config.addConfiguration(new HealthEnvironmentConfiguration());
+        config.addConfiguration(new FileBasedConfigurationBuilder<>(YAMLConfiguration.class)
                 .configure(new Parameters().hierarchical().setURL(configFile))
-                .getConfiguration();
+                .getConfiguration());
+
+        return config;
     }
 
     /**
@@ -50,8 +55,6 @@ public class HealthApp {
 
         Flyway flyway = new Flyway();
         flyway.configure(properties);
-
-        // Start the migration
         flyway.migrate();
     }
 

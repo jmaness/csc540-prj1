@@ -3,6 +3,8 @@ package edu.ncsu.csc540.health.pages;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.function.Consumer;
 
 /**
@@ -12,6 +14,12 @@ import java.util.function.Consumer;
  *
  */
 public class HomePage implements Consumer<TextIO> {
+    private final Consumer<TextIO> signUpPage;
+
+    @Inject
+    public HomePage(@Named("signUp") Consumer<TextIO> signUpPage) {
+        this.signUpPage = signUpPage;
+    }
 
     @Override
     public void accept(TextIO textIO) {
@@ -34,7 +42,7 @@ public class HomePage implements Consumer<TextIO> {
                 terminal.println("Sign In not yet implemented");
                 break;
             case 2:
-                terminal.println("Sign Up (Patient) not yet implemented");
+                signUpPage.accept(textIO);
                 break;
             case 3:
                 terminal.println("Demo Queries not yet implemented");

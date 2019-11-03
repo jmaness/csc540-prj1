@@ -10,6 +10,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import edu.ncsu.csc540.health.db.JdbiTransactionInterceptor;
 import edu.ncsu.csc540.health.db.UnitOfWork;
 import edu.ncsu.csc540.health.pages.HomePage;
+import edu.ncsu.csc540.health.pages.Page;
 import edu.ncsu.csc540.health.pages.SignInPage;
 import edu.ncsu.csc540.health.pages.SignUpPage;
 import org.apache.commons.configuration2.Configuration;
@@ -28,15 +29,15 @@ public class HealthModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(new TypeLiteral<Consumer<TextIO>>(){})
+        bind(Page.class)
                 .annotatedWith(Names.named("home"))
                 .to(HomePage.class);
 
-        bind(new TypeLiteral<Consumer<TextIO>>(){})
+        bind(Page.class)
                 .annotatedWith(Names.named("signUp"))
                 .to(SignUpPage.class);
 
-        bind(new TypeLiteral<Consumer<TextIO>>(){})
+        bind(Page.class)
                 .annotatedWith(Names.named("signIn"))
                 .to(SignInPage.class);
 

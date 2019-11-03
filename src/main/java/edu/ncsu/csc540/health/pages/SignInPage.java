@@ -4,10 +4,10 @@ import org.beryx.textio.TextIO;
 
 import java.util.function.Consumer;
 
-public class SignInPage implements Consumer<TextIO> {
+public class SignInPage implements Page {
 
     @Override
-    public void accept(TextIO textIO) {
-
+    public Page apply(TextIO textIO) {
+        return null;
     }
 }

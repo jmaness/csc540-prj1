@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import edu.ncsu.csc540.health.config.HealthEnvironmentConfiguration;
 import edu.ncsu.csc540.health.pages.HomePage;
+import edu.ncsu.csc540.health.pages.Page;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.YAMLConfiguration;
@@ -79,8 +80,11 @@ public class HealthApp {
         TextIO textIO = new TextIO(terminal);
 
         Injector injector = Guice.createInjector(new HealthModule(configuration));
-        HomePage homePage = injector.getInstance(HomePage.class);
-        homePage.accept(textIO);
+        Page page = injector.getInstance(HomePage.class);
+
+        while (page != null) {
+            page = page.apply(textIO);
+        }
     }
 
     /**

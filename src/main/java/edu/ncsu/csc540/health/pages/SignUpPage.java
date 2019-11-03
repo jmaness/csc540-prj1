@@ -12,18 +12,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Consumer;
 
-public class SignUpPage implements Consumer<TextIO> {
-    private final Consumer<TextIO> signInPage;
-    private final Consumer<TextIO> previousPage;
+public class SignUpPage implements Page {
+    private final Page signInPage;
+    private final Page previousPage;
     private final PatientService patientService;
 
     private static final Logger logger = LoggerFactory.getLogger(SignUpPage.class);
 
     @Inject
-    public SignUpPage(@Named("signIn") Consumer<TextIO> signInPage,
-                      @Named("home") Consumer<TextIO> previousPage,
+    public SignUpPage(@Named("signIn") Page signInPage,
+                      @Named("home") Page previousPage,
                       PatientService patientService) {
         this.signInPage = signInPage;
         this.previousPage = previousPage;
@@ -31,7 +30,7 @@ public class SignUpPage implements Consumer<TextIO> {
     }
 
     @Override
-    public void accept(TextIO textIO) {
+    public Page apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println("Sign Up");
         terminal.println("=====================");
@@ -102,11 +101,9 @@ public class SignUpPage implements Consumer<TextIO> {
                         dob,
                         new Address(null, streetNum, street, city, state, country),
                         phone));
-                signInPage.accept(textIO);
-                break;
-            case 2:
-                previousPage.accept(textIO);
-                break;
+                return signInPage;
+            default:
+                return previousPage;
         }
     }
 }

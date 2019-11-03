@@ -3,6 +3,7 @@ package edu.ncsu.csc540.health.pages;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 
+import javax.inject.Singleton;
 import java.sql.Date;
 import java.util.function.Consumer;
 
@@ -12,6 +13,7 @@ import java.util.function.Consumer;
  * of prompts, after each of which the user will input the corresponding
  * information.
  */
+@Singleton
 public class SignInPage implements Consumer<TextIO> {
 
     @Override
@@ -29,9 +31,11 @@ public class SignInPage implements Consumer<TextIO> {
 
         switch (option) {
             case 1:
+
                 /*
                 TODO: List all facilities here (will do after database interfaces have been implemented)
                  */
+
                 terminal.println("A. Please enter your Facility ID:\n");
                 int facilityID = textIO.newIntInputReader().withMinVal(1).read("> "); //TODO: Add withMaxVal() after database interface implementation
 

@@ -11,6 +11,7 @@ import javax.inject.Named;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javax.inject.Singleton;
 import java.sql.Date;
 import java.util.function.Consumer;
 

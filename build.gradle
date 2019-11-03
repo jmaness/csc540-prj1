@@ -31,7 +31,9 @@ dependencies {
     // JDBI - for executing SQL
     implementation 'org.jdbi:jdbi3-core:3.10.1'
     implementation 'org.jdbi:jdbi3-sqlobject:3.10.1'
-    implementation 'org.jdbi:jdbi3-oracle12:3.5.1'
+    implementation('org.jdbi:jdbi3-oracle12:3.5.1') {
+        exclude group: 'com.oracle.jdbc', module: 'ojdbc7'
+    }
 
     // Oracle JDBC driver
     implementation 'com.oracle.ojdbc:ojdbc8:19.3.0.0'

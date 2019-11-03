@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@Singleton
 public class SignUpPage implements Page {
     private final Page signInPage;
     private final Page previousPage;

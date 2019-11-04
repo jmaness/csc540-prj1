@@ -1,5 +1,5 @@
 db:
   driver: "oracle.jdbc.OracleDriver"
   url: "jdbc:oracle:thin:@orca.csc.ncsu.edu:1521:orcl01"
-  # user: "youruser"
-  # password: "yourpass"
+ # user: ""
+ # password: ""

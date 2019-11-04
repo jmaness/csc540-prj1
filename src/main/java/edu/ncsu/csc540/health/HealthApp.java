@@ -65,6 +65,7 @@ public class HealthApp {
 
         Flyway flyway = new Flyway();
         flyway.configure(properties);
+        //flyway.baseline();
         flyway.migrate();
     }
 

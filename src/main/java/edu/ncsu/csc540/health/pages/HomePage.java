@@ -17,12 +17,15 @@ import javax.inject.Singleton;
 public class HomePage implements Page {
     private final Page signUpPage;
     private final Page demoQueryPage;
+    private final Page signInPage;
 
     @Inject
     public HomePage(@Named("signUp") Page signUpPage,
-                    @Named("demo") Page demoQueryPage) {
+                    @Named("demo") Page demoQueryPage,
+                    @Named("signIn") Page signInPage) {
         this.signUpPage = signUpPage;
         this.demoQueryPage = demoQueryPage;
+        this.signInPage = signInPage;
     }
 
     @Override
@@ -43,8 +46,7 @@ public class HomePage implements Page {
 
         switch (option) {
             case 1:
-                terminal.println("Sign In not yet implemented");
-                return this;
+                return signInPage;
             case 2:
                 return signUpPage;
             case 3:

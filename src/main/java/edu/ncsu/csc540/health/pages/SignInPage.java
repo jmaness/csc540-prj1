@@ -58,7 +58,7 @@ public class SignInPage implements Page {
 
                 terminal.println("\nC. Please enter your date of birth (mm/dd/yyyy):\n");
 
-                String dateString = textIO.newStringInputReader().read("> ")
+                String dateString = textIO.newStringInputReader().read("> ");
                 LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("mm/dd/yyyy"));
 
                 terminal.println("\nD. Please enter the city listed on your home address:\n");
@@ -84,7 +84,8 @@ public class SignInPage implements Page {
                 break;
             case 2:
                 return previousPage;
-                break;
         }
+
+        return previousPage; //Temporary
     }
 }

@@ -76,7 +76,7 @@ CREATE TABLE staff_secondary_departments (
 	FOREIGN KEY (department_code) REFERENCES departments(code)
 );
 
-CREATE TABLE service (
+CREATE TABLE services (
 	code varchar2(100) NOT NULL,
 	name varchar2(100) NOT NULL,
 	PRIMARY KEY (code)
@@ -87,14 +87,14 @@ CREATE TABLE department_services (
 	service_code varchar2(100) NOT NULL,
 	PRIMARY KEY (department_code, service_code),
 	FOREIGN KEY (department_code) REFERENCES departments(code),
-	FOREIGN KEY (service_code) REFERENCES service(code)
+	FOREIGN KEY (service_code) REFERENCES services(code)
 );
 
 CREATE TABLE service_equipment (
 	service_code varchar2(100) NOT NULL,
 	name varchar2(100) NOT NULL,
 	PRIMARY KEY (service_code, name),
-	FOREIGN KEY (service_code) REFERENCES service(code)
+	FOREIGN KEY (service_code) REFERENCES services(code)
 );
 
 CREATE TABLE patients (
@@ -119,7 +119,7 @@ CREATE TABLE service_body_parts (
 	service_code varchar2(100) NOT NULL,
 	PRIMARY KEY (body_part_code, service_code),
 	FOREIGN KEY (body_part_code) REFERENCES body_parts(code),
-	FOREIGN KEY (service_code) REFERENCES service(code)
+	FOREIGN KEY (service_code) REFERENCES services(code)
 );
 
 CREATE TABLE severity_scales (

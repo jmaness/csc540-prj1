@@ -5,7 +5,7 @@ import org.beryx.textio.TextTerminal;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.function.Consumer;
+import javax.inject.Singleton;
 
 /**
  * The Home page is one of the start pages that all users initially see. This
@@ -13,12 +13,16 @@ import java.util.function.Consumer;
  * or run some demo queries.
  *
  */
+@Singleton
 public class HomePage implements Page {
     private final Page signUpPage;
+    private final Page demoQueryPage;
 
     @Inject
-    public HomePage(@Named("signUp") Page signUpPage) {
+    public HomePage(@Named("signUp") Page signUpPage,
+                    @Named("demo") Page demoQueryPage) {
         this.signUpPage = signUpPage;
+        this.demoQueryPage = demoQueryPage;
     }
 
     @Override
@@ -44,8 +48,7 @@ public class HomePage implements Page {
             case 2:
                 return signUpPage;
             case 3:
-                terminal.println("Demo Queries not yet implemented");
-                return this;
+                return demoQueryPage;
             case 4:
                 textIO.dispose();
                 break;

@@ -9,6 +9,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import edu.ncsu.csc540.health.db.JdbiTransactionInterceptor;
 import edu.ncsu.csc540.health.db.UnitOfWork;
+import edu.ncsu.csc540.health.pages.DemoQueryPage;
 import edu.ncsu.csc540.health.pages.HomePage;
 import edu.ncsu.csc540.health.pages.Page;
 import edu.ncsu.csc540.health.pages.SignInPage;
@@ -40,6 +41,10 @@ public class HealthModule extends AbstractModule {
         bind(Page.class)
                 .annotatedWith(Names.named("signIn"))
                 .to(SignInPage.class);
+
+        bind(Page.class)
+                .annotatedWith(Names.named("demo"))
+                .to(DemoQueryPage.class);
 
         configureJdbi();
     }

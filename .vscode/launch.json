@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - HealthApp",
+            "request": "launch",
+            "mainClass": "edu.ncsu.csc540.health.HealthApp",
+            "projectName": "csc540-prj1"
+        }
+    ]
+}

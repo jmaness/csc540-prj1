@@ -94,7 +94,7 @@ CREATE TABLE service_equipment (
 	service_code varchar2(100) NOT NULL,
 	name varchar2(100) NOT NULL,
 	PRIMARY KEY (service_code, name),
-	FOREIGN KEY (service_code) REFERENCES service(code),
+	FOREIGN KEY (service_code) REFERENCES service(code)
 );
 
 CREATE TABLE patients (
@@ -118,8 +118,8 @@ CREATE TABLE service_body_parts (
 	body_part_code varchar2(100) NOT NULL,
 	service_code varchar2(100) NOT NULL,
 	PRIMARY KEY (body_part_code, service_code),
-	FOREIGN KEY body_part_code REFERENCES body_parts(code),
-	FOREIGN KEY service_code REFERENCES service(code)
+	FOREIGN KEY (body_part_code) REFERENCES body_parts(code),
+	FOREIGN KEY (service_code) REFERENCES service(code)
 );
 
 CREATE TABLE severity_scales (
@@ -134,16 +134,16 @@ CREATE TABLE severity_scale_values (
 	name varchar2(100) NOT NULL,
 	ordinal varchar2(100) NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY severity_scale_id REFERENCES severity_scales(id)
+	FOREIGN KEY (severity_scale_id) REFERENCES severity_scales(id)
 );
 
 CREATE TABLE patient_checkin (
 	id int NOT NULL,
 	patient_id int NOT NULL,
-	start TIMESTAMP NOT NULL,
-	end TIMESTAMP NOT NULL,
+	start_time TIMESTAMP NOT NULL,
+	end_time TIMESTAMP NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY patient_id REFERENCES patients(id)
+	FOREIGN KEY (patient_id) REFERENCES patients(id)
 );
 
 CREATE TABLE symptoms (
@@ -152,8 +152,8 @@ CREATE TABLE symptoms (
 	severity_scale_id int NOT NULL,
 	body_part_code varchar2(100) NOT NULL,
 	PRIMARY KEY (code),
-	FOREIGN KEY severity_scale_id REFERENCES severity_scales(id),
-	FOREIGN KEY body_part_code REFERENCES body_parts(code),
+	FOREIGN KEY (severity_scale_id) REFERENCES severity_scales(id),
+	FOREIGN KEY (body_part_code) REFERENCES body_parts(code),
 	CHECK (substr(code,1,3) IN('sym', 'SYM', 'Sym'))
 );
 
@@ -161,16 +161,16 @@ CREATE TABLE checkin_symptoms (
 	checkin_id int NOT NULL,
 	symptom_code varchar2(100) NOT NULL,
 	body_part_code varchar2(100) NOT NULL,
-	severity_scale_value_id varchar2(100) NOT NULL,
+	severity_scale_value_id int NOT NULL,
 	duration int NOT NULL,
-	reoccuring boolean DEFAULT false,
-	incident TEXT(1000),
-	PRIMARY KEY (checkin_id, symptom_code, severity_scale_value_id),
-	FOREIGN KEY checkin_id REFERENCES patient_checkin(id),
-	FOREIGN KEY symptom_code REFERENCES symptoms(code),
-	FOREIGN KEY body_part_code REFERENCES body_parts(code),
-	FOREIGN KEY severity_scale_value_id REFERENCES severity_scale_values(id)
-)
+	reoccuring number(1) NOT NULL,
+	incident varchar2(1000),
+	PRIMARY KEY (checkin_id, symptom_code),
+	FOREIGN KEY (checkin_id) REFERENCES patient_checkin(id),
+	FOREIGN KEY (symptom_code) REFERENCES symptoms(code),
+	FOREIGN KEY (body_part_code) REFERENCES body_parts(code),
+	FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values(id)
+);
 
 CREATE TABLE outcome_reports (
 	checkin_id int NOT NULL,
@@ -178,8 +178,8 @@ CREATE TABLE outcome_reports (
 	patient_acknowledged varchar2(100) NOT NULL,
 	patient_acknowledge_reason varchar2(100) NOT NULL,
 	time_out TIMESTAMP NOT NULL,
-	PRIMARY KEY checkin_id,
-	FOREIGN KEY checkin_id REFERENCES patient_checkin(id)
+	PRIMARY KEY (checkin_id),
+	FOREIGN KEY (checkin_id) REFERENCES patient_checkin(id)
 );
 
 CREATE TABLE negative_experiences (
@@ -187,16 +187,16 @@ CREATE TABLE negative_experiences (
 	code varchar2(100) NOT NULL,
 	description text(1000),
 	PRIMARY KEY (checkin_id, code),
-	FOREIGN KEY checkin_id REFERENCES outcome_reports(checkin_id),
-)
+	FOREIGN KEY (checkin_id) REFERENCES outcome_reports(checkin_id)
+);
 
 CREATE TABLE priority_lists (
 	id int NOT NULL,
 	priority varchar2(100) NOT NULL,
 	start TIMESTAMP NOT NULL,
 	end TIMESTAMP NOT NULL,
-	PRIMARY KEY id,
-	FOREIGN KEY id REFERENCES patient_checkin(id),
+	PRIMARY KEY (id),
+	FOREIGN KEY (id) REFERENCES patient_checkin(id),
 );
 
 CREATE TABLE assessment_rules (
@@ -212,9 +212,9 @@ CREATE TABLE assesment_symptoms(
 	severity_scale_value_id int NOT NULL,
 	operation varchar2(100) NOT NULL,
 	PRIMARY KEY (rule_id, symptom_code),
-	FOREIGN KEY rule_id REFERENCES assessment_rules(id),
-	FOREIGN KEY symptom_code REFERENCES symptoms(code),
-	FOREIGN KEY severity_scale_value_id REFERENCES severity_scale_values(id)
+	FOREIGN KEY (rule_id) REFERENCES assessment_rules(id),
+	FOREIGN KEY (symptom_code) REFERENCES symptoms(code),
+	FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values(id)
 );
 
 CREATE TABLE referral_statuses (
@@ -222,10 +222,10 @@ CREATE TABLE referral_statuses (
 	facility_id int NOT NULL,
 	staff_id int NOT NULL,
 	treatment varchar2(100) NOT NULL,
-	PRIMARY KEY checkin_id,
-	FOREIGN KEY checkin_id REFERENCES outcome_reports(checkin_id),
-	FOREIGN KEY facility_id REFERENCES facilities(id),
-	FOREIGN KEY staff_id REFERENCES staff(id)
+	PRIMARY KEY (checkin_id),
+	FOREIGN KEY (checkin_id) REFERENCES outcome_reports(checkin_id),
+	FOREIGN KEY (facility_id) REFERENCES facilities(id),
+	FOREIGN KEY (staff_id) REFERENCES staff(id)
 );
 
 CREATE TABLE referral_reasons (
@@ -234,6 +234,6 @@ CREATE TABLE referral_reasons (
 	service_code varchar2(100) NOT NULL,
 	description text(1000) NOT NULL,
 	PRIMARY KEY (checkin_id, code, service_code),
-	FOREIGN KEY checkin_id REFERENCES referral_statuses (checkin_id),
-	FOREIGN KEY service_code REFERENCES services(code)
-)
+	FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
+	FOREIGN KEY (service_code) REFERENCES services(code)
+);

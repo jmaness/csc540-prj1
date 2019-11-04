@@ -1,11 +1,15 @@
 package edu.ncsu.csc540.health.pages;
 
+import edu.ncsu.csc540.health.service.PatientService;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
-import java.sql.Date;
-import java.util.function.Consumer;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * The Sign-In page is the area where a user enters their information in
@@ -13,11 +17,21 @@ import java.util.function.Consumer;
  * of prompts, after each of which the user will input the corresponding
  * information.
  */
-@Singleton
-public class SignInPage implements Consumer<TextIO> {
+
+public class SignInPage implements Page {
+    private final Page previousPage;
+    private final PatientService patientService;
+
+    private static final Logger logger = LoggerFactory.getLogger(SignInPage.class);
+
+    @Inject
+    public SignInPage(@Named("home") Page previousPage, PatientService patientService) {
+        this.previousPage = previousPage;
+        this.patientService = patientService;
+    }
 
     @Override
-    public void accept(TextIO textIO) {
+    public Page apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println("Sign In");
         terminal.println("=====================");
@@ -43,10 +57,9 @@ public class SignInPage implements Consumer<TextIO> {
                 String lastName = textIO.newStringInputReader().read("> ");
 
                 terminal.println("\nC. Please enter your date of birth (mm/dd/yyyy):\n");
-                String[] dateArray = textIO.newStringInputReader().read("> ").split("/");
-                Date date = new Date(Integer.parseInt(dateArray[0]),
-                        Integer.parseInt(dateArray[1]),
-                        Integer.parseInt(dateArray[2]));
+
+                String dateString = textIO.newStringInputReader().read("> ")
+                LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("mm/dd/yyyy"));
 
                 terminal.println("\nD. Please enter the city listed on your home address:\n");
                 String city = textIO.newStringInputReader().read("> ");
@@ -54,14 +67,23 @@ public class SignInPage implements Consumer<TextIO> {
                 terminal.println("\nE. Are you a patient? (y/n)\n");
                 String patient = textIO.newStringInputReader().withPossibleValues("y", "n", "yes", "no").read("> ");
 
-                /*
-                TODO: Query database for tuple matching given information to validate user
-                 */
+                switch (patient.toLowerCase()) {
+                    case "y":
+                    case "yes":
+
+                        break;
+                    case "n":
+                    case "no":
+                        //TODO: Implement staff verification
+                        break;
+                    default:
+                        //You done goofed.
+                        break;
+                }
 
                 break;
             case 2:
-                //TODO: Add a link back to the home page
-                terminal.println("Coward.");
+                return previousPage;
                 break;
         }
     }

@@ -1,7 +1,10 @@
 package edu.ncsu.csc540.health;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import edu.ncsu.csc540.health.config.HealthEnvironmentConfiguration;
 import edu.ncsu.csc540.health.pages.HomePage;
+import edu.ncsu.csc540.health.pages.Page;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.YAMLConfiguration;
@@ -31,7 +34,7 @@ public class HealthApp {
         try {
             Configuration config = loadConfiguration(configFile);
             runDatabaseMigration(config);
-            runTextIOApp();
+            runTextIOApp(config);
         } catch (ConfigurationException e) {
             logger.error(String.format("Unable to load configuration file %s", configFile), e);
         }
@@ -65,7 +68,7 @@ public class HealthApp {
         flyway.migrate();
     }
 
-    private void runTextIOApp() {
+    private void runTextIOApp(Configuration configuration) {
         TextTerminalProvider terminalProvider = new JLineTextTerminalProvider();
         TextTerminal terminal = terminalProvider.getTextTerminal();
 
@@ -74,9 +77,14 @@ public class HealthApp {
         }
 
         terminal.init();
-
         TextIO textIO = new TextIO(terminal);
-        new HomePage().accept(textIO);
+
+        Injector injector = Guice.createInjector(new HealthModule(configuration));
+        Page page = injector.getInstance(HomePage.class);
+
+        while (page != null) {
+            page = page.apply(textIO);
+        }
     }
 
     /**

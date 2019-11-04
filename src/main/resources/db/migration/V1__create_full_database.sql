@@ -104,8 +104,10 @@ CREATE TABLE patients (
 	dob DATE NOT NULL,
 	phone varchar2(100) NOT NULL,
 	address_id int NOT NULL,
+	facility_id int NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY (address_id) REFERENCES addresses(id)
+	FOREIGN KEY (address_id) REFERENCES addresses(id),
+	FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );
 
 CREATE TABLE body_parts (
@@ -236,4 +238,22 @@ CREATE TABLE referral_reasons (
 	PRIMARY KEY (checkin_id, code, service_code),
 	FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
 	FOREIGN KEY (service_code) REFERENCES services(code)
+);
+
+CREATE TABLE assessment_symptoms (
+	rule_id int NOT NULL,
+	symptom_code varchar2(100) NOT NULL,
+	severity_scale_value_id int NOT NULL,
+	operation varchar2(100) NOT NULL,
+	PRIMARY KEY (rule_id, symptom_code, severity_scale_value_id),
+	FOREIGN KEY (rule_id) REFERENCES assessment_rules(id),
+	FOREIGN KEY (symptom_code) REFERENCES symptoms(code),
+	FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values(id)
+);
+
+CREATE TABLE associated_body_parts (
+	code varchar2(100) NOT NULL,
+	associated_part_code varchar2(100) NOT NULL,
+	PRIMARY KEY (code, associated_part_code),
+	FOREIGN KEY (associated_part_code) REFERENCES body_parts(code)
 );

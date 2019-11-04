@@ -57,7 +57,6 @@ public class SignInPage implements Page {
                 String lastName = textIO.newStringInputReader().read("> ");
 
                 terminal.println("\nC. Please enter your date of birth (mm/dd/yyyy):\n");
-
                 String dateString = textIO.newStringInputReader().read("> ");
                 LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("mm/dd/yyyy"));
 

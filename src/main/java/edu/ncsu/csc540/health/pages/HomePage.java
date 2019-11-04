@@ -15,10 +15,12 @@ import java.util.function.Consumer;
  */
 public class HomePage implements Page {
     private final Page signUpPage;
+    private final Page signInPage;
 
     @Inject
-    public HomePage(@Named("signUp") Page signUpPage) {
+    public HomePage(@Named("signUp") Page signUpPage, @Named("signIn") Page signInPage) {
         this.signUpPage = signUpPage;
+        this.signInPage = signInPage;
     }
 
     @Override
@@ -39,8 +41,7 @@ public class HomePage implements Page {
 
         switch (option) {
             case 1:
-                terminal.println("Sign In not yet implemented");
-                return this;
+                return signInPage;
             case 2:
                 return signUpPage;
             case 3:

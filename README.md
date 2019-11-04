@@ -20,27 +20,30 @@ In addition, since this project uses the Gradle Application Plugin, a few other 
 
 # To run the app
 
-During development, a simple way to run the application is to use the following command.
-
-```
-./gradlew run
-```
-
-NOTE: The database username and password must be configured. The easiest way is to set the 
-`HEALTH_DB_USER` and `HEALTH_DB_PASSWORD` environment variables.
-
-```
-HEALTH_DB_USER=myuser HEALTH_DB_PASSWORD=mypass ./gradlew run
-```
-
-Alternatively, you can set these in a `config.yml` file and specify the path as the first argument.
-
-```
-./gradlew run myconfig.yml
-```
-
 NOTE: Because of https://github.com/gradle/gradle/issues/1251, there is a problem using the Console with the Gradle Daemon.
 You can work around this by configuring your IDE to not use Gradle when running `edu.ncsu.csc540.health.HealthApp`.
+
+# Option 1. Run configuration in an IDE
+1. Go to File -> Settings.
+2. Under "Build, Execution, and Deployment" -> Build Tools -> Gradle, change "Build and run using" to IntelliJ IDEA instead of Gradle.
+
+Create a Run configuration with the following values:
+* Main Class: `edu.ncsu.csc540.health.HealthApp`, 
+* Environment variables: `HEALTH_DB_USER` and `HEALTH_DB_PASSWORD` 
+
+# Option 2. Use `run_app.sh`
+```
+HEALTH_DB_USER=your_unity_id HEALTH_DB_PASSWORD=your_pass ./run_app.sh
+```
+
+
+1. Run the build 
+```
+./gradlew build
+```
+2. Extract build/distributions/csc540-prj1.zip to a temporary directory
+
+
 
 # Code conventions
 Checkstyle is configured to enforce some basic conventions, but we as a group can decide to relax or change these. This

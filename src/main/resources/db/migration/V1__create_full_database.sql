@@ -185,7 +185,7 @@ CREATE TABLE outcome_reports (
 CREATE TABLE negative_experiences (
 	checkin_id int NOT NULL,
 	code varchar2(100) NOT NULL,
-	description text(1000),
+	description CLOB,
 	PRIMARY KEY (checkin_id, code),
 	FOREIGN KEY (checkin_id) REFERENCES outcome_reports(checkin_id)
 );
@@ -193,16 +193,16 @@ CREATE TABLE negative_experiences (
 CREATE TABLE priority_lists (
 	id int NOT NULL,
 	priority varchar2(100) NOT NULL,
-	start TIMESTAMP NOT NULL,
-	end TIMESTAMP NOT NULL,
+	start_time TIMESTAMP NOT NULL,
+	end_time TIMESTAMP NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY (id) REFERENCES patient_checkin(id),
+	FOREIGN KEY (id) REFERENCES patient_checkin(id)
 );
 
 CREATE TABLE assessment_rules (
 	id int NOT NULL,
 	priority varchar2(100) NOT NULL,
-	description text(1000) NOT NULL,
+	description CLOB NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -232,7 +232,7 @@ CREATE TABLE referral_reasons (
 	checkin_id int NOT NULL,
 	code varchar2(100) NOT NULL,
 	service_code varchar2(100) NOT NULL,
-	description text(1000) NOT NULL,
+	description CLOB,
 	PRIMARY KEY (checkin_id, code, service_code),
 	FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
 	FOREIGN KEY (service_code) REFERENCES services(code)

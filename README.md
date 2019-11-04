@@ -39,6 +39,8 @@ Alternatively, you can set these in a `config.yml` file and specify the path as 
 ./gradlew run myconfig.yml
 ```
 
+NOTE: Because of https://github.com/gradle/gradle/issues/1251, there is a problem using the Console with the Gradle Daemon.
+You can work around this by configuring your IDE to not use Gradle when running `edu.ncsu.csc540.health.HealthApp`.
 
 # Code conventions
 Checkstyle is configured to enforce some basic conventions, but we as a group can decide to relax or change these. This

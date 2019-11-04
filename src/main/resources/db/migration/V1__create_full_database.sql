@@ -1,4 +1,4 @@
-CREATE TABLE classification (
+CREATE TABLE classifications (
 	code varchar2(100) NOT NULL,
 	name varchar2(100) NOT NULL,
 	PRIMARY KEY (code)
@@ -21,7 +21,7 @@ CREATE TABLE facilities (
 	classification_code varchar(100) NOT NULL,
 	address_id int NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY (classification_code) REFERENCES classification(code),
+	FOREIGN KEY (classification_code) REFERENCES classifications(code),
 	FOREIGN KEY (address_id) REFERENCES addresses(id)
 );
 

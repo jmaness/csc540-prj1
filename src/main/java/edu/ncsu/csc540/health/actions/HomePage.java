@@ -18,19 +18,22 @@ import java.util.Arrays;
 public class HomePage implements Action {
     private final Action signUpPage;
     private final Action demoQueryPage;
+    private final Action signInPage;
 
     @Inject
     public HomePage(@Named("signUp") Action signUpPage,
-                    @Named("demo") Action demoQueryPage) {
+                    @Named("demo") Action demoQueryPage,
+                    @Named("signIn") Action signInPage) {
         this.signUpPage = signUpPage;
         this.demoQueryPage = demoQueryPage;
+        this.signInPage = signInPage;
     }
 
     @Override
     public Action apply(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
-                        Pair.of("Sign In", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Sign In", signInPage),
                         Pair.of("Sign Up (Patient)", signUpPage),
                         Pair.of("Demo Queries", demoQueryPage),
                         Pair.of("Exit", Actions.exit)))

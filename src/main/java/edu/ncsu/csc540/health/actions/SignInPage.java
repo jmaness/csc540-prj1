@@ -1,5 +1,8 @@
 package edu.ncsu.csc540.health.actions;
 
+import edu.ncsu.csc540.health.model.Facility;
+import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.service.FacilityService;
 import edu.ncsu.csc540.health.service.PatientService;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
@@ -12,9 +15,7 @@ import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import javax.inject.Singleton;
-import java.sql.Date;
-import java.util.function.Consumer;
+import java.util.List;
 
 /**
  * The Sign-In page is the area where a user enters their information in
@@ -27,13 +28,15 @@ import java.util.function.Consumer;
 public class SignInPage implements Action {
     private final Action previousPage;
     private final PatientService patientService;
+    private final FacilityService facilityService;
 
     private static final Logger logger = LoggerFactory.getLogger(SignInPage.class);
 
     @Inject
-    public SignInPage(@Named("home") Action previousPage, PatientService patientService) {
+    public SignInPage(@Named("home") Action previousPage, PatientService patientService, FacilityService facilityService) {
         this.previousPage = previousPage;
         this.patientService = patientService;
+        this.facilityService = facilityService;
     }
 
     @Override
@@ -51,32 +54,42 @@ public class SignInPage implements Action {
 
         switch (option) {
             case 1:
+                List<Facility> facilities = facilityService.findAllFacilities();
 
-                /*
-                TODO: List all facilities here (will do after database interfaces have been implemented)
-                 */
+                if (facilities.isEmpty()) {
+                    terminal.println("No facilities found.");
+                    terminal.println();
+                    return previousPage;
+                }
 
-                terminal.println("A. Please enter your Facility ID:\n");
-                int facilityID = textIO.newIntInputReader().withMinVal(1).read("> "); //TODO: Add withMaxVal() after database interface implementation
+                Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
+                    .withNumberedPossibleValues(facilities)
+                    .withValueFormatter(Facility::getName)
+                    .read("A. Please select your Facility: ");
 
-                terminal.println("\nB. Please enter your last name:\n");
-                String lastName = textIO.newStringInputReader().read("> ");
+                String lastName = textIO.newStringInputReader().read("\nB. Please enter your last name: ");
 
-                terminal.println("\nC. Please enter your date of birth (mm/dd/yyyy):\n");
-                String dateString = textIO.newStringInputReader().read("> ");
-                LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("mm/dd/yyyy"));
+                String dobString = textIO.newStringInputReader().withPattern("\\d{1,2}/\\d{1,2}/\\d{4}").read("\nC. Please enter your date of birth (mm/dd/yyyy): ");
+                LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
 
-                terminal.println("\nD. Please enter the city listed on your home address:\n");
-                String city = textIO.newStringInputReader().read("> ");
+                String city = textIO.newStringInputReader().read("\nD. Please enter the city listed on your home address: ");
 
-                terminal.println("\nE. Are you a patient? (y/n)\n");
-                String patient = textIO.newStringInputReader().withPossibleValues("y", "n", "yes", "no").read("> ");
+                String isPatient = textIO.newStringInputReader().withPossibleValues("y", "n", "yes", "no").read("\nE. Are you a patient? (y/n)");
 
-                switch (patient.toLowerCase()) {
+                switch (isPatient.toLowerCase()) {
                     case "y":
                     case "yes":
+                        Patient patient = patientService.signIn(selectedFacility.getId(), lastName, dob, city);
 
-                        break;
+                        if (patient == null) {
+                            terminal.println("\nError: Patient not found. Please try again");
+                            return this;
+                        }
+                        else {
+                            //The following should be replaced with a link to the Patient Check-In Page
+                            terminal.println("\nSuccess!");
+                            return previousPage;
+                        }
                     case "n":
                     case "no":
                         //TODO: Implement staff verification

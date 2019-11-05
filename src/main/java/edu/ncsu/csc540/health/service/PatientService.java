@@ -9,6 +9,7 @@ import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.time.LocalDate;
 
 @Singleton
 public class PatientService {
@@ -37,5 +38,10 @@ public class PatientService {
                 patient.getPhone()));
 
         return patientDAO.findById(patientId);
+    }
+
+    @Transactional
+    public Patient signIn(Integer facilityID, String lastName, LocalDate dob, String city) {
+        return patientDAO.validateSignIn(facilityID, lastName, dob, city);
     }
 }

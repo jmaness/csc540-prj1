@@ -28,6 +28,7 @@ import java.util.List;
 
 @Singleton
 public class SignInPage implements Action {
+    private final ActionFactory actionFactory;
     private final Action previousPage;
     private final Action staffMenuPage;
     private final PatientService patientService;
@@ -37,11 +38,13 @@ public class SignInPage implements Action {
     private static final Logger logger = LoggerFactory.getLogger(SignInPage.class);
 
     @Inject
-    public SignInPage(@Named("home") Action previousPage,
+    public SignInPage(ActionFactory actionFactory,
+                      @Named("home") Action previousPage,
                       @Named("staffMenu") Action staffMenuPage,
                       PatientService patientService,
                       StaffService staffService,
                       FacilityService facilityService) {
+        this.actionFactory = actionFactory;
         this.previousPage = previousPage;
         this.staffMenuPage = staffMenuPage;
         this.patientService = patientService;
@@ -96,9 +99,7 @@ public class SignInPage implements Action {
                             return this;
                         }
                         else {
-                            //The following should be replaced with a link to the Patient Check-In Page
-                            terminal.println("\nSuccess!");
-                            return previousPage;
+                            return actionFactory.getPatientRoutingPage(patient);
                         }
                     case "n":
                     case "no":

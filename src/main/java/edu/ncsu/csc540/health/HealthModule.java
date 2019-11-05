@@ -1,7 +1,6 @@
 package edu.ncsu.csc540.health;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.persist.Transactional;
@@ -9,17 +8,14 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import edu.ncsu.csc540.health.db.JdbiTransactionInterceptor;
 import edu.ncsu.csc540.health.db.UnitOfWork;
-import edu.ncsu.csc540.health.pages.DemoQueryPage;
-import edu.ncsu.csc540.health.pages.HomePage;
-import edu.ncsu.csc540.health.pages.Page;
-import edu.ncsu.csc540.health.pages.SignInPage;
-import edu.ncsu.csc540.health.pages.SignUpPage;
+import edu.ncsu.csc540.health.actions.DemoQueryPage;
+import edu.ncsu.csc540.health.actions.HomePage;
+import edu.ncsu.csc540.health.actions.Action;
+import edu.ncsu.csc540.health.actions.SignInPage;
+import edu.ncsu.csc540.health.actions.SignUpPage;
 import org.apache.commons.configuration2.Configuration;
-import org.beryx.textio.TextIO;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-
-import java.util.function.Consumer;
 
 public class HealthModule extends AbstractModule {
     private final Configuration configuration;
@@ -30,19 +26,19 @@ public class HealthModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(Page.class)
+        bind(Action.class)
                 .annotatedWith(Names.named("home"))
                 .to(HomePage.class);
 
-        bind(Page.class)
+        bind(Action.class)
                 .annotatedWith(Names.named("signUp"))
                 .to(SignUpPage.class);
 
-        bind(Page.class)
+        bind(Action.class)
                 .annotatedWith(Names.named("signIn"))
                 .to(SignInPage.class);
 
-        bind(Page.class)
+        bind(Action.class)
                 .annotatedWith(Names.named("demo"))
                 .to(DemoQueryPage.class);
 

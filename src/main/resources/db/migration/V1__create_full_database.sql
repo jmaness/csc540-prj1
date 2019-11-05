@@ -65,16 +65,13 @@ CREATE TABLE staff (
 	FOREIGN KEY (primary_department_code) REFERENCES departments(code)
 );
 
-CREATE TABLE department_directors {
+CREATE TABLE department_directors (
     department_code varchar2(100) NOT NULL,
     staff_id int NOT NULL,
     PRIMARY KEY (department_code),
     FOREIGN KEY (department_code) REFERENCES departments(code),
     FOREIGN KEY (staff_id) REFERENCES staff(id)
-};
-
-ALTER TABLE staff
-	ADD FOREIGN KEY (primary_department_code) REFERENCES departments(code);
+);
 
 CREATE TABLE staff_secondary_departments (
 	staff_id int NOT NULL,

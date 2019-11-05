@@ -21,7 +21,7 @@ public class Staff {
                  @ColumnName("last_name") String lastName,
                  @ColumnName("designation") String designation,
                  @ColumnName("hire_date") LocalDate hire_date,
-                 @ColumnName("primary_department") String primary_department,
+                 @ColumnName("primary_department_code") String primary_department,
                  @Nested("a") @Nullable Address address,
                  @ColumnName("facility_id") Integer facilityId) {
         this.id = id;

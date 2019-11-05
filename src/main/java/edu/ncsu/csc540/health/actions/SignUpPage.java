@@ -1,34 +1,32 @@
-package edu.ncsu.csc540.health.pages;
+package edu.ncsu.csc540.health.actions;
 
 import edu.ncsu.csc540.health.model.Address;
 import edu.ncsu.csc540.health.model.Facility;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.service.FacilityService;
 import edu.ncsu.csc540.health.service.PatientService;
+import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 @Singleton
-public class SignUpPage implements Page {
-    private final Page signInPage;
-    private final Page previousPage;
+public class SignUpPage implements Action {
+    private final Action signInPage;
+    private final Action previousPage;
     private final PatientService patientService;
     private final FacilityService facilityService;
 
-    private static final Logger logger = LoggerFactory.getLogger(SignUpPage.class);
-
     @Inject
-    public SignUpPage(@Named("signIn") Page signInPage,
-                      @Named("home") Page previousPage,
+    public SignUpPage(@Named("signIn") Action signInPage,
+                      @Named("home") Action previousPage,
                       PatientService patientService,
                       FacilityService facilityService) {
         this.signInPage = signInPage;
@@ -38,7 +36,7 @@ public class SignUpPage implements Page {
     }
 
     @Override
-    public Page apply(TextIO textIO) {
+    public Action apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
         List<Facility> facilities = facilityService.findAllFacilities();
@@ -109,27 +107,22 @@ public class SignUpPage implements Page {
         terminal.println(String.format("Phone: %s", phone));
 
         terminal.println();
-        terminal.println("1. Sign Up");
-        terminal.println("2. Go Back");
-        terminal.println();
 
-        int option = textIO.newIntInputReader()
-                .withMinVal(1)
-                .withMaxVal(2)
-                .read("> ");
-
-        switch (option) {
-            case 1:
-                patientService.signUp(new Patient(null,
-                        selectedFacility.getId(),
-                        firstName,
-                        lastName,
-                        dob,
-                        new Address(null, streetNum, street, city, state, country),
-                        phone));
-                return signInPage;
-            default:
-                return previousPage;
-        }
+        return textIO.<Pair<String, Action>>newGenericInputReader(null)
+                .withNumberedPossibleValues(Arrays.asList(
+                        Pair.of("Sign Up", (TextIO tio) -> {
+                            patientService.signUp(new Patient(null,
+                                    selectedFacility.getId(),
+                                    firstName,
+                                    lastName,
+                                    dob,
+                                    new Address(null, streetNum, street, city, state, country),
+                                    phone));
+                            return signInPage;
+                        }),
+                        Pair.of("Go Back", previousPage)))
+                .withValueFormatter(Pair::getKey)
+                .read()
+                .getValue();
     }
 }

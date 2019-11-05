@@ -37,4 +37,12 @@ public class StaffMenuPage implements Action {
                 .read("Staff Menu")
                 .getValue();
     }
+
+    private void processPatient() {
+
+    }
+
+    private void addSymptoms() {
+
+    }
 }

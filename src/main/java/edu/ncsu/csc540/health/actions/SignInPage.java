@@ -30,7 +30,6 @@ import java.util.List;
 public class SignInPage implements Action {
     private final ActionFactory actionFactory;
     private final Action previousPage;
-    private final Action staffMenuPage;
     private final PatientService patientService;
     private final StaffService staffService;
     private final FacilityService facilityService;
@@ -40,13 +39,11 @@ public class SignInPage implements Action {
     @Inject
     public SignInPage(ActionFactory actionFactory,
                       @Named("home") Action previousPage,
-                      @Named("staffMenu") Action staffMenuPage,
                       PatientService patientService,
                       StaffService staffService,
                       FacilityService facilityService) {
         this.actionFactory = actionFactory;
         this.previousPage = previousPage;
-        this.staffMenuPage = staffMenuPage;
         this.patientService = patientService;
         this.staffService = staffService;
         this.facilityService = facilityService;
@@ -110,7 +107,7 @@ public class SignInPage implements Action {
                             return this;
                         }
                         else
-                            return staffMenuPage;
+                            return actionFactory.getStaffMenuPage(staff);
                     default:
                         //You done goofed.
                         break;

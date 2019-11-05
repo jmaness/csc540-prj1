@@ -1,5 +1,7 @@
 package edu.ncsu.csc540.health.actions;
 
+import com.google.inject.assistedinject.Assisted;
+import edu.ncsu.csc540.health.model.Staff;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 
@@ -14,13 +16,15 @@ import java.util.Arrays;
  * or run some demo queries.
  *
  */
-@Singleton
 public class StaffMenuPage implements Action {
     private final Action homePage;
+    private final Staff staff;
 
     @Inject
-    public StaffMenuPage(@Named("home") Action homePage) {
+    public StaffMenuPage(@Named("home") Action homePage,
+                         @Assisted Staff staff) {
         this.homePage = homePage;
+        this.staff = staff;
     }
 
     @Override

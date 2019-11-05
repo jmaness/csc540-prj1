@@ -1,7 +1,9 @@
 package edu.ncsu.csc540.health.pages;
 
 import edu.ncsu.csc540.health.model.Address;
+import edu.ncsu.csc540.health.model.Facility;
 import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.service.FacilityService;
 import edu.ncsu.csc540.health.service.PatientService;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
@@ -13,29 +15,49 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Singleton
 public class SignUpPage implements Page {
     private final Page signInPage;
     private final Page previousPage;
     private final PatientService patientService;
+    private final FacilityService facilityService;
 
     private static final Logger logger = LoggerFactory.getLogger(SignUpPage.class);
 
     @Inject
     public SignUpPage(@Named("signIn") Page signInPage,
                       @Named("home") Page previousPage,
-                      PatientService patientService) {
+                      PatientService patientService,
+                      FacilityService facilityService) {
         this.signInPage = signInPage;
         this.previousPage = previousPage;
         this.patientService = patientService;
+        this.facilityService = facilityService;
     }
 
     @Override
     public Page apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
+
+        List<Facility> facilities = facilityService.findAllFacilities();
+
+        if (facilities.isEmpty()) {
+            terminal.println("No facilities found.");
+            terminal.println();
+            return previousPage;
+        }
+
         terminal.println("Sign Up");
         terminal.println("=====================");
+        terminal.println();
+
+        Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
+                .withNumberedPossibleValues(facilities)
+                .withValueFormatter(Facility::getName)
+                .read("Facility");
+
         terminal.println();
 
         String firstName = textIO.newStringInputReader()
@@ -79,6 +101,7 @@ public class SignUpPage implements Page {
         terminal.println();
         terminal.println("Please confirm the following information:");
         terminal.println();
+        terminal.println(String.format("Facility: %s", selectedFacility.getName()));
         terminal.println(String.format("First name: %s", firstName));
         terminal.println(String.format("Last name: %s", firstName));
         terminal.println(String.format("Date of birth: %s", firstName));
@@ -98,6 +121,7 @@ public class SignUpPage implements Page {
         switch (option) {
             case 1:
                 patientService.signUp(new Patient(null,
+                        selectedFacility.getId(),
                         firstName,
                         lastName,
                         dob,

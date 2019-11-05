@@ -29,6 +29,7 @@ public class PatientService {
 
         // Store the patient referencing the new address
         int patientId = patientDAO.create(new Patient(null,
+                patient.getFacilityId(),
                 patient.getFirstName(),
                 patient.getLastName(),
                 patient.getDob(),

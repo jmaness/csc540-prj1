@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class Patient {
     private final Integer id;
+    private final Integer facilityId;
     private final String firstName;
     private final String lastName;
     private final LocalDate dob;
@@ -16,12 +17,14 @@ public class Patient {
     private final String phone;
 
     public Patient(@ColumnName("id") @Nullable Integer id,
+                   @ColumnName("facility_id") Integer facilityId,
                    @ColumnName("first_name") String firstName,
                    @ColumnName("last_name") String lastName,
                    @ColumnName("dob") LocalDate dob,
                    @Nested("a") @Nullable Address address,
                    @ColumnName("phone") String phone) {
         this.id = id;
+        this.facilityId = facilityId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
@@ -31,6 +34,10 @@ public class Patient {
 
     public Integer getId() {
         return id;
+    }
+
+    public Integer getFacilityId() {
+        return facilityId;
     }
 
     public String getFirstName() {

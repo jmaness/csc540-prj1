@@ -101,8 +101,8 @@ public class SignUpPage implements Action {
         terminal.println();
         terminal.println(String.format("Facility: %s", selectedFacility.getName()));
         terminal.println(String.format("First name: %s", firstName));
-        terminal.println(String.format("Last name: %s", firstName));
-        terminal.println(String.format("Date of birth: %s", firstName));
+        terminal.println(String.format("Last name: %s", lastName));
+        terminal.println(String.format("Date of birth: %s", dob));
         terminal.println(String.format("Address: %d %s \n         %s, %s, %s", streetNum, street, city, state, country));
         terminal.println(String.format("Phone: %s", phone));
 
@@ -110,7 +110,7 @@ public class SignUpPage implements Action {
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
-                        Pair.of("Sign Up", (TextIO tio) -> {
+                        Pair.of("Confirm", (TextIO tio) -> {
                             patientService.signUp(new Patient(null,
                                     selectedFacility.getId(),
                                     firstName,

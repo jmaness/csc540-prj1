@@ -1,7 +1,6 @@
 package edu.ncsu.csc540.health.dao;
 
 import edu.ncsu.csc540.health.model.Address;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -9,12 +8,10 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import javax.inject.Named;
-
 
 public interface AddressDAO {
 
-    @SqlUpdate("insert into addresses (street_number, street, city, state, country) values (:streetNum, :street, :city, :state, :country)")
+    @SqlUpdate("insert into addresses (num, street, city, state, country) values (:streetNum, :street, :city, :state, :country)")
     @GetGeneratedKeys("id")
     Integer create(@BindBean Address address);
 
@@ -23,7 +20,7 @@ public interface AddressDAO {
     Address findById(@Bind("id") Integer id);
 
     @SqlUpdate("update addresses " +
-               "set street_number = :streetNum, " +
+               "set num = :streetNum, " +
                "    street = :street, " +
                "    city = :city, " +
                "    state = :state, " +

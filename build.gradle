@@ -21,6 +21,7 @@ dependencies {
     // Guice - dependency injection
     implementation 'com.google.inject:guice:4.2.2'
     implementation 'com.google.inject.extensions:guice-persist:4.2.2'
+    implementation 'com.google.inject.extensions:guice-assistedinject:4.2.2'
 
     // Text-IO - for console UI
     implementation 'org.beryx:text-io:3.3.0'

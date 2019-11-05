@@ -17,7 +17,7 @@ public interface PatientDAO {
     Integer create(@BindBean Patient patient);
 
     @SqlQuery("select p.id p_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
-            "a.id a_id, a.street_number a_street_number, a.street a_street, a.city a_city, a.state a_state, a.country a_country " +
+            "a.id a_id, a.num a_num, a.street a_street, a.city a_city, a.state a_state, a.country a_country " +
             "from patients p, addresses a where p.id = :id and p.address_id = a.id")
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     @RegisterConstructorMapper(value = Address.class, prefix = "a")

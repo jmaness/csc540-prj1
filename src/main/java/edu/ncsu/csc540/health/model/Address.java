@@ -13,7 +13,7 @@ public class Address {
     private final String country;
 
     public Address(@ColumnName("id") @Nullable Integer id,
-                   @ColumnName("street_number") Integer streetNum,
+                   @ColumnName("num") Integer streetNum,
                    @ColumnName("street") String street,
                    @ColumnName("city") String city,
                    @ColumnName("state") String state,

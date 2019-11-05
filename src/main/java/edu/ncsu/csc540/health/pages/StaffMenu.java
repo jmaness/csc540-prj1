@@ -16,7 +16,7 @@ public class StaffMenu implements Page {
     public Page apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        erminal.println("Staff Menu");
+        terminal.println("Staff Menu");
         terminal.println("=====================");
         terminal.println("1. Checked-in patient list");
         terminal.println("2. Treated patient list");

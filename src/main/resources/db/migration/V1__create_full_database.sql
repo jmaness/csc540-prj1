@@ -43,13 +43,13 @@ CREATE TABLE facility_certifications (
 
 CREATE TABLE staff (
 	id int NOT NULL,
-	name varchar2(100) NOT NULL,
+	first_name varchar2(100) NOT NULL,
+	last_name varchar2(100) NOT NULL,
 	designation varchar2(100) NOT NULL,
 	hire_date DATE NOT NULL,
+	address_id int NOT NULL,
 	facility_id int NOT NULL,
 	primary_department_code varchar(100) NOT NULL,
-	username varchar2(100) NOT NULL,
-	password varchar2(100) NOT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (facility_id) REFERENCES facilities(id)
 );

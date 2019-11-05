@@ -13,6 +13,7 @@ import edu.ncsu.csc540.health.actions.HomePage;
 import edu.ncsu.csc540.health.actions.Action;
 import edu.ncsu.csc540.health.actions.SignInPage;
 import edu.ncsu.csc540.health.actions.SignUpPage;
+import edu.ncsu.csc540.health.actions.StaffMenuPage;
 import org.apache.commons.configuration2.Configuration;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -41,6 +42,9 @@ public class HealthModule extends AbstractModule {
         bind(Action.class)
                 .annotatedWith(Names.named("demo"))
                 .to(DemoQueryPage.class);
+        bind(Action.class)
+                .annotatedWith(Names.named("staffMenu"))
+                .to(StaffMenuPage.class);
 
         configureJdbi();
     }

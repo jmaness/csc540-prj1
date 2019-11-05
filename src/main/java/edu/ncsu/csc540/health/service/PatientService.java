@@ -44,4 +44,8 @@ public class PatientService {
     public Patient signIn(Integer facilityID, String lastName, LocalDate dob, String city) {
         return patientDAO.validateSignIn(facilityID, lastName, dob, city);
     }
+
+    public boolean isCheckedIn(Patient patient) {
+        return patientDAO.findActivePatientCheckin(patient.getId()) != null;
+    }
 }

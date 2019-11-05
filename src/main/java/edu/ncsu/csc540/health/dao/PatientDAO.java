@@ -2,6 +2,7 @@ package edu.ncsu.csc540.health.dao;
 
 import edu.ncsu.csc540.health.model.Address;
 import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.PatientCheckin;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -35,4 +36,8 @@ public interface PatientDAO {
                            @Bind("last_name") String lastName,
                            @Bind("dob") LocalDate dob,
                            @Bind("city") String city);
+
+    @SqlQuery("select * from patient_checkin where patient_id = :id and end_time is null")
+    @RegisterConstructorMapper(value = PatientCheckin.class)
+    PatientCheckin findActivePatientCheckin(@Bind("id") Integer patientId);
 }

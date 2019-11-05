@@ -2,8 +2,10 @@ package edu.ncsu.csc540.health.actions;
 
 import edu.ncsu.csc540.health.model.Facility;
 import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.Staff;
 import edu.ncsu.csc540.health.service.FacilityService;
 import edu.ncsu.csc540.health.service.PatientService;
+import edu.ncsu.csc540.health.service.StaffService;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 import org.slf4j.Logger;
@@ -27,15 +29,23 @@ import java.util.List;
 @Singleton
 public class SignInPage implements Action {
     private final Action previousPage;
+    private final Action staffMenuPage;
     private final PatientService patientService;
+    private final StaffService staffService;
     private final FacilityService facilityService;
 
     private static final Logger logger = LoggerFactory.getLogger(SignInPage.class);
 
     @Inject
-    public SignInPage(@Named("home") Action previousPage, PatientService patientService, FacilityService facilityService) {
+    public SignInPage(@Named("home") Action previousPage,
+                      @Named("staffMenu") Action staffMenuPage,
+                      PatientService patientService,
+                      StaffService staffService,
+                      FacilityService facilityService) {
         this.previousPage = previousPage;
+        this.staffMenuPage = staffMenuPage;
         this.patientService = patientService;
+        this.staffService = staffService;
         this.facilityService = facilityService;
     }
 
@@ -82,7 +92,7 @@ public class SignInPage implements Action {
                         Patient patient = patientService.signIn(selectedFacility.getId(), lastName, dob, city);
 
                         if (patient == null) {
-                            terminal.println("\nError: Patient not found. Please try again");
+                            terminal.println("\nError: Patient not found. Please try again.\n");
                             return this;
                         }
                         else {
@@ -92,8 +102,14 @@ public class SignInPage implements Action {
                         }
                     case "n":
                     case "no":
-                        //TODO: Implement staff verification
-                        break;
+                        Staff staff = staffService.signIn(selectedFacility.getId(), lastName, city);
+
+                        if (staff == null) {
+                            terminal.println("\nError: Staff not found. Please try again.\n");
+                            return this;
+                        }
+                        else
+                            return staffMenuPage;
                     default:
                         //You done goofed.
                         break;

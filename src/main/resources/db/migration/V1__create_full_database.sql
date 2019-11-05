@@ -41,6 +41,15 @@ CREATE TABLE facility_certifications (
 	FOREIGN KEY (certification_acronym) REFERENCES certifications(acronym)
 );
 
+CREATE TABLE departments (
+	code varchar2(100) NOT NULL,
+	name varchar2(100) NOT NULL,
+	type varchar2(100) NOT NULL,
+	facility_id int NOT NULL,
+	PRIMARY KEY (code),
+	FOREIGN KEY (facility_id) REFERENCES facilities(id)
+);
+
 CREATE TABLE staff (
 	id int NOT NULL,
 	first_name varchar2(100) NOT NULL,
@@ -51,22 +60,18 @@ CREATE TABLE staff (
 	facility_id int NOT NULL,
 	primary_department_code varchar(100) NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY (facility_id) REFERENCES facilities(id)
-);
-
-CREATE TABLE departments (
-	code varchar2(100) NOT NULL,
-	name varchar2(100) NOT NULL,
-	type varchar2(100) NOT NULL,
-	facility_id int NOT NULL,
-	director_id int NOT NULL,
-	PRIMARY KEY (code),
 	FOREIGN KEY (facility_id) REFERENCES facilities(id),
-	FOREIGN KEY (director_id) REFERENCES staff(id)
+	FOREIGN KEY (address_id) REFERENCES addresses(id),
+	FOREIGN KEY (primary_department_code) REFERENCES departments(code)
 );
 
-ALTER TABLE staff
-	ADD FOREIGN KEY (primary_department_code) REFERENCES departments(code);
+CREATE TABLE department_directors (
+    department_code varchar2(100) NOT NULL,
+    staff_id int NOT NULL,
+    PRIMARY KEY (department_code),
+    FOREIGN KEY (department_code) REFERENCES departments(code),
+    FOREIGN KEY (staff_id) REFERENCES staff(id)
+);
 
 CREATE TABLE staff_secondary_departments (
 	staff_id int NOT NULL,

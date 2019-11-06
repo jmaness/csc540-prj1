@@ -6,6 +6,7 @@ import edu.ncsu.csc540.health.model.Staff;
 import edu.ncsu.csc540.health.service.FacilityService;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.StaffService;
+import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import javax.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,73 +53,64 @@ public class SignInPage implements Action {
 
     @Override
     public Action apply(TextIO textIO) {
+        return textIO.<Pair<String, Action>>newGenericInputReader(null)
+                .withNumberedPossibleValues(Arrays.asList(
+                        Pair.of("Sign In", this::signIn),
+                        Pair.of("Go Back", previousPage)
+                ))
+                .withValueFormatter(Pair::getKey)
+                .read("Sign In\n=====================")
+                .getValue();
+    }
+
+    private Action signIn(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
-        terminal.println("Sign In");
-        terminal.println("=====================");
-        terminal.println("1. Sign In");
-        terminal.println("2. Go Back\n");
+        List<Facility> facilities = facilityService.findAllFacilities();
 
-        int option = textIO.newIntInputReader()
-                .withMinVal(1)
-                .withMaxVal(2)
-                .read("> ");
-
-        switch (option) {
-            case 1:
-                List<Facility> facilities = facilityService.findAllFacilities();
-
-                if (facilities.isEmpty()) {
-                    terminal.println("No facilities found.");
-                    terminal.println();
-                    return previousPage;
-                }
-
-                Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
-                    .withNumberedPossibleValues(facilities)
-                    .withValueFormatter(Facility::getName)
-                    .read("A. Please select your Facility: ");
-
-                String lastName = textIO.newStringInputReader().read("\nB. Please enter your last name: ");
-
-                String dobString = textIO.newStringInputReader().withPattern("\\d{1,2}/\\d{1,2}/\\d{4}").read("\nC. Please enter your date of birth (mm/dd/yyyy): ");
-                LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-
-                String city = textIO.newStringInputReader().read("\nD. Please enter the city listed on your home address: ");
-
-                String isPatient = textIO.newStringInputReader().withPossibleValues("y", "n", "yes", "no").read("\nE. Are you a patient? (y/n)");
-
-                switch (isPatient.toLowerCase()) {
-                    case "y":
-                    case "yes":
-                        Patient patient = patientService.signIn(selectedFacility.getId(), lastName, dob, city);
-
-                        if (patient == null) {
-                            terminal.println("\nError: Patient not found. Please try again.\n");
-                            return this;
-                        }
-                        else {
-                            return actionFactory.getPatientRoutingPage(patient);
-                        }
-                    case "n":
-                    case "no":
-                        Staff staff = staffService.signIn(selectedFacility.getId(), lastName, city);
-
-                        if (staff == null) {
-                            terminal.println("\nError: Staff not found. Please try again.\n");
-                            return this;
-                        }
-                        else
-                            return actionFactory.getStaffMenuPage(staff);
-                    default:
-                        //You done goofed.
-                        break;
-                }
-
-                break;
-            case 2:
-                return previousPage;
+        if (facilities.isEmpty()) {
+            terminal.println("No facilities found.");
+            terminal.println();
+            return previousPage;
         }
 
-        return previousPage; //Temporary
+        Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
+                .withNumberedPossibleValues(facilities)
+                .withValueFormatter(Facility::getName)
+                .read("A. Please select your Facility: ");
+
+        String lastName = textIO.newStringInputReader()
+                .read("\nB. Please enter your last name: ");
+
+        String dobString = textIO.newStringInputReader()
+                .withPattern("\\d{1,2}/\\d{1,2}/\\d{4}")
+                .read("\nC. Please enter your date of birth (mm/dd/yyyy): ");
+        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        String city = textIO.newStringInputReader()
+                .read("\nD. Please enter the city listed on your home address: ");
+
+        boolean isPatient = textIO.newBooleanInputReader()
+                .read("\nE. Are you a patient?");
+
+        if (isPatient) {
+            Patient patient = patientService.signIn(selectedFacility.getId(), lastName, dob, city);
+
+            if (patient == null) {
+                terminal.println("\nError: Patient not found. Please try again.\n");
+                return this;
+            } else {
+                return actionFactory.getPatientRoutingPage(patient);
+            }
+        } else {
+            Staff staff = staffService.signIn(selectedFacility.getId(), lastName, city);
+
+            if (staff == null) {
+                terminal.println("\nError: Staff not found. Please try again.\n");
+                return this;
+            }
+            else {
+                return actionFactory.getStaffMenuPage(staff);
+            }
+        }
     }
 }

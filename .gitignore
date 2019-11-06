@@ -10,8 +10,7 @@
 
 # IDEA
 # ----
-!/.idea
-/.idea/*
+/.idea
 !/.idea/codeStyles
 !/.idea/inspectionProfiles
 */**/.idea

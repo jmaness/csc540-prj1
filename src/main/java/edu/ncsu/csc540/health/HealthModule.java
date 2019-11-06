@@ -43,10 +43,6 @@ public class HealthModule extends AbstractModule {
                 .to(SignInPage.class);
 
         bind(Action.class)
-                .annotatedWith(Names.named("checkIn"))
-                .to(CheckInPage.class);
-
-        bind(Action.class)
                 .annotatedWith(Names.named("demo"))
                 .to(DemoQueryPage.class);
 

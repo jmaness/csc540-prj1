@@ -1,0 +1,39 @@
+package edu.ncsu.csc540.health.service;
+
+import edu.ncsu.csc540.health.dao.BodyPartDAO;
+import edu.ncsu.csc540.health.dao.SeverityScaleDAO;
+import edu.ncsu.csc540.health.dao.SymptomDAO;
+import edu.ncsu.csc540.health.model.BodyPart;
+import edu.ncsu.csc540.health.model.SeverityScaleValue;
+import edu.ncsu.csc540.health.model.Symptom;
+import org.jdbi.v3.core.Jdbi;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
+
+@Singleton
+public class SymptomService {
+    private final SymptomDAO symptomDAO;
+    private final BodyPartDAO bodyPartDAO;
+    private final SeverityScaleDAO severityScaleDAO;
+
+    @Inject
+    public SymptomService(Jdbi jdbi) {
+        symptomDAO = jdbi.onDemand(SymptomDAO.class);
+        bodyPartDAO = jdbi.onDemand(BodyPartDAO.class);
+        severityScaleDAO = jdbi.onDemand(SeverityScaleDAO.class);
+    }
+
+    public List<Symptom> findAllSymptoms() {
+        return symptomDAO.findAll();
+    }
+
+    public List<BodyPart> findAllBodyParts() {
+        return bodyPartDAO.findAllBodyParts();
+    }
+
+    public List<SeverityScaleValue> findSeverityScaleValues(Integer severityScaleId) {
+        return severityScaleDAO.findSeverityScaleValues(severityScaleId);
+    }
+}

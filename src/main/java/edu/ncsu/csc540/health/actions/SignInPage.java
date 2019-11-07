@@ -84,7 +84,7 @@ public class SignInPage implements Action {
         String dobString = textIO.newStringInputReader()
                 .withPattern("\\d{1,2}/\\d{1,2}/\\d{4}")
                 .read("\nC. Please enter your date of birth (mm/dd/yyyy): ");
-        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("M/d/yyyy"));
 
         String city = textIO.newStringInputReader()
                 .read("\nD. Please enter the city listed on your home address: ");

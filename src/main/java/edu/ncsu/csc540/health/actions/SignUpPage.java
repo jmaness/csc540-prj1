@@ -70,7 +70,7 @@ public class SignUpPage implements Action {
                 .withPattern("\\d{1,2}/\\d{1,2}/\\d{4}")
                 .read("Date of birth: ");
 
-        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("M/d/yyyy"));
 
         int streetNum = textIO.newIntInputReader()
                 .withMinVal(0)

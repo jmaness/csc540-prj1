@@ -1,11 +1,14 @@
 package edu.ncsu.csc540.health;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.persist.Transactional;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import edu.ncsu.csc540.health.actions.ActionFactory;
+import edu.ncsu.csc540.health.actions.CheckInPage;
 import edu.ncsu.csc540.health.db.JdbiTransactionInterceptor;
 import edu.ncsu.csc540.health.db.UnitOfWork;
 import edu.ncsu.csc540.health.actions.DemoQueryPage;
@@ -42,9 +45,9 @@ public class HealthModule extends AbstractModule {
         bind(Action.class)
                 .annotatedWith(Names.named("demo"))
                 .to(DemoQueryPage.class);
-        bind(Action.class)
-                .annotatedWith(Names.named("staffMenu"))
-                .to(StaffMenuPage.class);
+
+        install(new FactoryModuleBuilder()
+                .build(ActionFactory.class));
 
         configureJdbi();
     }

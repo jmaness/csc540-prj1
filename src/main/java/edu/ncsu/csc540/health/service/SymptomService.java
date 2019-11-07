@@ -4,6 +4,7 @@ import edu.ncsu.csc540.health.dao.BodyPartDAO;
 import edu.ncsu.csc540.health.dao.SeverityScaleDAO;
 import edu.ncsu.csc540.health.dao.SymptomDAO;
 import edu.ncsu.csc540.health.model.BodyPart;
+import edu.ncsu.csc540.health.model.SeverityScale;
 import edu.ncsu.csc540.health.model.SeverityScaleValue;
 import edu.ncsu.csc540.health.model.Symptom;
 import org.jdbi.v3.core.Jdbi;
@@ -33,7 +34,16 @@ public class SymptomService {
         return bodyPartDAO.findAllBodyParts();
     }
 
+    public List<SeverityScale> findAllSeverityScales() {
+        return severityScaleDAO.findAllSeverityScales();
+    }
+
     public List<SeverityScaleValue> findSeverityScaleValues(Integer severityScaleId) {
         return severityScaleDAO.findSeverityScaleValues(severityScaleId);
+    }
+
+    public Symptom createSymptom(Symptom symptom) {
+        String symptomCode = symptomDAO.create(symptom);
+        return symptomDAO.findByCode(symptomCode);
     }
 }

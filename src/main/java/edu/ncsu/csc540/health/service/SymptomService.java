@@ -46,9 +46,6 @@ public class SymptomService {
 
     public Symptom createSymptom(Symptom symptom) {
         String symptomCode = symptomDAO.create(symptom);
-        //return symptomDAO.findByCode(symptomCode);
-        Symptom symptom_fetch = symptomDAO.findByCode(symptomCode);
-        System.out.println(symptom_fetch.getName());
-        return null;
+        return symptomDAO.findByCode(symptomCode);
     }
 }

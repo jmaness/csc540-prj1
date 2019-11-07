@@ -198,12 +198,12 @@ CREATE TABLE negative_experiences (
 );
 
 CREATE TABLE priority_lists (
-	id int NOT NULL,
+	checkin_id int NOT NULL,
 	priority varchar2(100) NOT NULL,
 	start_time TIMESTAMP NOT NULL,
-	end_time TIMESTAMP NOT NULL,
-	PRIMARY KEY (id),
-	FOREIGN KEY (id) REFERENCES patient_checkin(id)
+	end_time TIMESTAMP,
+	PRIMARY KEY (checkin_id),
+	FOREIGN KEY (checkin_id) REFERENCES patient_checkin(id)
 );
 
 CREATE TABLE assessment_rules (

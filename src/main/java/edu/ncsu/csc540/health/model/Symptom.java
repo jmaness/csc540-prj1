@@ -3,6 +3,8 @@ package edu.ncsu.csc540.health.model;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+import javax.annotation.Nullable;
+
 public class Symptom {
     private final String code;
     private final String name;
@@ -11,8 +13,8 @@ public class Symptom {
 
     public Symptom(@ColumnName("code") String code,
                    @ColumnName("name") String name,
-                   @Nested("s") SeverityScale severityScale,
-                   @Nested("b") BodyPart bodyPart) {
+                   @Nullable @Nested("c") SeverityScale severityScale,
+                   @Nullable @Nested("b") BodyPart bodyPart) {
         this.code = code;
         this.name = name;
         this.severityScale = severityScale;

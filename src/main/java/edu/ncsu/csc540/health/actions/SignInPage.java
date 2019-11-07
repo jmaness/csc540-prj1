@@ -76,7 +76,7 @@ public class SignInPage implements Action {
         Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
                 .withNumberedPossibleValues(facilities)
                 .withValueFormatter(Facility::getName)
-                .read("A. Please select your Facility: ");
+                .read("A. Please select your facility: ");
 
         String lastName = textIO.newStringInputReader()
                 .read("\nB. Please enter your last name: ");

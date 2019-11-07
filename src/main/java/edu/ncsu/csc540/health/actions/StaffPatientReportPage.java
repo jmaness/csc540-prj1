@@ -18,15 +18,19 @@ import java.util.List;
 public class StaffPatientReportPage implements Action {
     private Staff staff;
     private PatientCheckIn patientCheckIn;
+    private StaffMenuPage staffMenuPage;
+
     private DischargeStatus selectedDischargeStatus;
     private String treatment;
     private List<NegativeExperience> negativeExperiences = new ArrayList<>();
 
     @Inject
     public StaffPatientReportPage(@Assisted Staff staff,
-                                  @Assisted PatientCheckIn patientCheckIn) {
+                                  @Assisted PatientCheckIn patientCheckIn,
+                                  @Assisted StaffMenuPage staffMenuPage) {
         this.staff = staff;
         this.patientCheckIn = patientCheckIn;
+        this.staffMenuPage = staffMenuPage;
     }
 
     @Override
@@ -156,5 +160,8 @@ public class StaffPatientReportPage implements Action {
      */
     private Action submit(TextIO textIO) {
         return Actions.notYetImplemented.apply(this);
+
+        // TODO Submit outcome report
+        // return staffMenuPage
     }
 }

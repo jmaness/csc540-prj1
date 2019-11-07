@@ -41,4 +41,10 @@ public class StaffMenuPage implements Action {
                 .read("Staff Menu")
                 .getValue();
     }
+
+    private Action treatedPatientList(TextIO textIO) {
+
+
+        return null;
+    }
 }

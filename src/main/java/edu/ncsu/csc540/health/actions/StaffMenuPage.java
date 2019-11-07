@@ -2,6 +2,7 @@ package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
 import edu.ncsu.csc540.health.model.Staff;
+import edu.ncsu.csc540.health.service.PatientService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 
@@ -31,7 +32,7 @@ public class StaffMenuPage implements Action {
     public Action apply(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
-                        Pair.of("Checked-in patient list", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Checked-in patient list", treatedPatientList(textIO)),
                         Pair.of("Treated patient list", Actions.notYetImplemented.apply(this)),
                         Pair.of("Add symptoms", Actions.notYetImplemented.apply(this)),
                         Pair.of("Add severity scale", Actions.notYetImplemented.apply(this)),
@@ -45,6 +46,6 @@ public class StaffMenuPage implements Action {
     private Action treatedPatientList(TextIO textIO) {
 
 
-        return null;
+        return Actions.notYetImplemented.apply(this);
     }
 }

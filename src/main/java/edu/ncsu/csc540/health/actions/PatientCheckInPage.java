@@ -71,7 +71,7 @@ public class PatientCheckInPage implements Action {
                     .read("Reoccurring?");
 
             SeverityScaleValue severity = textIO.<SeverityScaleValue>newGenericInputReader(null)
-                    .withNumberedPossibleValues(symptomService.findSeverityScaleValues(symptom.getSeverityScaleId()))
+                    .withNumberedPossibleValues(symptomService.findSeverityScaleValues(symptom.getSeverityScale().getId()))
                     .withValueFormatter(SeverityScaleValue::getName)
                     .read("Severity");
 

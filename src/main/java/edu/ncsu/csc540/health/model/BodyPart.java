@@ -3,8 +3,8 @@ package edu.ncsu.csc540.health.model;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class BodyPart {
-    private String code;
-    private String name;
+    private final String code;
+    private final String name;
 
     public BodyPart(@ColumnName("code") String code,
                     @ColumnName("name") String name) {

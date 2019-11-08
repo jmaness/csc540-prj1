@@ -1,7 +1,6 @@
 package edu.ncsu.csc540.health.model;
 
 import org.jdbi.v3.core.mapper.Nested;
-import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import javax.annotation.Nullable;
@@ -21,7 +20,7 @@ public class Patient {
                    @ColumnName("first_name") String firstName,
                    @ColumnName("last_name") String lastName,
                    @ColumnName("dob") LocalDate dob,
-                   @Nested("a") @PropagateNull("a_id") Address address,
+                   @Nested("a") Address address,
                    @ColumnName("phone") String phone) {
         this.id = id;
         this.facilityId = facilityId;

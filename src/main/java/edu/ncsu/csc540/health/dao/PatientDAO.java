@@ -4,10 +4,7 @@ import edu.ncsu.csc540.health.model.Address;
 import edu.ncsu.csc540.health.model.CheckInSymptom;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
-import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
@@ -15,12 +12,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowReducer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 public interface PatientDAO {
 
@@ -30,16 +22,16 @@ public interface PatientDAO {
     Integer create(@BindBean Patient patient);
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
-            "a.id a_id, a.num a_num, a.street a_street, a.city a_city, a.state a_state, a.country a_country " +
+            "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
             "from patients p, addresses a where p.id = :id and p.address_id = a.id")
-    @RegisterRowMapper(PatientMapper.class)
+    @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     Patient findById(@Bind("id") Integer id);
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
-            "a.id a_id, a.num a_num, a.street a_street, a.city a_city, a.state a_state, a.country a_country " +
+            "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
             "from patients p, addresses a " +
             "where p.address_id = a.id and p.facility_id = :facilityId and p.last_name = :lastName and p.dob = :dob and a.city = :city")
-    @RegisterRowMapper(PatientMapper.class)
+    @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     Patient validateSignIn(@Bind("facilityId") Integer facilityID,
                            @Bind("lastName") String lastName,
                            @Bind("dob") LocalDate dob,
@@ -69,25 +61,4 @@ public interface PatientDAO {
     @RegisterConstructorMapper(value = CheckInSymptom.class, prefix = "cs")
     @UseRowReducer(PatientCheckInRowReducer.class)
     PatientCheckIn findCheckInById(@Bind("id") int id);
-
-    class PatientMapper implements RowMapper<Patient> {
-        @Override
-        public Patient map(ResultSet rs, StatementContext ctx) throws SQLException {
-            Address address = new Address(rs.getInt("a_id"),
-                    rs.getInt("a_num"),
-                    rs.getString("a_street"),
-                    rs.getString("a_city"),
-                    rs.getString("a_state"),
-                    rs.getString("a_country"));
-            Patient patient = new Patient(rs.getInt("p_id"),
-                    rs.getInt("p_facility_id"),
-                    rs.getString("p_first_name"),
-                    rs.getString("p_last_name"),
-                    LocalDateTime.ofInstant(Instant.ofEpochMilli(rs.getDate("p_dob").getTime()), ZoneId.systemDefault()).toLocalDate(),
-                    address,
-                    rs.getString("p_phone"));
-
-            return patient;
-        }
-    }
 }

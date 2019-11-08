@@ -1,5 +1,6 @@
 package edu.ncsu.csc540.health.service;
 
+import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.BodyPartDAO;
 import edu.ncsu.csc540.health.dao.SeverityScaleDAO;
 import edu.ncsu.csc540.health.dao.SymptomDAO;
@@ -11,8 +12,6 @@ import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Singleton
@@ -44,6 +43,7 @@ public class SymptomService {
         return severityScaleDAO.findSeverityScaleValues(severityScaleId);
     }
 
+    @Transactional
     public Symptom createSymptom(Symptom symptom) {
         String symptomCode = symptomDAO.create(symptom);
         return symptomDAO.findByCode(symptomCode);

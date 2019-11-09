@@ -20,8 +20,14 @@ insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (
 
 insert into severity_scales(id, name) values (4, 'Normal/Premium');
  1);
-insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (15, 3, 'Normal', 1);
-insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (16, 3, 'Premium', 2);
+insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (15, 4, 'Normal', 1);
+insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (16, 4, 'Premium', 2);
+
+insert into severity_scales(id, name) values (5, 'Light/Normal/Heavy');
+ 1);
+insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (16, 5, 'Light', 1);
+insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (17, 5, 'Normal', 2);
+insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (18, 5, 'Heavy', 3);
 
 insert into body_parts (code, name) values ('1', 'Abdominal');
 insert into body_parts (code, name) values ('2', 'Head');
@@ -40,6 +46,7 @@ insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SY
 insert into symptoms (code, name, severity_scale_id, body_part_code)values ('SYM004', 'Physical Exam', 4, null);
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM005', 'Lightheadedness', 2, '2');
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM006', 'Blurred vision', 2, '3');
+insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM007', 'Bleeding', 5, null);
 
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM01', 'Fever', 1, null);
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM02', 'Headache', 1, '1');

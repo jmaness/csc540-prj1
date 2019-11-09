@@ -12,15 +12,17 @@ import java.util.List;
 
 public interface SymptomDAO {
 
-    @SqlQuery("select * from symptoms")
-    @RegisterConstructorMapper(Symptom.class)
-    List<Symptom> findAll();
-
-    @SqlQuery("select s.code s_code, s.name s_name, " +
+    String FIND_SYMPTOMS = "select s.code s_code, s.name s_name, " +
             "c.id sc_id, c.name sc_name, " +
             "b.code sb_code, b.name sb_name " +
             "from symptoms s, severity_scales c, body_parts b " +
-            "where s.code = :code and s.severity_scale_id = c.id and s.body_part_code = b.code")
+            "where s.severity_scale_id = c.id and s.body_part_code = b.code";
+
+    @SqlQuery(FIND_SYMPTOMS)
+    @RegisterConstructorMapper(value = Symptom.class, prefix = "s")
+    List<Symptom> findAll();
+
+    @SqlQuery(FIND_SYMPTOMS + " and s.code = :code")
     @RegisterConstructorMapper(value = Symptom.class, prefix = "s")
     Symptom findByCode(@Bind("code") String code);
 

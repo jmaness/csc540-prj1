@@ -15,7 +15,6 @@ insert into addresses (num, street, city, state, zip, country) values (2650, '25
 insert into facilities (id, name, capacity, classification_code, address_id) values (1001, 'California Health Care', 150, '02', 2);
 insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1001, 'ISO000', TO_DATE('01/01/2001', 'MM/DD/YYYY'), TO_DATE('01/01/2021', 'MM/DD/YYYY'));
 
-
 insert into addresses (num, street, city, state, zip, country) values (489, 'First Avenue', 'New York', 'NY', 10001, 'US');
 insert into facilities (id, name, capacity, classification_code, address_id) values (1002, 'Suny Medical Center', 10, '01', 3);
 insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'ISO001', TO_DATE('01/01/2002', 'MM/DD/YYYY'), TO_DATE('01/01/2022', 'MM/DD/YYYY'));
@@ -24,7 +23,7 @@ insert into facility_certifications (facility_id, certification_acronym, certifi
 insert into departments (code, name, type, facility_id) values ('GP000', 'General Practice department', 'medical', 1000);
 insert into departments (code, name, type, facility_id) values ('OP000', 'Optometry', 'medical', 1000);
 insert into departments (code, name, type, facility_id) values ('SE000', 'Security', 'non-medical', 1000);
-insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'medical', 1001);
+insert into departments (code, name, type, facility_id) values ('ER000', 'Emergency room', 'medical', 1001);
 insert into departments (code, name, type, facility_id) values ('GP001', 'General Practice department', 'medical', 1001);
 insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'medical', 1002);
 
@@ -34,17 +33,15 @@ insert into department_services (department_code, service_code) values ('GP000',
 insert into department_services (department_code, service_code) values ('GP001', 'SGP01');
 insert into department_services (department_code, service_code) values ('OP000', 'VIS01');
 
-insert into service_equipment (service_code, name) values ('ER000', 'ER combo rack');
-insert into service_equipment (service_code, name) values ('GP000', 'Blood pressure monitor');
-insert into service_equipment (service_code, name) values ('GP001', 'Blood pressure monitor');
-insert into service_equipment (service_code, name) values ('GP000', 'Thermometer');
-insert into service_equipment (service_code, name) values ('GP001', 'Thermometer');
-insert into service_equipment (service_code, name) values ('OP000', 'Vision Screener');
+insert into service_equipment (service_code, name) values ('SER01', 'ER combo rack');
+insert into service_equipment (service_code, name) values ('SGP01', 'Blood pressure monitor');
+insert into service_equipment (service_code, name) values ('SGP01', 'Thermometer');
+insert into service_equipment (service_code, name) values ('VIS01', 'Vision Screener');
 
-/* Old hospitals */
-insert into addresses (num, street, city, state, country) values (100, 'UNC Street', 'Chapel Hill', 'NC', 'US');
+/* Old hospitals. Still using their addresses. */
+insert into addresses (num, street, city, state, zip, country) values (100, 'UNC Street', 'Chapel Hill', 'NC', 27500, 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('UNC Hospital', 500, '01', 4);
-insert into addresses (num, street, city, state, country) values (200, 'Duke Street', 'Durham', 'NC', 'US');
+insert into addresses (num, street, city, state, zip, country) values (200, 'Duke Street', 'Durham', 'NC', 27550, 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('Duke Hospital', 500, '01', 5);
-insert into addresses (num, street, city, state, country) values (300, 'NCSU Street', 'Raleigh', 'NC', 'US');
+insert into addresses (num, street, city, state, zip, country) values (300, 'NCSU Street', 'Raleigh', 'NC', 27600, 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('NCSU Hospital', 500, '01', 6);

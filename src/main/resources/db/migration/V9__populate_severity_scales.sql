@@ -43,7 +43,6 @@ insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SY
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM006', 'Blurred vision', 2, 'EYE000');
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM007', 'Bleeding', 5, null);
 
-
 insert into body_parts (code, name) values ('1', 'Head');
 insert into body_parts (code, name) values ('2', 'Heart');
 insert into body_parts (code, name) values ('3', 'Lungs');

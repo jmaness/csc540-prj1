@@ -1,3 +1,29 @@
-insert into departments (code, name, type, facility_id) values ('butt', 'Department of Butr', 'Medical', 1);
-insert into addresses (num, street, city, state, country) values (400, 'Sad Boy Ln', 'Durham', 'NC', 'US');
-insert into staff (first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values ('Logab', 'Willard', 'Medical', DATE '2019-11-05', 4, 1, 'butt');
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (89001, 'Medical', 'Robot', 'Medical', TO_DATE('06/21/2019', 'MM/DD/YYYY'), 4, 1000, 'OP000');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (93001, 'Musical', 'Robert', 'Medical', TO_DATE('08/29/2018', 'MM/DD/YYYY'), 5, 1001, 'ER000');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (67001, 'Muscular', 'Rob', 'Medical', TO_DATE('10/12/1983', 'MM/DD/YYYY'), 6, 1000, 'GP000');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (88001, 'Mechanical', 'Roboto', 'Medical', TO_DATE('06/21/2019', 'MM/DD/YYYY'), 4, 1000, 'GP000');
+insert into staff_secondary_departments (staff_id, department_code) values (88001, 'OP000');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (91001, 'Millenium', 'Roberten', 'Medical', TO_DATE('09/20/2018', 'MM/DD/YYYY'), 5, 1001, 'GP001');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (66001, 'Missionary', 'Robinson', 'Medical', TO_DATE('10/01/1993', 'MM/DD/YYYY'), 6, 1001, 'ER000');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (89002, 'Miscellaneous', 'Robotor', 'Non-medical', TO_DATE('08/19/2014', 'MM/DD/YYYY'), 4, 1000, 'SE000');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (93002, 'Musician', 'Robot', 'Non-medical', TO_DATE('10/18/2017', 'MM/DD/YYYY'), 5, 1000, 'SE000');
+
+insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (67002, 'Massaging', 'Robin', 'Medical', TO_DATE('12/10/1990', 'MM/DD/YYYY'), 6, 1002, 'ER001');
+
+insert into department_directors (staff_id, department_code) values (93001, 'ER000');
+insert into department_directors (staff_id, department_code) values (67001, 'GP000');
+insert into department_directors (staff_id, department_code) values (91001, 'GP001');
+insert into department_directors (staff_id, department_code) values (89001, 'OP000');
+insert into department_directors (staff_id, department_code) values (89001, 'SE000');
+
+/* old data */
+insert into departments (code, name, type, facility_id) values ('butt', 'Department of Butr', 'Medical', 2003);
+insert into addresses (num, street, city, state, zip, country) values (400, 'Sad Boy Ln', 'Durham', 'NC', 27501, 'US');
+insert into staff (first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values ('Logab', 'Willard', 'Medical', DATE '2019-11-05', 7, 2003, 'butt');

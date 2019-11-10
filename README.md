@@ -29,7 +29,7 @@ You can work around this by configuring your IDE to not use Gradle when running 
 
 Create a Run configuration with the following values:
 * Main Class: `edu.ncsu.csc540.health.HealthApp`, 
-* Environment variables: `HEALTH_DB_USER` and `HEALTH_DB_PASSWORD` 
+* Environment variables: `HEALTH_DB_USER=<your unity id>` and `HEALTH_DB_PASSWORD=<your numeric unity id>` 
 
 # Option 2. Use `run_app.sh`
 ```

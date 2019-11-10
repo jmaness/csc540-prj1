@@ -6,6 +6,7 @@ import edu.ncsu.csc540.health.model.Staff;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class StaffService {
     private final StaffDAO staffDAO;
@@ -18,5 +19,9 @@ public class StaffService {
     @Transactional
     public Staff signIn(Integer facilityID, String lastName, String city) {
         return staffDAO.validateSignIn(facilityID, lastName, city);
+    }
+
+    public List<Staff> findAllMedicalStaffByFacility(Integer facilityId) {
+        return staffDAO.findAllMedicalStaffByFacility(facilityId);
     }
 }

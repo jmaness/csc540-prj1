@@ -2,9 +2,11 @@ package edu.ncsu.csc540.health.service;
 
 import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.AddressDAO;
+import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
 import edu.ncsu.csc540.health.model.Address;
 import edu.ncsu.csc540.health.model.CheckInSymptom;
+import edu.ncsu.csc540.health.model.OutcomeReport;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
 import org.jdbi.v3.core.Jdbi;
@@ -17,11 +19,13 @@ import java.time.LocalDate;
 public class PatientService {
     private final AddressDAO addressDAO;
     private final PatientDAO patientDAO;
+    private final OutcomeReportDAO outcomeReportDAO;
 
     @Inject
     public PatientService(Jdbi jdbi) {
         addressDAO = jdbi.onDemand(AddressDAO.class);
         patientDAO = jdbi.onDemand(PatientDAO.class);
+        outcomeReportDAO = jdbi.onDemand(OutcomeReportDAO.class);
     }
 
     @Transactional
@@ -64,5 +68,15 @@ public class PatientService {
 
     public boolean isCheckedIn(Patient patient) {
         return patientDAO.findActivePatientCheckin(patient.getId()) != null;
+    }
+
+    @Transactional
+    public void submitOutcomeReport(OutcomeReport outcomeReport) {
+        outcomeReportDAO.insertOutcomeReport(outcomeReport);
+
+        if (outcomeReport.getReferralStatus() != null) {
+            outcomeReportDAO.insertReferralStatus(outcomeReport.getReferralStatus());
+            outcomeReport.getReferralStatus().getReasons().forEach(outcomeReportDAO::insertReferralReason);
+        }
     }
 }

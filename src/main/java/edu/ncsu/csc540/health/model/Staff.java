@@ -61,4 +61,6 @@ public class Staff {
     public String getPrimary_department() {
         return primary_department;
     }
+
+    public String getDisplayString() { return id + ": " + first_name + " " + last_name; }
 }

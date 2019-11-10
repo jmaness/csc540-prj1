@@ -65,16 +65,7 @@ public interface PatientDAO {
     @UseRowReducer(PatientCheckInRowReducer.class)
     PatientCheckIn findCheckInById(@Bind("id") int id);
 
-    @SqlQuery("select p.id, p.first_name, p.last_name, p.dob, p.phone, p.address_id, p.facility_id " +
-            "from patients p " +
-            "where p.id in(" +
-            "    select pc.patient_id" +
-            "    from patient_checkin pc" +
-            "    where pc.end_time is not null and pc.id in(" +
-            "        select pl.checkin_id" +
-            "        from priority_lists pl" +
-            "        where pl.end_time is not null" +
-            "));")
-    @RegisterConstructorMapper(value = Patient.class, prefix = "p")
+    @SqlQuery("select * from patients p where p.id in( select pc.patient_id from patient_checkin pc where pc.end_time is not null and pc.id in( select pl.checkin_id from priority_lists pl where pl.end_time is not null))")
+    @RegisterConstructorMapper(Patient.class)
     List<Patient> getTreatedPatientList();
 }

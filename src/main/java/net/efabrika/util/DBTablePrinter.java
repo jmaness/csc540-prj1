@@ -31,6 +31,7 @@ Hami
 
 package net.efabrika.util;
 
+import java.io.PrintWriter;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +167,9 @@ public class DBTablePrinter {
          */
         private int typeCategory = 0;
 
+        private int precision = 0;
+        private int scale = 0;
+
         /**
          * Constructs a new <code>Column</code> with a column label,
          * generic SQL type and type name (as defined in
@@ -178,10 +182,12 @@ public class DBTablePrinter {
          * @param type Generic SQL type
          * @param typeName Generic SQL type name
          */
-        public Column (String label, int type, String typeName) {
+        public Column (String label, int type, String typeName, int precision, int scale) {
             this.label = label;
             this.type = type;
             this.typeName = typeName;
+            this.precision = precision;
+            this.scale = scale;
         }
 
         /**
@@ -298,6 +304,14 @@ public class DBTablePrinter {
         public void setTypeCategory(int typeCategory) {
             this.typeCategory = typeCategory;
         }
+
+        public int getPrecision() {
+            return precision;
+        }
+
+        public int getScale() {
+            return scale;
+        }
     }
 
     /**
@@ -405,6 +419,18 @@ public class DBTablePrinter {
         printResultSet(rs, DEFAULT_MAX_TEXT_COL_WIDTH);
     }
 
+    public static void printResultSet(ResultSet rs, int maxStringColWidth) {
+        printResultSet(rs, maxStringColWidth, new PrintWriter(System.out), new PrintWriter(System.err));
+    }
+
+    public static void printResultSet(ResultSet rs, PrintWriter writer) {
+        printResultSet(rs, writer, writer);
+    }
+
+    public static void printResultSet(ResultSet rs, PrintWriter writer, PrintWriter errWriter) {
+        printResultSet(rs, DEFAULT_MAX_TEXT_COL_WIDTH, writer, errWriter);
+    }
+
     /**
      * Overloaded method to print rows of a <a target="_blank"
      * href="http://docs.oracle.com/javase/8/docs/api/java/sql/ResultSet.html">
@@ -414,18 +440,18 @@ public class DBTablePrinter {
      * @param rs The <code>ResultSet</code> to print
      * @param maxStringColWidth Max. width of text columns
      */
-    public static void printResultSet(ResultSet rs, int maxStringColWidth) {
+    public static void printResultSet(ResultSet rs, int maxStringColWidth, PrintWriter writer, PrintWriter errWriter) {
         try {
             if (rs == null) {
-                System.err.println("DBTablePrinter Error: Result set is null!");
+                errWriter.println("DBTablePrinter Error: Result set is null!");
                 return;
             }
             if (rs.isClosed()) {
-                System.err.println("DBTablePrinter Error: Result Set is closed!");
+                errWriter.println("DBTablePrinter Error: Result Set is closed!");
                 return;
             }
             if (maxStringColWidth < 1) {
-                System.err.println("DBTablePrinter Info: Invalid max. varchar column width. Using default!");
+                errWriter.println("DBTablePrinter Info: Invalid max. varchar column width. Using default!");
                 maxStringColWidth = DEFAULT_MAX_TEXT_COL_WIDTH;
             }
 
@@ -448,9 +474,13 @@ public class DBTablePrinter {
             // NOTE: columnIndex for rsmd.getXXX methods STARTS AT 1 NOT 0
             for (int i = 1; i <= columnCount; i++) {
                 Column c = new Column(rsmd.getColumnLabel(i),
-                        rsmd.getColumnType(i), rsmd.getColumnTypeName(i));
+                        rsmd.getColumnType(i),
+                        rsmd.getColumnTypeName(i),
+                        rsmd.getPrecision(i),
+                        rsmd.getScale(i)
+                );
                 c.setWidth(c.getLabel().length());
-                c.setTypeCategory(whichCategory(c.getType()));
+                c.setTypeCategory(whichCategory(c));
                 columns.add(c);
 
                 if (!tableNames.contains(rsmd.getTableName(i))) {
@@ -581,15 +611,8 @@ public class DBTablePrinter {
                 sj.add(name);
             }
 
-            String info = "Printing " + rowCount;
-            info += rowCount > 1 ? " rows from " : " row from ";
-            info += tableNames.size() > 1 ? "tables " : "table ";
-            info += sj.toString();
-
-            System.out.println(info);
-
             // Print out the formatted column labels
-            System.out.print(strToPrint.toString());
+            writer.print(strToPrint.toString());
 
             String format;
 
@@ -599,16 +622,16 @@ public class DBTablePrinter {
 
                     // This should form a format string like: "%-60s"
                     format = String.format("| %%%s%ds ", c.getJustifyFlag(), c.getWidth());
-                    System.out.print(
+                    writer.print(
                             String.format(format, c.getValue(i))
                     );
                 }
 
-                System.out.println("|");
-                System.out.print(rowSeparator);
+                writer.println("|");
+                writer.print(rowSeparator);
             }
 
-            System.out.println();
+            writer.println();
 
             /*
                 Hopefully this should have printed something like this:
@@ -622,13 +645,13 @@ public class DBTablePrinter {
              */
 
         } catch (SQLException e) {
-            System.err.println("SQL exception in DBTablePrinter. Message:");
-            System.err.println(e.getMessage());
+            errWriter.println("SQL exception in DBTablePrinter. Message:");
+            errWriter.println(e.getMessage());
         }
     }
 
     /**
-     * Takes a generic SQL type and returns the category this type
+     * Takes a Column and returns the category this column's type
      * belongs to. Types are categorized according to print formatting
      * needs:
      * <p>
@@ -640,11 +663,19 @@ public class DBTablePrinter {
      * href="http://docs.oracle.com/javase/8/docs/api/java/sql/Types.html">
      * java.sql.Types</a>
      *
-     * @param type Generic SQL type
-     * @return The category this type belongs to
+     * @param column Column
+     * @return The category this column belongs to
      */
-    private static int whichCategory(int type) {
-        switch (type) {
+    private static int whichCategory(Column column) {
+        if (column.type == Types.NUMERIC) {
+            if (column.scale == 0) {
+                return CATEGORY_INTEGER;
+            } else {
+                return CATEGORY_DOUBLE;
+            }
+        }
+
+        switch (column.type) {
             case Types.BIGINT:
             case Types.TINYINT:
             case Types.SMALLINT:

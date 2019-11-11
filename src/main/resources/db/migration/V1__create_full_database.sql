@@ -11,7 +11,6 @@ CREATE TABLE addresses (
 	city varchar2(100) NOT NULL,
 	state varchar2(100) NOT NULL,
 	country varchar2(100) NOT NULL,
-	zip int NOT NULL,
 	PRIMARY KEY (id)
 );
 

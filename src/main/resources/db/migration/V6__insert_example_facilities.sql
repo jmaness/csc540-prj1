@@ -39,9 +39,9 @@ insert into service_equipment (service_code, name) values ('SGP01', 'Thermometer
 insert into service_equipment (service_code, name) values ('VIS01', 'Vision Screener');
 
 /* Old hospitals. Still using their addresses. */
-insert into addresses (num, street, city, state, zip, country) values (100, 'UNC Street', 'Chapel Hill', 'NC', 27500, 'US');
+insert into addresses (num, street, city, state, country) values (100, 'UNC Street', 'Chapel Hill', 'North Carolina', 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('UNC Hospital', 500, '01', 4);
-insert into addresses (num, street, city, state, zip, country) values (200, 'Duke Street', 'Durham', 'NC', 27550, 'US');
+insert into addresses (num, street, city, state, country) values (200, 'Duke Street', 'Durham', 'North Carolina', 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('Duke Hospital', 500, '01', 5);
-insert into addresses (num, street, city, state, zip, country) values (300, 'NCSU Street', 'Raleigh', 'NC', 27600, 'US');
+insert into addresses (num, street, city, state, country) values (300, 'NCSU Street', 'Raleigh', 'North Carolina', 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('NCSU Hospital', 500, '01', 6);

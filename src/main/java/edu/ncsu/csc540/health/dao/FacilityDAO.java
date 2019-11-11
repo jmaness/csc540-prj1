@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FacilityDAO {
 
-    @SqlQuery("select * from facilities order by id")
+    @SqlQuery("select * from facilities order by name")
     @RegisterConstructorMapper(Facility.class)
     List<Facility> findAll();
 }

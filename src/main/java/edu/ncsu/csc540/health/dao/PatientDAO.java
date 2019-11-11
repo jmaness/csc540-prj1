@@ -84,7 +84,7 @@ public interface PatientDAO {
     List<Symptom> findAllPatientSymptoms(@Bind("id") int id);
 
     @SqlUpdate("update patient_checkins " +
-            "set patient_checkins.end_time = :end_time " +
+            "set end_time = :end_time " +
             "where patient_id = :id")
     void updateCheckInEndTime(@Bind("id") int id,
                               @Bind("end_time") Timestamp endTime);

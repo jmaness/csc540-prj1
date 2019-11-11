@@ -141,8 +141,8 @@ public class StaffMenuPage implements Action {
         }
 
         if (!treatable) {
-            terminal.println("\nError: Inadequate priveleges.");
-            terminal.println("If you wish to process this patient, please return to the home page and sign in a relevant medical staff's credentials.");
+            terminal.println("\nError: Inadequate privileges.");
+            terminal.println("This patient's symptoms are not covered by your department's specialties.");
             return this;
         }
 
@@ -153,6 +153,7 @@ public class StaffMenuPage implements Action {
         //TODO: Replace this with a reference to the Patient Outcome Report page
         return Actions.notYetImplemented.apply(this);
     }
+
 
     private Action addSymptoms(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();

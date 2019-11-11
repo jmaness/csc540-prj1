@@ -34,6 +34,7 @@ insert into body_parts (code, name) values ('EYE000', 'Eye');
 insert into body_parts (code, name) values ('HRT000', 'Heart');
 insert into body_parts (code, name) values ('CST000', 'Chest');
 insert into body_parts (code, name) values ('HED000', 'Head');
+insert into body_parts (code, name) values ('NON000', 'None');
 
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM001', 'Pain', 1, null);
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM002', 'Diarrhea', 2, 'ABD000');
@@ -47,6 +48,7 @@ insert into body_parts (code, name) values ('1', 'Head');
 insert into body_parts (code, name) values ('2', 'Heart');
 insert into body_parts (code, name) values ('3', 'Lungs');
 insert into body_parts (code, name) values ('4', 'Eyes');
+
 
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM01', 'Fever', 1, null);
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM02', 'Headache', 1, '1');

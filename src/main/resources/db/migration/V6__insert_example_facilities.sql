@@ -1,7 +1,6 @@
-insert into certifications (acronym, name) values ('CSC000', 'Comprehensive Stroke Certification');
-insert into certifications (acronym, name) values ('ISO000', 'ISO Certification');
-insert into certifications (acronym, name) values ('ISO001', 'ISO Certification');
-insert into certifications (acronym, name) values ('PSC000', 'Primary Stroke Certification');
+insert into certifications (acronym, name) values ('CER001', 'Comprehensive Stroke Certification');
+insert into certifications (acronym, name) values ('CER002', 'ISO Certification');
+insert into certifications (acronym, name) values ('CER003', 'Primary Stroke Certification');
 
 insert into services (code, name) values ('SER01', 'Emergency');
 insert into services (code, name) values ('SGP01', 'General practice');
@@ -9,16 +8,16 @@ insert into services (code, name) values ('VIS01', 'Vision');
 
 insert into addresses (num, street, city, state, country) values (2650, 'Wolf Village Way Box 7220', 'Raleigh', 'NC', 'US');
 insert into facilities (id, name, capacity, classification_code, address_id) values (1000, 'Wolf Hospital', 300, '03', 1);
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1000, 'CSC000', TO_DATE('01/01/2000', 'MM/DD/YYYY'), TO_DATE('01/01/2020', 'MM/DD/YYYY'));
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1000, 'CER001', TO_DATE('11/12/1990', 'MM/DD/YYYY'), TO_DATE('11/11/2025', 'MM/DD/YYYY'));
 
 insert into addresses (num, street, city, state, country) values (2650, '2500 Sacramento', 'Santa Cruz', 'CA', 'US');
 insert into facilities (id, name, capacity, classification_code, address_id) values (1001, 'California Health Care', 150, '02', 2);
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1001, 'ISO000', TO_DATE('01/01/2001', 'MM/DD/YYYY'), TO_DATE('01/01/2021', 'MM/DD/YYYY'));
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1001, 'CER002', TO_DATE('05/09/2011', 'MM/DD/YYYY'), TO_DATE('02/08/2024', 'MM/DD/YYYY'));
 
 insert into addresses (num, street, city, state, country) values (489, 'First Avenue', 'New York', 'NY', 'US');
 insert into facilities (id, name, capacity, classification_code, address_id) values (1002, 'Suny Medical Center', 10, '01', 3);
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'ISO001', TO_DATE('01/01/2002', 'MM/DD/YYYY'), TO_DATE('01/01/2022', 'MM/DD/YYYY'));
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'PSC000', TO_DATE('01/01/2000', 'MM/DD/YYYY'), TO_DATE('01/01/2020', 'MM/DD/YYYY'));
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'CER002', TO_DATE('05/09/2011', 'MM/DD/YYYY'), TO_DATE('02/08/2024', 'MM/DD/YYYY'));
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'CER003', TO_DATE('01/01/2018', 'MM/DD/YYYY'), TO_DATE('12/31/2028', 'MM/DD/YYYY'));
 
 insert into departments (code, name, type, facility_id) values ('GP000', 'General Practice department', 'medical', 1000);
 insert into departments (code, name, type, facility_id) values ('OP000', 'Optometry', 'medical', 1000);

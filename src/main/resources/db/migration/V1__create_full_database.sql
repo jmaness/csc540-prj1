@@ -121,12 +121,12 @@ CREATE TABLE body_parts (
 	PRIMARY KEY (code)
 );
 
-CREATE TABLE service_body_parts (
+CREATE TABLE department_body_parts (
+	department_code varchar2(100) NOT NULL,
 	body_part_code varchar2(100) NOT NULL,
-	service_code varchar2(100) NOT NULL,
-	PRIMARY KEY (body_part_code, service_code),
+	PRIMARY KEY (department_code, body_part_code),
 	FOREIGN KEY (body_part_code) REFERENCES body_parts(code),
-	FOREIGN KEY (service_code) REFERENCES services(code)
+	FOREIGN KEY (department_code) REFERENCES departments(code)
 );
 
 CREATE TABLE severity_scales (

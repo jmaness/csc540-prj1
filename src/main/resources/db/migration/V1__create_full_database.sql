@@ -121,12 +121,12 @@ CREATE TABLE body_parts (
 	PRIMARY KEY (code)
 );
 
-CREATE TABLE service_body_parts (
+CREATE TABLE departments_body_parts (
 	body_part_code VARCHAR2(100) NOT NULL,
-	service_code VARCHAR2(100) NOT NULL,
-	PRIMARY KEY (body_part_code, service_code),
+	department_code VARCHAR2(100) NOT NULL,
+	PRIMARY KEY (body_part_code, department_code),
 	FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
-	FOREIGN KEY (service_code) REFERENCES services (code)
+	FOREIGN KEY (department_code) REFERENCES departments (code)
 );
 
 CREATE TABLE severity_scales (
@@ -202,7 +202,7 @@ CREATE TABLE priority_lists (
 	checkin_id INTEGER NOT NULL,
 	priority VARCHAR2(100) NOT NULL,
 	start_time TIMESTAMP NOT NULL,
-	end_time TIMESTAMP NOT NULL,
+	end_time TIMESTAMP,
 	PRIMARY KEY (checkin_id),
 	FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id)
 );

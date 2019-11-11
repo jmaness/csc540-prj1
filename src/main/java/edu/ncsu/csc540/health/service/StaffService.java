@@ -2,6 +2,8 @@ package edu.ncsu.csc540.health.service;
 
 import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.StaffDAO;
+import edu.ncsu.csc540.health.model.BodyPart;
+import edu.ncsu.csc540.health.model.Department;
 import edu.ncsu.csc540.health.model.Staff;
 import org.jdbi.v3.core.Jdbi;
 
@@ -18,7 +20,26 @@ public class StaffService {
 
     @Transactional
     public Staff signIn(Integer facilityID, String lastName, String city) {
-        return staffDAO.validateSignIn(facilityID, lastName, city);
+        Staff tempStaff = staffDAO.validateSignIn(facilityID, lastName, city);
+        Department tempDepartment = staffDAO.findStaffDepartment(tempStaff.getId());
+        List<BodyPart> bodyParts = staffDAO.findDepartmentBodyParts(tempDepartment.getCode());
+
+        Department department = new Department(tempDepartment.getCode(),
+                tempDepartment.getName(),
+                tempDepartment.getType(),
+                tempDepartment.getFacilityId(),
+                bodyParts);
+
+        Staff staff = new Staff(tempStaff.getId(),
+                tempStaff.getFirstName(),
+                tempStaff.getLastName(),
+                tempStaff.getDesignation(),
+                tempStaff.getHireDate(),
+                tempStaff.getFacilityId(),
+                department,
+                tempStaff.getAddress());
+
+        return staff;
     }
 
     public List<Staff> findAllMedicalStaffByFacility(Integer facilityId) {

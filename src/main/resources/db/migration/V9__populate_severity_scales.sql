@@ -27,15 +27,6 @@ insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (
 insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (18, 5, 'Normal', 2);
 insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (19, 5, 'Heavy', 3);
 
-insert into body_parts (code, name) values ('ARM000', 'Left Arm');
-insert into body_parts (code, name) values ('ARM001', 'Right Arm');
-insert into body_parts (code, name) values ('ABD000', 'Abdominal');
-insert into body_parts (code, name) values ('EYE000', 'Eye');
-insert into body_parts (code, name) values ('HRT000', 'Heart');
-insert into body_parts (code, name) values ('CST000', 'Chest');
-insert into body_parts (code, name) values ('HED000', 'Head');
-insert into body_parts (code, name) values ('NON000', 'None');
-
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM001', 'Pain', 1, null);
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM002', 'Diarrhea', 2, 'ABD000');
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM003', 'Fever', 3, null);
@@ -48,7 +39,6 @@ insert into body_parts (code, name) values ('1', 'Head');
 insert into body_parts (code, name) values ('2', 'Heart');
 insert into body_parts (code, name) values ('3', 'Lungs');
 insert into body_parts (code, name) values ('4', 'Eyes');
-
 
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM01', 'Fever', 1, null);
 insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM02', 'Headache', 1, '1');

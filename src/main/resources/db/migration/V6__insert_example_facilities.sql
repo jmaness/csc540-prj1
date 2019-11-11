@@ -19,6 +19,15 @@ insert into facilities (id, name, capacity, classification_code, address_id) val
 insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'CER002', TO_DATE('05/09/2011', 'MM/DD/YYYY'), TO_DATE('02/08/2024', 'MM/DD/YYYY'));
 insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'CER003', TO_DATE('01/01/2018', 'MM/DD/YYYY'), TO_DATE('12/31/2028', 'MM/DD/YYYY'));
 
+insert into body_parts (code, name) values ('ARM000', 'Left Arm');
+insert into body_parts (code, name) values ('ARM001', 'Right Arm');
+insert into body_parts (code, name) values ('ABD000', 'Abdominal');
+insert into body_parts (code, name) values ('EYE000', 'Eye');
+insert into body_parts (code, name) values ('HRT000', 'Heart');
+insert into body_parts (code, name) values ('CST000', 'Chest');
+insert into body_parts (code, name) values ('HED000', 'Head');
+insert into body_parts (code, name) values ('NON000', 'None');
+
 insert into departments (code, name, type, facility_id) values ('GP000', 'General Practice department', 'medical', 1000);
 insert into departments (code, name, type, facility_id) values ('OP000', 'Optometry', 'medical', 1000);
 insert into departments (code, name, type, facility_id) values ('SE000', 'Security', 'non-medical', 1000);

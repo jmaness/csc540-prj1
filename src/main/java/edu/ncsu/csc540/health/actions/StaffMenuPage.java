@@ -13,6 +13,7 @@ import edu.ncsu.csc540.health.service.SymptomService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,12 +54,34 @@ public class StaffMenuPage implements Action {
                         Pair.of("Checked-in patient list", this::processPatient),
                         Pair.of("Treated patient list", this::treatedPatientListMenu),
                         Pair.of("Add symptoms", this::addSymptoms),
-                        Pair.of("Add severity scale", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Add severity scale", this::addSeverityScale),
                         Pair.of("Add assessment rule", this::addAssessmentRule),
                         Pair.of("Go back", homePage)))
                 .withValueFormatter(Pair::getKey)
                 .read("Staff Menu")
                 .getValue();
+    }
+
+    private Action addSeverityScale(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
+
+        SeverityScale scale;
+        List<SeverityScaleValue> scaleValues = new ArrayList<>();
+
+        String scaleName = textIO.newStringInputReader()
+                .read("\nEnter the name of the new scale: ");
+
+        textIO.<Pair<String, Action>>newGenericInputReader(null)
+                .withNumberedPossibleValues(Arrays.asList(
+                        Pair.of("Add level for this scale", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Confirm scale: no more levels", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Go Back", this::apply)))
+                .withValueFormatter(Pair::getKey)
+                .read("Scale Menu")
+                .getValue();
+
+
+        return Actions.notYetImplemented.apply(this);
     }
 
     private Action processPatient(TextIO textIO) {
@@ -179,7 +202,7 @@ public class StaffMenuPage implements Action {
         List<Patient> patients = patientService.getTreatedPatientList();
 
         if (patients.size() == 0) {
-            terminal.print("There are currently no treated patients awaiting checkout.");
+            terminal.println("There are currently no treated patients awaiting checkout.");
             return this::apply;
         }
 

@@ -4,16 +4,14 @@ import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.AddressDAO;
 import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
-import edu.ncsu.csc540.health.model.Address;
-import edu.ncsu.csc540.health.model.CheckInSymptom;
-import edu.ncsu.csc540.health.model.OutcomeReport;
-import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.*;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
 @Singleton
 public class PatientService {
@@ -78,5 +76,25 @@ public class PatientService {
             outcomeReportDAO.insertReferralStatus(outcomeReport.getReferralStatus());
             outcomeReport.getReferralStatus().getReasons().forEach(outcomeReportDAO::insertReferralReason);
         }
+    }
+
+    @Transactional
+    public List<Patient> findAllPriorityPatients() {
+        return patientDAO.findAllPriorityPatients();
+    }
+
+    @Transactional
+    public List<Patient> findAllVitalsPatients() {
+        return patientDAO.findAllVitalsPatients();
+    }
+
+    @Transactional
+    public List<Symptom> findAllPatientSymptoms(Patient patient) {
+        return patientDAO.findAllPatientSymptoms(patient.getId());
+    }
+
+    @Transactional
+    public void updateCheckInEndtime(Patient patient, Timestamp endTime) {
+        patientDAO.updateCheckInEndTime(patient.getId(), endTime);
     }
 }

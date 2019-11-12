@@ -13,7 +13,7 @@ public class Staff {
     private final String designation;
     private final LocalDate hireDate;
     private final Integer facilityId;
-    private final String primaryDepartment;
+    private final Department primaryDepartment;
     private final Address address;
 
     public Staff(@ColumnName("id") @Nullable Integer id,
@@ -21,16 +21,16 @@ public class Staff {
                  @ColumnName("last_name") String lastName,
                  @ColumnName("designation") String designation,
                  @ColumnName("hire_date") LocalDate hireDate,
-                 @ColumnName("primary_department_code") String primaryDepartment,
-                 @Nested("a") @Nullable Address address,
-                 @ColumnName("facility_id") Integer facilityId) {
+                 @ColumnName("facility_id") Integer facilityId,
+                 @Nullable Department primaryDepartment,
+                 @Nested("a") Address address) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.designation = designation;
         this.hireDate = hireDate;
-        this.primaryDepartment = primaryDepartment;
         this.facilityId = facilityId;
+        this.primaryDepartment = primaryDepartment;
         this.address = address;
     }
 
@@ -58,7 +58,11 @@ public class Staff {
         return facilityId;
     }
 
-    public String getPrimaryDepartment() {
+    public Department getPrimaryDepartment() {
         return primaryDepartment;
+    }
+
+    public Address getAddress() {
+        return address;
     }
 }

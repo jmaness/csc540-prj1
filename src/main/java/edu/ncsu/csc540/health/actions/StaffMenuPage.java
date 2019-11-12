@@ -226,7 +226,7 @@ public class StaffMenuPage implements Action {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
         boolean repeat = false;
-        List<Pair<Symptom, SeverityScaleValue>> assessmentSymptoms = new ArrayList<>();
+        List<AssessmentSymptom> assessmentSymptoms = new ArrayList<>();
 
         do {
 
@@ -242,7 +242,17 @@ public class StaffMenuPage implements Action {
                     .withValueFormatter(SeverityScaleValue::getName)
                     .read("Please select a severity: ");
 
-            assessmentSymptoms.add(Pair.of(selectedSymptom, selectedValue));
+            String operation = textIO.<String>newGenericInputReader(null)
+                    .withNumberedPossibleValues(Arrays.asList(
+                            "<",
+                            "<=",
+                            "=",
+                            ">=",
+                            ">"
+                    ))
+                    .read("Please select an operator to associate to the severity: ");
+
+            assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue, operation));
 
             terminal.println("Would you like to enter another symptom, or move on to choosing the assessment rule priority?");
 
@@ -265,18 +275,16 @@ public class StaffMenuPage implements Action {
                 .read("B. Please select the associated body part (leave blank if none applicable): ");
 
         terminal.println("\nPlease confirm the following information:\n");
-        for (Pair pair : assessmentSymptoms) {
-            Symptom symptom = (Symptom) pair.getLeft();
-            SeverityScaleValue value = (SeverityScaleValue) pair.getRight();
-
-            terminal.println(String.format("Symptom: %s | Severity: %s", symptom.getName(), value.getName()));
-        }
+        for (AssessmentSymptom assessmentSymptom : assessmentSymptoms)
+            terminal.println(String.format("Symptom: %s | Severity: %s", assessmentSymptom.getSymptom().getName(), assessmentSymptom.getSeverityScaleValue().getName()));
 
         terminal.println(String.format("Rule priority: %s", priority));
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
+                            AssessmentRule rule = new AssessmentRule(null, priority, "", assessmentSymptoms);
+
 
                         }),
                         Pair.of("Go Back", this)))

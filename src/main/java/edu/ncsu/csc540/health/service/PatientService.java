@@ -4,7 +4,12 @@ import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.AddressDAO;
 import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
-import edu.ncsu.csc540.health.model.*;
+import edu.ncsu.csc540.health.model.Address;
+import edu.ncsu.csc540.health.model.CheckInSymptom;
+import edu.ncsu.csc540.health.model.OutcomeReport;
+import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.Symptom;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
@@ -96,5 +101,9 @@ public class PatientService {
     @Transactional
     public void updateCheckInEndtime(Patient patient, Timestamp endTime) {
         patientDAO.updateCheckInEndTime(patient.getId(), endTime);
+    }
+
+    public List<Patient> getTreatedPatientList() {
+        return patientDAO.getTreatedPatientList();
     }
 }

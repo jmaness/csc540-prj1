@@ -183,7 +183,7 @@ CREATE TABLE outcome_reports (
 	checkin_id INTEGER NOT NULL,
 	discharge_status VARCHAR2(100) NOT NULL,
 	treatment CLOB NOT NULL,
-    out_time TIMESTAMP NOT NULL,
+        out_time TIMESTAMP NOT NULL,
 	patient_acknowledged NUMBER(1),
 	patient_acknowledge_reason CLOB,
 	PRIMARY KEY (checkin_id),

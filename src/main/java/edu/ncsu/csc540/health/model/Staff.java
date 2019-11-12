@@ -65,4 +65,6 @@ public class Staff {
     public Address getAddress() {
         return address;
     }
+
+    public String getDisplayString() { return id + ": " + firstName + " " + lastName; }
 }

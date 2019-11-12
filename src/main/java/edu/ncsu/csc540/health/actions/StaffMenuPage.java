@@ -1,7 +1,11 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
-import edu.ncsu.csc540.health.model.*;
+import edu.ncsu.csc540.health.model.BodyPart;
+import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.SeverityScale;
+import edu.ncsu.csc540.health.model.Staff;
+import edu.ncsu.csc540.health.model.Symptom;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.SymptomService;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,7 +15,6 @@ import org.beryx.textio.TextTerminal;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +45,7 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Checked-in patient list", this::processPatient),
-                        Pair.of("Treated patient list", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Treated patient list", this::treatedPatientListMenu),
                         Pair.of("Add symptoms", this::addSymptoms),
                         Pair.of("Add severity scale", Actions.notYetImplemented.apply(this)),
                         Pair.of("Add assessment rule", Actions.notYetImplemented.apply(this)),
@@ -154,6 +157,27 @@ public class StaffMenuPage implements Action {
         return Actions.notYetImplemented.apply(this);
     }
 
+    private Action treatedPatientListMenu(TextIO textIO) {
+        return textIO.<Pair<String, Action>>newGenericInputReader(null)
+                .withNumberedPossibleValues(Arrays.asList(
+                        Pair.of("Checkout patient", this::treatedPatientList),
+                        Pair.of("Go back", this::apply)))
+                .withValueFormatter(Pair::getKey)
+                .read("Treated Patient Menu")
+                .getValue();
+    }
+
+    private Action treatedPatientList(TextIO textIO) {
+        List<Patient> patients = patientService.getTreatedPatientList();
+
+        Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
+                .withNumberedPossibleValues(patients)
+                .withValueFormatter(Patient::getDisplayString)
+                .read("Patient");
+
+        //Jeremy, patient info is above. Ready to hook up next step
+        return Actions.notYetImplemented.apply(this);
+    }
 
     private Action addSymptoms(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();

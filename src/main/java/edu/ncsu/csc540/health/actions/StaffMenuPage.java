@@ -247,7 +247,7 @@ public class StaffMenuPage implements Action {
                     .withValueFormatter(SeverityScaleValue::getName)
                     .read("Please select a severity: ");
 
-            String operation = textIO.<String>newGenericInputReader(null)
+            String operation = textIO.<String>newStringInputReader()
                     .withNumberedPossibleValues(Arrays.asList(
                             "<",
                             "<=",
@@ -270,7 +270,7 @@ public class StaffMenuPage implements Action {
                     .getValue();
         } while (repeat);
 
-        String priority = textIO.<String>newGenericInputReader(null)
+        String priority = textIO.<String>newStringInputReader()
                 .withNumberedPossibleValues(Arrays.asList(
                         "High",
                         "Normal",

@@ -95,7 +95,10 @@ public interface PatientDAO {
     void updateCheckInEndTime(@Bind("id") int id,
                               @Bind("end_time") Timestamp endTime);
 
-    @SqlQuery("select * from patients p where p.id in( select pc.patient_id from patient_checkin pc where pc.end_time is not null and pc.id in( select pl.checkin_id from priority_lists pl where pl.end_time is not null))")
-    @RegisterConstructorMapper(Patient.class)
+    @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
+            "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
+            "from patients p, addresses a " +
+            "where p.address_id = a.id and p.id in( select pc.patient_id from patient_checkins pc where pc.end_time is not null and pc.id in( select pl.checkin_id from priority_lists pl where pl.end_time is not null))")
+    @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     List<Patient> getTreatedPatientList();
 }

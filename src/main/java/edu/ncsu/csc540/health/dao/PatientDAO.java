@@ -70,6 +70,16 @@ public interface PatientDAO {
     @UseRowReducer(PatientCheckInRowReducer.class)
     PatientCheckIn findActivePatientCheckin(@Bind("patientId") Integer patientId);
 
+    @SqlQuery("select c.id c_id, c.patient_id c_patient_id, c.start_time c_start_time, c.end_time c_end_time, " +
+            "cs.checkin_id cs_checkin_id, cs.symptom_code cs_symptom_code, cs.body_part_code cs_body_part_code, " +
+            "cs.severity_scale_value_id cs_severity_scale_value_id, cs.duration cs_duration, " +
+            "cs.reoccurring cs_reoccurring, cs.incident cs_incident " +
+            "from patient_checkin c " +
+            "left outer join checkin_symptoms cs " +
+            "  on c.id = cs.checkin_id " +
+            "where c.patient_id = :id and c.end_time is null")
+    PatientCheckIn findCheckInByPatient(@BindBean Patient patient);
+
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
             "from patients p, addresses a, patient_checkins c, priority_lists r " +
@@ -113,7 +123,6 @@ public interface PatientDAO {
 
     @SqlUpdate("update patient_checkins set active = 0 where id = :checkInId")
     void setComplete(@Bind("checkInId") Integer checkInId);
-    List<Patient> getTreatedPatientList();
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
@@ -122,6 +131,9 @@ public interface PatientDAO {
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     List<Patient> getPatientPriorityList();
 
-    @SqlUpdate("")
-    List<Patient> addPatientToPriorityList();
+    @SqlUpdate("insert into priority_lists (checkin_id, priority, start_time) " +
+            "values (:checkin_id, :priority, :start_time)")
+    void addPatientToPriorityList(@Bind("checkin_id") Integer checkinId,
+                                           @Bind("priority") String priority,
+                                           @Bind("start_time") Timestamp startTime);
 }

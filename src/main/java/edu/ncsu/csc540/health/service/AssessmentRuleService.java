@@ -6,6 +6,7 @@ import edu.ncsu.csc540.health.model.AssessmentSymptom;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class AssessmentRuleService {
     private final AssessmentRuleDAO assessmentRuleDAO;
@@ -25,5 +26,9 @@ public class AssessmentRuleService {
                     symptom.getOperation()));
 
         return id;
+    }
+
+    public List<AssessmentRule> findAllAssessmentRules() {
+        return assessmentRuleDAO.findAllAssessmentRules();
     }
 }

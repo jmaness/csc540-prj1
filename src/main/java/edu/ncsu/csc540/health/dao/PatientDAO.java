@@ -131,7 +131,6 @@ public interface PatientDAO {
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     List<Patient> getPatientPriorityList();
 
-
     @SqlUpdate("insert into priority_lists (checkin_id, priority, start_time) " +
             "values (:checkin_id, :priority, :start_time)")
     void addPatientToPriorityList(@Bind("checkin_id") Integer checkinId,

@@ -113,4 +113,15 @@ public interface PatientDAO {
 
     @SqlUpdate("update patient_checkins set active = 0 where id = :checkInId")
     void setComplete(@Bind("checkInId") Integer checkInId);
+    List<Patient> getTreatedPatientList();
+
+    @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
+            "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
+            "from patients p, addresses a, priority_lists r, patient_checkins c " +
+            "where r.checkin_id = c.id and c.patient_id = p.id and p.address_id = a.id")
+    @RegisterConstructorMapper(value = Patient.class, prefix = "p")
+    List<Patient> getPatientPriorityList();
+
+    @SqlUpdate("")
+    List<Patient> addPatientToPriorityList();
 }

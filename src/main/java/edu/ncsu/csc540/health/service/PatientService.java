@@ -115,4 +115,8 @@ public class PatientService {
     public List<Patient> getTreatedPatientList(Integer facilityId) {
         return patientDAO.getTreatedPatientList(facilityId);
     }
+
+    public List<Patient> getPatientPriorityList() {
+        return patientDAO.getPatientPriorityList();
+    }
 }

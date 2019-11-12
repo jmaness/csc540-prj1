@@ -168,7 +168,8 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm & Record", (TextIO tio) -> {
                             patientService.updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
-                            //TODO: Implement assessment rules, place patient on priority list, display priority
+
+
                             return this;
                         }),
                         Pair.of("Go Back", this)))

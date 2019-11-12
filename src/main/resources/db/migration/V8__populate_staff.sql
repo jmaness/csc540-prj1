@@ -22,5 +22,3 @@ insert into department_directors (staff_id, department_code) values (67001, 'GP0
 insert into department_directors (staff_id, department_code) values (91001, 'GP001');
 insert into department_directors (staff_id, department_code) values (89001, 'OP000');
 insert into department_directors (staff_id, department_code) values (89001, 'SE000');
-
-

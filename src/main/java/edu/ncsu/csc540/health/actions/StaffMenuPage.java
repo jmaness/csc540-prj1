@@ -174,7 +174,14 @@ public class StaffMenuPage implements Action {
     }
 
     private Action treatedPatientList(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
+
         List<Patient> patients = patientService.getTreatedPatientList();
+
+        if (patients.size() == 0) {
+            terminal.print("There are currently no treated patients awaiting checkout.");
+            return this::apply;
+        }
 
         Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
                 .withNumberedPossibleValues(patients)

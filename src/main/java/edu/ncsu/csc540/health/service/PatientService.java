@@ -12,7 +12,6 @@ import org.jdbi.v3.core.Jdbi;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.LocalDate;
-import java.util.List;
 
 @Singleton
 public class PatientService {
@@ -65,6 +64,36 @@ public class PatientService {
 
     public boolean isCheckedIn(Patient patient) {
         return patientDAO.findActivePatientCheckin(patient.getId()) != null;
+    }
+
+    @Transactional
+    public void submitOutcomeReport(OutcomeReport outcomeReport) {
+        outcomeReportDAO.insertOutcomeReport(outcomeReport);
+
+        if (outcomeReport.getReferralStatus() != null) {
+            outcomeReportDAO.insertReferralStatus(outcomeReport.getReferralStatus());
+            outcomeReport.getReferralStatus().getReasons().forEach(outcomeReportDAO::insertReferralReason);
+        }
+    }
+
+    @Transactional
+    public List<Patient> findAllPriorityPatients() {
+        return patientDAO.findAllPriorityPatients();
+    }
+
+    @Transactional
+    public List<Patient> findAllVitalsPatients() {
+        return patientDAO.findAllVitalsPatients();
+    }
+
+    @Transactional
+    public List<Symptom> findAllPatientSymptoms(Patient patient) {
+        return patientDAO.findAllPatientSymptoms(patient.getId());
+    }
+
+    @Transactional
+    public void updateCheckInEndtime(Patient patient, Timestamp endTime) {
+        patientDAO.updateCheckInEndTime(patient.getId(), endTime);
     }
 
     public List<Patient> getTreatedPatientList() {

@@ -5,7 +5,6 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import javax.annotation.Nullable;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Patient {
     private final Integer id;
@@ -21,7 +20,7 @@ public class Patient {
                    @ColumnName("first_name") String firstName,
                    @ColumnName("last_name") String lastName,
                    @ColumnName("dob") LocalDate dob,
-                   @Nested("a") @Nullable Address address,
+                   @Nested("a") Address address,
                    @ColumnName("phone") String phone) {
         this.id = id;
         this.facilityId = facilityId;

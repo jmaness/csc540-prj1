@@ -122,4 +122,8 @@ public class PatientService {
     public void addPatientToPriorityList(PatientCheckIn checkIn, Priority priority, Timestamp timestamp) {
         patientDAO.addPatientToPriorityList(checkIn.getId(), priority.getName(), timestamp);
     }
+
+    public List<Patient> getPatientPriorityList() {
+        return patientDAO.getPatientPriorityList();
+    }
 }

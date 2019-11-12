@@ -170,6 +170,7 @@ public class StaffMenuPage implements Action {
                             PatientCheckIn checkIn = patientService.findCheckInByPatient(selectedPatient);
                             patientService.updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
 
+<<<<<<< HEAD
                             List<AssessmentRule> rules = assessmentRuleService.findAllAssessmentRules();
                             List<CheckInSymptom> symptoms = checkIn.getSymptoms();
 
@@ -236,6 +237,9 @@ public class StaffMenuPage implements Action {
 
                             terminal.println("...Success!");
                             terminal.println("The patient's check-in has been completed, and has been giving the following priority: " + priority.getName());
+=======
+
+>>>>>>> Changing branches.
                             return this;
                         }),
                         Pair.of("Go Back", this)))

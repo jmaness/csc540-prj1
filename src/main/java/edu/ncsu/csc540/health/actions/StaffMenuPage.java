@@ -15,6 +15,7 @@ import org.beryx.textio.TextTerminal;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class StaffMenuPage implements Action {
                         Pair.of("Treated patient list", this::treatedPatientListMenu),
                         Pair.of("Add symptoms", this::addSymptoms),
                         Pair.of("Add severity scale", Actions.notYetImplemented.apply(this)),
-                        Pair.of("Add assessment rule", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Add assessment rule", this::addAssessmentRule),
                         Pair.of("Go back", homePage)))
                 .withValueFormatter(Pair::getKey)
                 .read("Staff Menu")
@@ -201,7 +202,7 @@ public class StaffMenuPage implements Action {
                 .withDefaultValue(null)
                 .read("C. Please select the associated severity scale (leave blank if none applicable): ");
 
-        terminal.println("Please confirm the following information:\n");
+        terminal.println("\nPlease confirm the following information:\n");
         terminal.println(String.format("Symptom Name: %s", name));
         terminal.println(String.format("Associated Body Part: %s", selectedBodyPart.getName()));
         terminal.println(String.format("Associated Severity Scale: %s", selectedScale.getName()));
@@ -214,6 +215,69 @@ public class StaffMenuPage implements Action {
                                     selectedScale,
                                     selectedBodyPart));
                             return this;
+                        }),
+                        Pair.of("Go Back", this)))
+                .withValueFormatter(Pair::getKey)
+                .read()
+                .getValue();
+    }
+
+    private Action addAssessmentRule(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
+
+        boolean repeat = false;
+        List<Pair<Symptom, SeverityScaleValue>> assessmentSymptoms = new ArrayList<>();
+
+        do {
+
+            List<Symptom> symptoms = symptomService.findAllSymptoms();
+
+            Symptom selectedSymptom = textIO.<Symptom>newGenericInputReader(null)
+                    .withNumberedPossibleValues(symptoms)
+                    .withValueFormatter(Symptom::getName)
+                    .read("Please select a symptom: ");
+
+            SeverityScaleValue selectedValue = textIO.<SeverityScaleValue>newGenericInputReader(null)
+                    .withNumberedPossibleValues(symptomService.findSeverityScaleValues(selectedSymptom.getSeverityScale().getId()))
+                    .withValueFormatter(SeverityScaleValue::getName)
+                    .read("Please select a severity: ");
+
+            assessmentSymptoms.add(Pair.of(selectedSymptom, selectedValue));
+
+            terminal.println("Would you like to enter another symptom, or move on to choosing the assessment rule priority?");
+
+            repeat = textIO.<Pair<String, Boolean>>newGenericInputReader(null)
+                    .withNumberedPossibleValues(Arrays.asList(
+                            Pair.of("Enter another symptom", true),
+                            Pair.of("Choose priority", false)))
+                    .withValueFormatter(Pair::getKey)
+                    .read()
+                    .getValue();
+        } while (repeat);
+
+        terminal.println("Please select the priority to associate with this assessment rule:");
+        String priority = textIO.<String>newGenericInputReader(null)
+                .withNumberedPossibleValues(Arrays.asList(
+                        "High",
+                        "Normal",
+                        "Quarantine"
+                ))
+                .read("B. Please select the associated body part (leave blank if none applicable): ");
+
+        terminal.println("\nPlease confirm the following information:\n");
+        for (Pair pair : assessmentSymptoms) {
+            Symptom symptom = (Symptom) pair.getLeft();
+            SeverityScaleValue value = (SeverityScaleValue) pair.getRight();
+
+            terminal.println(String.format("Symptom: %s | Severity: %s", symptom.getName(), value.getName()));
+        }
+
+        terminal.println(String.format("Rule priority: %s", priority));
+
+        return textIO.<Pair<String, Action>>newGenericInputReader(null)
+                .withNumberedPossibleValues(Arrays.asList(
+                        Pair.of("Confirm", (TextIO tio) -> {
+
                         }),
                         Pair.of("Go Back", this)))
                 .withValueFormatter(Pair::getKey)

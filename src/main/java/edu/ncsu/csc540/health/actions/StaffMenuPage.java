@@ -6,6 +6,8 @@ import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.SeverityScale;
 import edu.ncsu.csc540.health.model.Staff;
 import edu.ncsu.csc540.health.model.Symptom;
+import edu.ncsu.csc540.health.model.*;
+import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.SymptomService;
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,16 +31,19 @@ public class StaffMenuPage implements Action {
     private final Staff staff;
     private final SymptomService symptomService;
     private final PatientService patientService;
+    private final AssessmentRuleService assessmentRuleService;
 
     @Inject
     public StaffMenuPage(@Named("home") Action homePage,
                          @Assisted Staff staff,
                          SymptomService symptomService,
-                         PatientService patientService) {
+                         PatientService patientService,
+                         AssessmentRuleService assessmentRuleService) {
         this.homePage = homePage;
         this.staff = staff;
         this.symptomService = symptomService;
         this.patientService = patientService;
+        this.assessmentRuleService = assessmentRuleService;
     }
 
     @Override
@@ -283,9 +288,8 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
-                            AssessmentRule rule = new AssessmentRule(null, priority, "", assessmentSymptoms);
-
-
+                            assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, "", assessmentSymptoms));
+                            return this;
                         }),
                         Pair.of("Go Back", this)))
                 .withValueFormatter(Pair::getKey)

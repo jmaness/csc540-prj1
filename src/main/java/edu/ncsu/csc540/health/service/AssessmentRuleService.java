@@ -16,10 +16,11 @@ public class AssessmentRuleService {
     }
 
     public Integer createAssessmentRule(AssessmentRule assessmentRule) {
-        return assessmentRuleDAO.createAssessmentRule(assessmentRule);
-    }
+        Integer id = assessmentRuleDAO.createAssessmentRule(assessmentRule);
 
-    public void createAssessmentSymptom(AssessmentSymptom assessmentSymptom) {
-        assessmentRuleDAO.createAssessmentSymptom(assessmentSymptom);
+        for (AssessmentSymptom symptom : assessmentRule.getAssessmentSymptoms())
+            assessmentRuleDAO.createAssessmentSymptom(symptom);
+
+        return id;
     }
 }

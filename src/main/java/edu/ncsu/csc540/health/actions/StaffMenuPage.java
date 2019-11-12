@@ -1,14 +1,7 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
-import edu.ncsu.csc540.health.model.AssessmentRule;
-import edu.ncsu.csc540.health.model.AssessmentSymptom;
-import edu.ncsu.csc540.health.model.BodyPart;
-import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.SeverityScale;
-import edu.ncsu.csc540.health.model.SeverityScaleValue;
-import edu.ncsu.csc540.health.model.Staff;
-import edu.ncsu.csc540.health.model.Symptom;
+import edu.ncsu.csc540.health.model.*;
 import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.SymptomService;
@@ -170,7 +163,6 @@ public class StaffMenuPage implements Action {
                             PatientCheckIn checkIn = patientService.findCheckInByPatient(selectedPatient);
                             patientService.updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
 
-<<<<<<< HEAD
                             List<AssessmentRule> rules = assessmentRuleService.findAllAssessmentRules();
                             List<CheckInSymptom> symptoms = checkIn.getSymptoms();
 
@@ -237,9 +229,6 @@ public class StaffMenuPage implements Action {
 
                             terminal.println("...Success!");
                             terminal.println("The patient's check-in has been completed, and has been giving the following priority: " + priority.getName());
-=======
-
->>>>>>> Changing branches.
                             return this;
                         }),
                         Pair.of("Go Back", this)))

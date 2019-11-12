@@ -4,6 +4,7 @@ import edu.ncsu.csc540.health.model.Address;
 import edu.ncsu.csc540.health.model.CheckInSymptom;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.Symptom;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -12,7 +13,9 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowReducer;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface PatientDAO {
 

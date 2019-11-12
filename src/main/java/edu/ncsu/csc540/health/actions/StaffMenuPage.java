@@ -1,7 +1,11 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
-import edu.ncsu.csc540.health.model.*;
+import edu.ncsu.csc540.health.model.BodyPart;
+import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.SeverityScale;
+import edu.ncsu.csc540.health.model.Staff;
+import edu.ncsu.csc540.health.model.Symptom;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.SymptomService;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,7 +15,6 @@ import org.beryx.textio.TextTerminal;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 

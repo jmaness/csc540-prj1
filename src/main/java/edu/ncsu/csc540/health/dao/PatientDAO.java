@@ -41,11 +41,11 @@ public interface PatientDAO {
                            @Bind("dob") LocalDate dob,
                            @Bind("city") String city);
 
-    @SqlQuery("select * from patient_checkin where patient_id = :id and end_time is null")
+    @SqlQuery("select * from patient_checkins where patient_id = :id and end_time is null")
     @RegisterConstructorMapper(value = PatientCheckIn.class)
     PatientCheckIn findActivePatientCheckin(@Bind("id") Integer patientId);
 
-    @SqlUpdate("insert into patient_checkin (patient_id, start_time, end_time) values (:patientId, :startTime, :endTime)")
+    @SqlUpdate("insert into patient_checkins (patient_id, start_time, end_time) values (:patientId, :startTime, :endTime)")
     @GetGeneratedKeys("id")
     Integer createCheckIn(@BindBean PatientCheckIn patientCheckin);
 
@@ -57,7 +57,7 @@ public interface PatientDAO {
             "cs.checkin_id cs_checkin_id, cs.symptom_code cs_symptom_code, cs.body_part_code cs_body_part_code, " +
             "cs.severity_scale_value_id cs_severity_scale_value_id, cs.duration cs_duration, " +
             "cs.reoccurring cs_reoccurring, cs.incident cs_incident " +
-            "from patient_checkin c " +
+            "from patient_checkins c " +
             "left outer join checkin_symptoms cs " +
             "  on c.id = cs.checkin_id " +
             "where c.id = :id")

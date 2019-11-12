@@ -1,6 +1,5 @@
 package edu.ncsu.csc540.health.dao;
 
-import edu.ncsu.csc540.health.model.Address;
 import edu.ncsu.csc540.health.model.BodyPart;
 import edu.ncsu.csc540.health.model.Department;
 import edu.ncsu.csc540.health.model.Staff;
@@ -15,19 +14,20 @@ public interface StaffDAO {
     String FIND_STAFF = "select s.id s_id, s.first_name s_first_name, s.last_name s_last_name, s.designation s_designation, s.hire_date s_hire_date, " +
             "s.address_id s_address_id, s.facility_id s_facility_id, " +
             "a.id sa_id, a.num sa_num, a.street sa_street, a.city sa_city, a.state sa_state, a.country sa_country " +
-            "from staff s, addresses a";
+            "from staff s, addresses a " +
+            "    where s.address_id = a.id ";
 
-    @SqlQuery(FIND_STAFF + " where s.id = :id and s.address_id = a.id")
+    @SqlQuery(FIND_STAFF + " and s.id = :id and s.address_id = a.id")
     @RegisterConstructorMapper(value = Staff.class, prefix = "s")
     Staff findById(@Bind("id") Integer id);
 
-    @SqlQuery(FIND_STAFF + " where s.address_id = a.id and s.facility_id = :facilityId and s.last_name = :lastName and a.city = :city")
+    @SqlQuery(FIND_STAFF + " and s.facility_id = :facilityId and s.last_name = :lastName and a.city = :city")
     @RegisterConstructorMapper(value = Staff.class, prefix = "s")
     Staff validateSignIn(@Bind("facilityId") Integer facilityID,
                            @Bind("lastName") String lastName,
                            @Bind("city") String city);
 
-    @SqlQuery(FIND_STAFF + " where s.facility_id = :facilityId and s.designation = 'MEDICAL'")
+    @SqlQuery(FIND_STAFF + " and s.facility_id = :facilityId and s.designation = 'Medical'")
     @RegisterConstructorMapper(value = Staff.class, prefix = "s")
     List<Staff> findAllMedicalStaffByFacility(@Bind("facilityId") Integer facilityId);
 

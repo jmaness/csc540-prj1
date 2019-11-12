@@ -1,12 +1,14 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
+import edu.ncsu.csc540.health.model.AssessmentRule;
+import edu.ncsu.csc540.health.model.AssessmentSymptom;
 import edu.ncsu.csc540.health.model.BodyPart;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.SeverityScale;
+import edu.ncsu.csc540.health.model.SeverityScaleValue;
 import edu.ncsu.csc540.health.model.Staff;
 import edu.ncsu.csc540.health.model.Symptom;
-import edu.ncsu.csc540.health.model.*;
 import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.SymptomService;
@@ -14,7 +16,6 @@ import edu.ncsu.csc540.health.service.SeverityScaleService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,6 +30,7 @@ import java.util.List;
  * or run some demo queries.
  */
 public class StaffMenuPage implements Action {
+    private final ActionFactory actionFactory;
     private final Action homePage;
     private final Staff staff;
     private final SymptomService symptomService;
@@ -40,12 +42,14 @@ public class StaffMenuPage implements Action {
     private List<SeverityScaleValue> scaleValues = new ArrayList<>();
 
     @Inject
-    public StaffMenuPage(@Named("home") Action homePage,
+    public StaffMenuPage(ActionFactory actionFactory,
+                         @Named("home") Action homePage,
                          @Assisted Staff staff,
                          SymptomService symptomService,
                          PatientService patientService,
                          AssessmentRuleService assessmentRuleService,
                          SeverityScaleService severityScaleService) {
+        this.actionFactory = actionFactory;
         this.homePage = homePage;
         this.staff = staff;
         this.symptomService = symptomService;
@@ -65,12 +69,11 @@ public class StaffMenuPage implements Action {
                         Pair.of("Add assessment rule", this::addAssessmentRule),
                         Pair.of("Go back", homePage)))
                 .withValueFormatter(Pair::getKey)
-                .read("Staff Menu")
+                .read("\nStaff Menu")
                 .getValue();
     }
 
     private Action addScale(TextIO textIO) {
-        TextTerminal<?> terminal = textIO.getTextTerminal();
         scaleValues.clear();
 
         String scaleName = textIO.newStringInputReader()
@@ -82,23 +85,18 @@ public class StaffMenuPage implements Action {
     }
 
     private Action scaleMenu(TextIO textIO) {
-        TextTerminal<?> terminal = textIO.getTextTerminal();
-
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Add level for this scale", this::addScaleValue),
                         Pair.of("Confirm scale: no more levels", this::writeScale),
-                        Pair.of("Go Back", this::apply)))
+                        Pair.of("Go Back", this)))
                 .withValueFormatter(Pair::getKey)
                 .read("Scale Menu")
                 .getValue();
     }
 
     private Action addScaleValue(TextIO textIO) {
-        TextTerminal<?> terminal = textIO.getTextTerminal();
-        String name;
-
-        name = textIO.newStringInputReader()
+        String name = textIO.newStringInputReader()
                 .read("\nEnter the severity scale value: ");
 
         this.scaleValues.add(new SeverityScaleValue(null, null, name, this.scaleValues.size() + 1));
@@ -119,7 +117,7 @@ public class StaffMenuPage implements Action {
                     )
             );
 
-        return this::apply;
+        return this;
     }
 
     private Action processPatient(TextIO textIO) {
@@ -153,7 +151,7 @@ public class StaffMenuPage implements Action {
 
         Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
                 .withNumberedPossibleValues(patients)
-                .withValueFormatter(Patient::getFirstName)
+                .withValueFormatter(Patient::getDisplayString)
                 .read("Please select the patient whose vitals you wish to record: ");
 
         Integer temperature = textIO.newIntInputReader().read("A. Please enter the patient's temperature in degrees Celsius: ");
@@ -161,7 +159,7 @@ public class StaffMenuPage implements Action {
         Integer diastolicBP = textIO.newIntInputReader().read("C. Please enter the patient's diastolic blood pressure: ");
 
         terminal.println("Please confirm the following information:\n");
-        terminal.println(String.format("Patient: %s %s", selectedPatient.getFirstName(), selectedPatient.getLastName()));
+        terminal.println(String.format("Patient: %s", selectedPatient.getDisplayString()));
         terminal.println(String.format("Temperature: %d", temperature));
         terminal.println(String.format("Systolic Blood Pressure: %d", systolicBP));
         terminal.println(String.format("Diastolic Blood Pressure: %d", diastolicBP));
@@ -228,29 +226,28 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Checkout patient", this::treatedPatientList),
-                        Pair.of("Go back", this::apply)))
+                        Pair.of("Go back", this)))
                 .withValueFormatter(Pair::getKey)
-                .read("Treated Patient Menu")
+                .read("\nTreated Patient Menu")
                 .getValue();
     }
 
     private Action treatedPatientList(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        List<Patient> patients = patientService.getTreatedPatientList();
+        List<Patient> patients = patientService.getTreatedPatientList(staff.getFacilityId());
 
-        if (patients.size() == 0) {
-            terminal.println("There are currently no treated patients awaiting checkout.");
-            return this::apply;
+        if (patients.isEmpty()) {
+            terminal.println("\nThere are currently no treated patients awaiting checkout.");
+            return this;
         }
 
         Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
                 .withNumberedPossibleValues(patients)
                 .withValueFormatter(Patient::getDisplayString)
-                .read("Patient");
+                .read("\nPatient");
 
-        //Jeremy, patient info is above. Ready to hook up next step
-        return Actions.notYetImplemented.apply(this);
+        return actionFactory.getStaffPatientReportPage(staff, selectedPatient, this);
     }
 
     private Action addSymptoms(TextIO textIO) {

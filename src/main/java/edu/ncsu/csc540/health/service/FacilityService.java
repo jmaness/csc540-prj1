@@ -21,8 +21,16 @@ public class FacilityService {
         serviceDAO = jdbi.onDemand(ServiceDAO.class);
     }
 
+    public Facility findById(Integer facilityId) {
+        return facilityDAO.findById(facilityId);
+    }
+
     public List<Facility> findAllFacilities() {
         return facilityDAO.findAll();
+    }
+
+    public Service findServiceByCode(String code) {
+        return serviceDAO.findServiceByCode(code);
     }
 
     public List<Service> findAllServicesByFacility(Integer facilityId) {

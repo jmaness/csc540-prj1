@@ -21,6 +21,10 @@ public class StaffService {
     @Transactional
     public Staff signIn(Integer facilityID, String lastName, String city) {
         Staff tempStaff = staffDAO.validateSignIn(facilityID, lastName, city);
+
+        if (tempStaff == null)
+            return null;
+
         Department tempDepartment = staffDAO.findStaffDepartment(tempStaff.getId());
         List<BodyPart> bodyParts = staffDAO.findDepartmentBodyParts(tempDepartment.getCode());
 

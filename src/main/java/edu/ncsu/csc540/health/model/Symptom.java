@@ -1,21 +1,22 @@
 package edu.ncsu.csc540.health.model;
 
+import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class Symptom {
     private final String code;
     private final String name;
-    private final Integer severityScaleId;
-    private final String bodyPartCode;
+    private final SeverityScale severityScale;
+    private final BodyPart bodyPart;
 
     public Symptom(@ColumnName("code") String code,
                    @ColumnName("name") String name,
-                   @ColumnName("severity_scale_id") Integer severityScaleId,
-                   @ColumnName("body_part_code") String bodyPartCode) {
+                   @Nested("c") SeverityScale severityScale,
+                   @Nested("b") BodyPart bodyPart) {
         this.code = code;
         this.name = name;
-        this.severityScaleId = severityScaleId;
-        this.bodyPartCode = bodyPartCode;
+        this.severityScale = severityScale;
+        this.bodyPart = bodyPart;
     }
 
     public String getCode() {
@@ -26,11 +27,11 @@ public class Symptom {
         return name;
     }
 
-    public Integer getSeverityScaleId() {
-        return severityScaleId;
+    public SeverityScale getSeverityScale() {
+        return severityScale;
     }
 
-    public String getBodyPartCode() {
-        return bodyPartCode;
+    public BodyPart getBodyPart() {
+        return bodyPart;
     }
 }

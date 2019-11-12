@@ -23,7 +23,4 @@ insert into department_directors (staff_id, department_code) values (91001, 'GP0
 insert into department_directors (staff_id, department_code) values (89001, 'OP000');
 insert into department_directors (staff_id, department_code) values (89001, 'SE000');
 
-/* old data */
-insert into departments (code, name, type, facility_id) values ('head', 'Department of Head', 'Medical', 1);
-insert into addresses (num, street, city, state, country) values (400, 'Sad Boy Ln', 'Durham', 'NC', 'US');
-insert into staff (first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values ('Logab', 'Willard', 'Medical', DATE '2019-11-05', 4, 1, 'head');
+

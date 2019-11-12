@@ -19,7 +19,10 @@ public class AssessmentRuleService {
         Integer id = assessmentRuleDAO.createAssessmentRule(assessmentRule);
 
         for (AssessmentSymptom symptom : assessmentRule.getAssessmentSymptoms())
-            assessmentRuleDAO.createAssessmentSymptom(symptom);
+            assessmentRuleDAO.createAssessmentSymptom(new AssessmentSymptom(id,
+                    symptom.getSymptom(),
+                    symptom.getSeverityScaleValue(),
+                    symptom.getOperation()));
 
         return id;
     }

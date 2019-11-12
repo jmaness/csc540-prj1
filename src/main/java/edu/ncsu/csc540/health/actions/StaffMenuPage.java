@@ -270,14 +270,17 @@ public class StaffMenuPage implements Action {
                     .getValue();
         } while (repeat);
 
-        terminal.println("Please select the priority to associate with this assessment rule:");
         String priority = textIO.<String>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         "High",
                         "Normal",
                         "Quarantine"
                 ))
-                .read("B. Please select the associated body part (leave blank if none applicable): ");
+                .read("Please select the priority to associate with this assessment rule:");
+
+        String description = textIO.newStringInputReader()
+                .withDefaultValue("No description provided.")
+                .read("Please provide a brief description of this assessment rule: ");
 
         terminal.println("\nPlease confirm the following information:\n");
         for (AssessmentSymptom assessmentSymptom : assessmentSymptoms)
@@ -288,7 +291,7 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
-                            assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, "", assessmentSymptoms));
+                            assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
                             return this;
                         }),
                         Pair.of("Go Back", this)))

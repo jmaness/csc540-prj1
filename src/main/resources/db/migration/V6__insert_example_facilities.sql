@@ -35,7 +35,7 @@ insert into departments (code, name, type, facility_id) values ('ER000', 'Emerge
 insert into departments (code, name, type, facility_id) values ('GP001', 'General Practice department', 'medical', 1001);
 insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'medical', 1002);
 
-insert into department_body_parts (department_code, body_part_code) values ('OP000', 'EYE000');
+insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'EYE000');
 insert into department_services (department_code, service_code) values ('ER000', 'SER01');
 insert into department_services (department_code, service_code) values ('GP000', 'SGP01');
 insert into department_services (department_code, service_code) values ('GP001', 'SGP01');

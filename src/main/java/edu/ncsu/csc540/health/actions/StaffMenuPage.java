@@ -87,7 +87,7 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Add level for this scale", this::addScaleValue),
-                        Pair.of("Confirm scale: no more levels", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Confirm scale: no more levels", this::writeScale),
                         Pair.of("Go Back", this::apply)))
                 .withValueFormatter(Pair::getKey)
                 .read("Scale Menu")
@@ -113,7 +113,7 @@ public class StaffMenuPage implements Action {
             severityScaleService.addSeverityScaleValue(
                     new SeverityScaleValue(
                             null,
-                            s.getSeverityScaleId(),
+                            id,
                             s.getName(),
                             s.getOrdinal()
                     )

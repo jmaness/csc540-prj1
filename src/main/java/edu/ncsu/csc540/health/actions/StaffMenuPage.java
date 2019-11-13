@@ -10,6 +10,7 @@ import edu.ncsu.csc540.health.model.*;
 import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.SymptomService;
+import edu.ncsu.csc540.health.service.SeverityScaleService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
@@ -33,18 +34,24 @@ public class StaffMenuPage implements Action {
     private final SymptomService symptomService;
     private final PatientService patientService;
     private final AssessmentRuleService assessmentRuleService;
+    private final SeverityScaleService severityScaleService;
+
+    private SeverityScale scale;
+    private List<SeverityScaleValue> scaleValues = new ArrayList<>();
 
     @Inject
     public StaffMenuPage(@Named("home") Action homePage,
                          @Assisted Staff staff,
                          SymptomService symptomService,
                          PatientService patientService,
-                         AssessmentRuleService assessmentRuleService) {
+                         AssessmentRuleService assessmentRuleService,
+                         SeverityScaleService severityScaleService) {
         this.homePage = homePage;
         this.staff = staff;
         this.symptomService = symptomService;
         this.patientService = patientService;
         this.assessmentRuleService = assessmentRuleService;
+        this.severityScaleService = severityScaleService;
     }
 
     @Override
@@ -54,7 +61,7 @@ public class StaffMenuPage implements Action {
                         Pair.of("Checked-in patient list", this::processPatient),
                         Pair.of("Treated patient list", this::treatedPatientListMenu),
                         Pair.of("Add symptoms", this::addSymptoms),
-                        Pair.of("Add severity scale", this::addSeverityScale),
+                        Pair.of("Add severity scale", this::addScale),
                         Pair.of("Add assessment rule", this::addAssessmentRule),
                         Pair.of("Go back", homePage)))
                 .withValueFormatter(Pair::getKey)
@@ -62,26 +69,57 @@ public class StaffMenuPage implements Action {
                 .getValue();
     }
 
-    private Action addSeverityScale(TextIO textIO) {
+    private Action addScale(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
-
-        SeverityScale scale;
-        List<SeverityScaleValue> scaleValues = new ArrayList<>();
+        scaleValues.clear();
 
         String scaleName = textIO.newStringInputReader()
                 .read("\nEnter the name of the new scale: ");
 
-        textIO.<Pair<String, Action>>newGenericInputReader(null)
+        this.scale = new SeverityScale(null, scaleName);
+
+        return this::scaleMenu;
+    }
+
+    private Action scaleMenu(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
+
+        return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
-                        Pair.of("Add level for this scale", Actions.notYetImplemented.apply(this)),
+                        Pair.of("Add level for this scale", this::addScaleValue),
                         Pair.of("Confirm scale: no more levels", Actions.notYetImplemented.apply(this)),
                         Pair.of("Go Back", this::apply)))
                 .withValueFormatter(Pair::getKey)
                 .read("Scale Menu")
                 .getValue();
+    }
 
+    private Action addScaleValue(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
+        String name;
 
-        return Actions.notYetImplemented.apply(this);
+        name = textIO.newStringInputReader()
+                .read("\nEnter the severity scale value: ");
+
+        this.scaleValues.add(new SeverityScaleValue(null, null, name, this.scaleValues.size() + 1));
+
+        return this::scaleMenu;
+    }
+
+    private Action writeScale(TextIO textIO) {
+        int id = severityScaleService.addSeverityScale(this.scale);
+
+        for (SeverityScaleValue s : this.scaleValues)
+            severityScaleService.addSeverityScaleValue(
+                    new SeverityScaleValue(
+                            null,
+                            s.getSeverityScaleId(),
+                            s.getName(),
+                            s.getOrdinal()
+                    )
+            );
+
+        return this::apply;
     }
 
     private Action processPatient(TextIO textIO) {

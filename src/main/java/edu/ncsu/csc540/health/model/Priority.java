@@ -9,7 +9,7 @@ public enum Priority {
 
     private final String name;
 
-    Priority(@ColumnName("priority") String name) {
+    Priority(String name) {
         this.name = name;
     }
 

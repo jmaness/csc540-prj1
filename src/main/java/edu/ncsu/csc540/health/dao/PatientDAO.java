@@ -138,7 +138,7 @@ public interface PatientDAO {
                                   @Bind("start_time") Timestamp startTime);
 
     @SqlUpdate("insert into patient_vitals (checkin_id, temperature, systolic_blood_pressure, diastolic_blood_pressure) " +
-            "values (:checkInId, :temperature, :systolicBloodPressure, :diastolicBloodPressure")
+            "values (:checkInId, :temperature, :systolicBloodPressure, :diastolicBloodPressure)")
     void addPatientVitals(@BindBean PatientVitals vitals);
 
     @SqlQuery("select v.checkin_id v_checkin_id, v.temperature v_temperature, v.systolic_blood_pressure v_systolic_blood_pressure, v.diastolic_blood_pressure, v_diastolic blood pressure " +

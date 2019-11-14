@@ -1,6 +1,7 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
+import com.google.inject.internal.cglib.proxy.$Dispatcher;
 import edu.ncsu.csc540.health.model.*;
 import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
@@ -161,6 +162,10 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm & Record", (TextIO tio) -> {
                             PatientCheckIn checkIn = patientService.findCheckInByPatient(selectedPatient);
+                            patientService.addPatientVitals(new PatientVitals(checkIn.getId(),
+                                    temperature,
+                                    systolicBP,
+                                    diastolicBP));
                             patientService.updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
 
                             List<AssessmentRule> rules = assessmentRuleService.findAllAssessmentRules();

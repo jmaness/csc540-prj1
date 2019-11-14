@@ -1,4 +1,4 @@
-CREATE SEQUENCE assessment_rule_sequence START WITH 1000;
+CREATE SEQUENCE assessment_rule_sequence START WITH 1001;
 
 CREATE OR REPLACE TRIGGER assessment_rules_on_insert
     BEFORE INSERT ON assessment_rules

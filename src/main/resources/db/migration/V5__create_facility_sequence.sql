@@ -1,4 +1,4 @@
-CREATE SEQUENCE facility_sequence START WITH 2000;
+CREATE SEQUENCE facility_sequence START WITH 2001;
 
 CREATE OR REPLACE TRIGGER facilities_on_insert
     BEFORE INSERT ON facilities

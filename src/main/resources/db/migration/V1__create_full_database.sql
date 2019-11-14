@@ -248,3 +248,12 @@ CREATE TABLE referral_reasons (
     FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
     FOREIGN KEY (service_code) REFERENCES services (code)
 );
+
+CREATE TABLE patient_vitals (
+    checkin_id INTEGER NOT NULL,
+    temperature INTEGER NOT NULL,
+    systolic_blood_pressure INTEGER NOT NULL,
+    diastolic_blood_pressure INTEGER NOT NULL,
+    PRIMARY KEY (checkin_id),
+    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id)
+);

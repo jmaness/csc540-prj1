@@ -1,9 +1,6 @@
 package edu.ncsu.csc540.health.dao;
 
-import edu.ncsu.csc540.health.model.CheckInSymptom;
-import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.PatientCheckIn;
-import edu.ncsu.csc540.health.model.Symptom;
+import edu.ncsu.csc540.health.model.*;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -137,6 +134,16 @@ public interface PatientDAO {
     @SqlUpdate("insert into priority_lists (checkin_id, priority, start_time) " +
             "values (:checkin_id, :priority, :start_time)")
     void addPatientToPriorityList(@Bind("checkin_id") Integer checkinId,
-                                           @Bind("priority") String priority,
-                                           @Bind("start_time") Timestamp startTime);
+                                  @Bind("priority") String priority,
+                                  @Bind("start_time") Timestamp startTime);
+
+    @SqlUpdate("insert into patient_vitals (checkin_id, temperature, systolic_blood_pressure, diastolic_blood_pressure) " +
+            "values (:checkInId, :temperature, :systolicBloodPressure, :diastolicBloodPressure")
+    void addPatientVitals(@BindBean PatientVitals vitals);
+
+    @SqlQuery("select v.checkin_id v_checkin_id, v.temperature v_temperature, v.systolic_blood_pressure v_systolic_blood_pressure, v.diastolic_blood_pressure, v_diastolic blood pressure " +
+            "from patient_vitals v" +
+            "where v.checkin_id = :checkin_id")
+    @RegisterConstructorMapper(value = PatientVitals.class, prefix = "v")
+    PatientVitals findPatientVitalsByCheckIn(@Bind("checkin_id") Integer checkInId);
 }

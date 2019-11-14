@@ -376,17 +376,11 @@ public class StaffMenuPage implements Action {
                     .withValueFormatter(SeverityScaleValue::getName)
                     .read("Please select a severity: ");
 
-            Operation operation = textIO.<Pair<String, Operation>>newGenericInputReader(null)
-                    .withNumberedPossibleValues(Arrays.asList(
-                            Pair.of("<", Operation.LESS_THAN),
-                            Pair.of("<=", Operation.LESS_THAN_EQUAL_TO),
-                            Pair.of("=", Operation.EQUAL_TO),
-                            Pair.of(">=", Operation.GREATER_THAN_EQUAL_TO),
-                            Pair.of(">", Operation.GREATER_THAN)))
-                    .read("Please select an operator to associate to the severity: ")
-                    .getValue();
+            Operation operation = textIO.newEnumInputReader(Operation.class)
+                    .withValueFormatter(Operation::toString)
+                    .read("Please select an operator to associate to the severity: ");
 
-            assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue.getId(), operation.toString()));
+            assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue.getId(), operation));
 
             terminal.println("Would you like to enter another symptom, or move on to choosing the assessment rule priority?");
 
@@ -399,14 +393,11 @@ public class StaffMenuPage implements Action {
                     .getValue();
         } while (repeat);
 
-        Priority priority = textIO.<Pair<String, Priority>>newGenericInputReader(null)
-                .withNumberedPossibleValues(Arrays.asList(
-                        Pair.of("Normal", Priority.NORMAL),
-                        Pair.of("High", Priority.HIGH),
-                        Pair.of("Quarantine", Priority.QUARANTINE)))
-                .withValueFormatter(Pair::getKey)
-                .read()
-                .getValue();
+
+
+        Priority priority = textIO.newEnumInputReader(Priority.class)
+                .withValueFormatter(Priority::toString)
+                .read("Please select an priority to associate to the assessment rule: ");
 
         String description = textIO.newStringInputReader()
                 .withDefaultValue("No description provided.")
@@ -421,7 +412,7 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
-                            assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority.toString(), description, assessmentSymptoms));
+                            assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
                             return this;
                         }),
                         Pair.of("Go Back", this)))

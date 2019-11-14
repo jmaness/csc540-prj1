@@ -13,11 +13,11 @@ public class AssessmentRule {
     private final List<AssessmentSymptom> assessmentSymptoms;
 
     public AssessmentRule(@Nullable @ColumnName("id") Integer id,
-                          @ColumnName("priority") String priority,
+                          @ColumnName("priority") Priority priority,
                           @ColumnName("description") String description,
                           @Nullable List<AssessmentSymptom> assessmentSymptoms) {
         this.id = id;
-        this.priority = Priority.fromString(priority);
+        this.priority = priority;
         this.description = description;
         this.assessmentSymptoms = assessmentSymptoms;
     }

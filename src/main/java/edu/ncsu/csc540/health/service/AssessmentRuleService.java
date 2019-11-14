@@ -18,15 +18,7 @@ public class AssessmentRuleService {
     }
 
     public Integer createAssessmentRule(AssessmentRule assessmentRule) {
-        Integer id = assessmentRuleDAO.createAssessmentRule(assessmentRule);
-
-        for (AssessmentSymptom symptom : assessmentRule.getAssessmentSymptoms())
-            assessmentRuleDAO.createAssessmentSymptom(new AssessmentSymptom(id,
-                    symptom.getSymptom(),
-                    symptom.getSeverityScaleValueId(),
-                    symptom.getOperation().toString()));
-
-        return id;
+        return assessmentRuleDAO.createAssessmentRule(assessmentRule);
     }
 
     public List<AssessmentRule> findAllAssessmentRules() {
@@ -35,10 +27,9 @@ public class AssessmentRuleService {
 
         for (AssessmentRule rule : tempRules) {
             rules.add(new AssessmentRule(rule.getId(),
-                    rule.getPriority().toString(),
+                    rule.getPriority(),
                     rule.getDescription(),
-                    assessmentRuleDAO.findAllAssessmentSymptomsByRule(rule.getId())
-                    ));
+                    assessmentRuleDAO.findAllAssessmentSymptomsByRule(rule.getId())));
         }
 
         return rules;

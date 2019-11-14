@@ -17,17 +17,4 @@ public enum Priority {
     public String toString() {
         return name;
     }
-
-    public static Priority fromString(String priority) {
-        switch (priority.toUpperCase()) {
-            case "NORMAL":
-                return NORMAL;
-            case "HIGH":
-                return HIGH;
-            case "QUARANTINE":
-                return QUARANTINE;
-            default:
-                return null;
-        }
-    }
 }

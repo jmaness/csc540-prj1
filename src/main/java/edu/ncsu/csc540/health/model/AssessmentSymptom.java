@@ -14,11 +14,11 @@ public class AssessmentSymptom {
     public AssessmentSymptom(@Nullable @ColumnName("rule_id") Integer ruleId,
                              @Nested("s") Symptom symptom,
                              @ColumnName("severity_scale_value_id") Integer severityScaleValueId,
-                             @ColumnName("operation") String operation) {
+                             @ColumnName("operation") Operation operation) {
         this.ruleId = ruleId;
         this.symptom = symptom;
         this.severityScaleValueId = severityScaleValueId;
-        this.operation = Operation.fromString(operation);
+        this.operation = operation;
     }
 
     public Integer getRuleId() {

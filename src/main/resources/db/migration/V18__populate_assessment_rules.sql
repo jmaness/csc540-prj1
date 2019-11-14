@@ -29,20 +29,20 @@ insert into checkin_symptoms(checkin_id, symptom_code, body_part_code, severity_
 insert into checkin_symptoms(checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1008, 'SYM109', 'NON000', 10, 3, 1, 'Fell off bike');
 
 insert into assessment_rules (priority, description) values ('Normal', 'Common Cold');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1001, 'SYM103', 13, '<=');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1001, 'SYM108', 7, '<=');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1001, 'SYM103', 13, 'LESS_THAN_EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1001, 'SYM108', 7, 'LESS_THAN_EQUAL_TO');
 
 insert into assessment_rules (priority, description) values ('High', 'Pneumonia');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1002, 'SYM103', 13, '>=');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1002, 'SYM108', 7, '>=');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1002, 'SYM103', 13, 'GREATER_THAN_EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1002, 'SYM108', 7, 'GREATER_THAN_EQUAL_TO');
 
 insert into assessment_rules (priority, description) values ('Quarantine', 'Zombie');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1003, 'SYM103', 14, '=');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1003, 'SYM108', 9, '>=');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1003, 'SYM103', 14, 'EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1003, 'SYM108', 9, 'GREATER_THAN_EQUAL_TO');
 
 insert into assessment_rules (priority, description) values ('Quarantine', 'Ebola');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM101', 10, '=');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM102', 12, '=');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM107', 19, '=');
-insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM109', 6, '>=');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM101', 10, 'EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM102', 12, 'EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM107', 19, 'EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) values (1004, 'SYM109', 6, 'GREATER_THAN_EQUAL_TO');
 

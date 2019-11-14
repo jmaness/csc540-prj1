@@ -158,7 +158,7 @@ CREATE TABLE patient_checkins (
 );
 
 CREATE TABLE symptoms (
-	code varchar2(100) NOT NULL,
+    code varchar2(100) NOT NULL,
 	name varchar2(100) NOT NULL,
 	severity_scale_id INTEGER NOT NULL,
 	body_part_code VARCHAR2(100) NOT NULL,

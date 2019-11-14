@@ -1,7 +1,9 @@
 CREATE TABLE classifications (
     code VARCHAR2(100) NOT NULL,
     name VARCHAR2(100) NOT NULL,
-    PRIMARY KEY (code)
+    PRIMARY KEY (code),
+    CONSTRAINT check_code
+    CHECK (code = '01' OR code = '02' OR code = '03')
 );
 
 CREATE TABLE addresses (
@@ -11,7 +13,9 @@ CREATE TABLE addresses (
     city VARCHAR2(100) NOT NULL,
     state VARCHAR2(100) NOT NULL,
     country VARCHAR2(100) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT check_num
+    CHECK (0 <= num)
 );
 
 CREATE TABLE facilities (
@@ -22,7 +26,9 @@ CREATE TABLE facilities (
     address_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (classification_code) REFERENCES classifications (code),
-    FOREIGN KEY (address_id) REFERENCES addresses (id)
+    FOREIGN KEY (address_id) REFERENCES addresses (id),
+    CONSTRAINT check_capacity
+    CHECK (0 <= capacity)
 );
 
 CREATE TABLE certifications (
@@ -47,7 +53,9 @@ CREATE TABLE departments (
     type VARCHAR2(100) NOT NULL,
     facility_id INTEGER NOT NULL,
     PRIMARY KEY (code),
-    FOREIGN KEY (facility_id) REFERENCES facilities (id)
+    FOREIGN KEY (facility_id) REFERENCES facilities (id),
+    CONSTRAINT check_type
+    CHECK (type = 'Medical' OR type = 'Non-medical')
 );
 
 CREATE TABLE staff (
@@ -62,7 +70,9 @@ CREATE TABLE staff (
     PRIMARY KEY (id),
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
     FOREIGN KEY (address_id) REFERENCES addresses (id),
-    FOREIGN KEY (primary_department_code) REFERENCES departments (code)
+    FOREIGN KEY (primary_department_code) REFERENCES departments (code),
+    CONSTRAINT designation_check
+    CHECK (designation = 'Medical' OR designation = 'Non-medical')
 );
 
 CREATE TABLE department_directors (

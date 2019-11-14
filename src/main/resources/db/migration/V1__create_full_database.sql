@@ -55,7 +55,9 @@ CREATE TABLE departments (
     PRIMARY KEY (code),
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
     CONSTRAINT check_type
-    CHECK (type = 'Medical' OR type = 'Non-medical')
+    CHECK (type = 'Medical' OR type = 'Non-medical'),
+    CONSTRAINT check_code_alphanum
+    CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE staff (
@@ -175,7 +177,8 @@ CREATE TABLE symptoms (
 	PRIMARY KEY (code),
 	FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
 	FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
-	CHECK (upper(substr(code,1,3)) IN ('SYM'))
+    CONSTRAINT check_sys_alphanum
+    CHECK (regexp_like(code,'^SYM[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE checkin_symptoms (
@@ -190,18 +193,22 @@ CREATE TABLE checkin_symptoms (
     FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
     FOREIGN KEY (symptom_code) REFERENCES symptoms (code),
     FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
-    FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values (id)
+    FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values (id),
+    CONSTRAINT reoccuring_bool
+    CHECK (reoccurring = 0 OR reoccurring = 1)
 );
 
 CREATE TABLE outcome_reports (
     checkin_id INTEGER NOT NULL,
     discharge_status VARCHAR2(100) NOT NULL,
-    treatment CLOB NOT NULL,
+    treatment VARCHAR2(1024) NOT NULL,
     out_time TIMESTAMP NOT NULL,
     patient_acknowledged NUMBER(1),
     patient_acknowledge_reason CLOB,
     PRIMARY KEY (checkin_id),
-    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id)
+    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
+    CONSTRAINT treatment_not_empty
+    CHECK (treatment <> '')
 );
 
 CREATE TABLE negative_experiences (
@@ -218,14 +225,18 @@ CREATE TABLE priority_lists (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP,
     PRIMARY KEY (checkin_id),
-    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id)
+    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
+    CONSTRAINT priority_check_lists
+    CHECK (priority = 'HIGH' OR priority = 'NORMAL' OR priority = 'QUARANTINE')
 );
 
 CREATE TABLE assessment_rules (
     id INTEGER NOT NULL,
     priority VARCHAR2(100) NOT NULL,
     description CLOB NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT priority_check_rules
+    CHECK (priority = 'HIGH' OR priority = 'NORMAL' OR priority = 'QUARANTINE')
 );
 
 CREATE TABLE assessment_symptoms(
@@ -241,12 +252,14 @@ CREATE TABLE assessment_symptoms(
 
 CREATE TABLE referral_statuses (
     checkin_id INTEGER NOT NULL,
-    facility_id INTEGER NOT NULL,
+    facility_id INTEGER,
     staff_id INTEGER NOT NULL,
     PRIMARY KEY (checkin_id),
     FOREIGN KEY (checkin_id) REFERENCES outcome_reports (checkin_id),
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
-    FOREIGN KEY (staff_id) REFERENCES staff (id)
+    FOREIGN KEY (staff_id) REFERENCES staff (id),
+    CONSTRAINT facility_id_check
+    CHECK (0 <= facility_id OR facility_id = null)
 );
 
 CREATE TABLE referral_reasons (

@@ -26,26 +26,3 @@ insert into severity_scales(id, name) values (5, 'Light/Normal/Heavy');
 insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (17, 5, 'Light', 1);
 insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (18, 5, 'Normal', 2);
 insert into severity_scale_values(id, severity_scale_id, name, ordinal) values (19, 5, 'Heavy', 3);
-
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM001', 'Pain', 1, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM002', 'Diarrhea', 2, 'ABD000');
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM003', 'Fever', 3, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code)values ('SYM004', 'Physical Exam', 4, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM005', 'Lightheadedness', 2, 'HED000');
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM006', 'Blurred vision', 2, 'EYE000');
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM007', 'Bleeding', 5, null);
-
-insert into body_parts (code, name) values ('1', 'Head');
-insert into body_parts (code, name) values ('2', 'Heart');
-insert into body_parts (code, name) values ('3', 'Lungs');
-insert into body_parts (code, name) values ('4', 'Eyes');
-
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM01', 'Fever', 1, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM02', 'Headache', 1, '1');
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM03', 'Pain', 1, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM04', 'Tenderness (to the touch)', 1, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM05', 'Tightness', 1, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM06', 'Numbness', 1, null);
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM07', 'Lightheadedness', 1, '1');
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM08', 'Shortness of breath', 1, '3');
-insert into symptoms (code, name, severity_scale_id, body_part_code) values ('SYM09', 'Blurred vision', 1, '4');

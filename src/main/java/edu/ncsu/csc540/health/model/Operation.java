@@ -13,7 +13,26 @@ public enum Operation {
         this.name = name;
     }
 
-    public String getName() {
+
+    @Override
+    public String toString() {
         return name;
+    }
+
+    public static Operation fromString(String operation) {
+        switch (operation) {
+            case "<":
+                return LESS_THAN;
+            case "<=":
+                return LESS_THAN_EQUAL_TO;
+            case "=":
+                return EQUAL_TO;
+            case ">=":
+                return GREATER_THAN_EQUAL_TO;
+            case ">":
+                return GREATER_THAN;
+            default:
+                return null;
+        }
     }
 }

@@ -41,6 +41,7 @@ public class PatientCheckInPage implements Action {
     @Override
     public Action apply(TextIO textIO) {
         List<Symptom> symptoms = symptomService.findAllSymptoms();
+        System.out.println(symptoms.size());
         List<Triple<Symptom, String, Action>> symptomActions = symptoms.stream()
                 .map(s -> Triple.of(s, s.getName(), getSymptomMeta(s, this)))
                 .collect(Collectors.toList());

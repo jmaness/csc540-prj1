@@ -158,14 +158,14 @@ CREATE TABLE patient_checkins (
 );
 
 CREATE TABLE symptoms (
-    code varchar2(100) NOT NULL,
-    name varchar2(100) NOT NULL,
-    severity_scale_id INTEGER NOT NULL,
-    body_part_code VARCHAR2(100),
-    PRIMARY KEY (code),
-    FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
-    FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
-    CHECK (upper(substr(code,1,3)) IN ('SYM'))
+	code varchar2(100) NOT NULL,
+	name varchar2(100) NOT NULL,
+	severity_scale_id INTEGER NOT NULL,
+	body_part_code VARCHAR2(100) NOT NULL,
+	PRIMARY KEY (code),
+	FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
+	FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
+	CHECK (upper(substr(code,1,3)) IN ('SYM'))
 );
 
 CREATE TABLE checkin_symptoms (

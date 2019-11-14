@@ -74,10 +74,13 @@ public interface PatientDAO {
             "cs.checkin_id cs_checkin_id, cs.symptom_code cs_symptom_code, cs.body_part_code cs_body_part_code, " +
             "cs.severity_scale_value_id cs_severity_scale_value_id, cs.duration cs_duration, " +
             "cs.reoccurring cs_reoccurring, cs.incident cs_incident " +
-            "from patient_checkin c " +
+            "from patient_checkins c " +
             "left outer join checkin_symptoms cs " +
             "  on c.id = cs.checkin_id " +
             "where c.patient_id = :id and c.end_time is null")
+    @RegisterConstructorMapper(value = PatientCheckIn.class, prefix = "c")
+    @RegisterConstructorMapper(value = CheckInSymptom.class, prefix = "cs")
+    @UseRowReducer(PatientCheckInRowReducer.class)
     PatientCheckIn findCheckInByPatient(@BindBean Patient patient);
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +

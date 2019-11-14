@@ -181,23 +181,23 @@ public class StaffMenuPage implements Action {
 
                                             switch (operation) {
                                                 case LESS_THAN:
-                                                    if (symptom.getSeverityScaleValueId() < aSymptom.getSeverityScaleValue().getId())
+                                                    if (symptom.getSeverityScaleValueId() < aSymptom.getSeverityScaleValueId())
                                                         symptomMatched = true;
                                                     break;
                                                 case LESS_THAN_EQUAL_TO:
-                                                    if (symptom.getSeverityScaleValueId() <= aSymptom.getSeverityScaleValue().getId())
+                                                    if (symptom.getSeverityScaleValueId() <= aSymptom.getSeverityScaleValueId())
                                                         symptomMatched = true;
                                                     break;
                                                 case EQUAL_TO:
-                                                    if (symptom.getSeverityScaleValueId() == aSymptom.getSeverityScaleValue().getId())
+                                                    if (symptom.getSeverityScaleValueId() == aSymptom.getSeverityScaleValueId())
                                                         symptomMatched = true;
                                                     break;
                                                 case GREATER_THAN_EQUAL_TO:
-                                                    if (symptom.getSeverityScaleValueId() >= aSymptom.getSeverityScaleValue().getId())
+                                                    if (symptom.getSeverityScaleValueId() >= aSymptom.getSeverityScaleValueId())
                                                         symptomMatched = true;
                                                     break;
                                                 case GREATER_THAN:
-                                                    if (symptom.getSeverityScaleValueId() > aSymptom.getSeverityScaleValue().getId())
+                                                    if (symptom.getSeverityScaleValueId() > aSymptom.getSeverityScaleValueId())
                                                         symptomMatched = true;
                                                     break;
                                                 default:
@@ -228,7 +228,7 @@ public class StaffMenuPage implements Action {
                             patientService.addPatientToPriorityList(checkIn, priority, new Timestamp(System.currentTimeMillis()));
 
                             terminal.println("...Success!");
-                            terminal.println("The patient's check-in has been completed, and has been giving the following priority: " + priority.getName());
+                            terminal.println("The patient's check-in has been completed, and has been giving the following priority: " + priority.toString());
                             return this;
                         }),
                         Pair.of("Go Back", this)))
@@ -321,8 +321,7 @@ public class StaffMenuPage implements Action {
         BodyPart selectedBodyPart = textIO.<BodyPart>newGenericInputReader(null)
                 .withNumberedPossibleValues(bodyParts)
                 .withValueFormatter(BodyPart::getName)
-                .withDefaultValue(null)
-                .read("B. Please select the associated body part (leave blank if none applicable): ");
+                .read("B. Please select the associated body part: ");
 
         List<SeverityScale> severityScales = symptomService.findAllSeverityScales();
 
@@ -382,7 +381,7 @@ public class StaffMenuPage implements Action {
                     .read("Please select an operator to associate to the severity: ")
                     .getValue();
 
-            assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue, operation));
+            assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue.getId(), operation.toString()));
 
             terminal.println("Would you like to enter another symptom, or move on to choosing the assessment rule priority?");
 
@@ -410,14 +409,14 @@ public class StaffMenuPage implements Action {
 
         terminal.println("\nPlease confirm the following information:\n");
         for (AssessmentSymptom assessmentSymptom : assessmentSymptoms)
-            terminal.println(String.format("Symptom: %s | Severity: %s", assessmentSymptom.getSymptom().getName(), assessmentSymptom.getSeverityScaleValue().getName()));
+            terminal.println(String.format("Symptom: %s | Severity: %s", assessmentSymptom.getSymptom().getName(), assessmentSymptom.getSeverityScaleValueId()));
 
         terminal.println(String.format("Rule priority: %s", priority));
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
-                            assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
+                            assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority.toString(), description, assessmentSymptoms));
                             return this;
                         }),
                         Pair.of("Go Back", this)))

@@ -4,12 +4,7 @@ import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.AddressDAO;
 import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
-import edu.ncsu.csc540.health.model.Address;
-import edu.ncsu.csc540.health.model.CheckInSymptom;
-import edu.ncsu.csc540.health.model.OutcomeReport;
-import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.PatientCheckIn;
-import edu.ncsu.csc540.health.model.Symptom;
+import edu.ncsu.csc540.health.model.*;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
@@ -77,6 +72,10 @@ public class PatientService {
         return patientDAO.findActivePatientCheckin(patient.getId());
     }
 
+    public PatientCheckIn findCheckInByPatient(Patient patient) {
+        return patientDAO.findCheckInByPatient(patient);
+    }
+
     @Transactional
     public void submitOutcomeReport(OutcomeReport outcomeReport) {
         outcomeReportDAO.insertOutcomeReport(outcomeReport);
@@ -114,5 +113,21 @@ public class PatientService {
 
     public List<Patient> getTreatedPatientList(Integer facilityId) {
         return patientDAO.getTreatedPatientList(facilityId);
+    }
+
+    public List<Patient> getPatientPriorityList() {
+        return patientDAO.getPatientPriorityList();
+    }
+
+    public void addPatientToPriorityList(PatientCheckIn checkIn, Priority priority, Timestamp timestamp) {
+        patientDAO.addPatientToPriorityList(checkIn.getId(), priority.toString(), timestamp);
+    }
+
+    public void addPatientVitals(PatientVitals vitals) {
+        patientDAO.addPatientVitals(vitals);
+    }
+
+    public PatientVitals findPatientVitalsByCheckIn(Integer checkInId) {
+        return patientDAO.findPatientVitalsByCheckIn(checkInId);
     }
 }

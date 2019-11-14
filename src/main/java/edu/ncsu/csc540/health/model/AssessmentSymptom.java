@@ -9,12 +9,12 @@ public class AssessmentSymptom {
     private final Integer ruleId;
     private final Symptom symptom;
     private final SeverityScaleValue severityScaleValue;
-    private final String operation;
+    private final Operation operation;
 
     public AssessmentSymptom(@Nullable @ColumnName("rule_id") Integer ruleId,
                              @Nested("s") Symptom symptom,
                              @Nested("v") SeverityScaleValue severityScaleValue,
-                             @ColumnName("operation") String operation) {
+                             @ColumnName("operation") Operation operation) {
         this.ruleId = ruleId;
         this.symptom = symptom;
         this.severityScaleValue = severityScaleValue;
@@ -33,7 +33,7 @@ public class AssessmentSymptom {
         return severityScaleValue;
     }
 
-    public String getOperation() {
+    public Operation getOperation() {
         return operation;
     }
 }

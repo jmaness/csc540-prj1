@@ -1,4 +1,4 @@
-CREATE SEQUENCE patient_checkin_sequence START WITH 1000;
+CREATE SEQUENCE patient_checkin_sequence START WITH 1001;
 
 CREATE OR REPLACE TRIGGER patient_checkin_on_insert
     BEFORE INSERT ON patient_checkins

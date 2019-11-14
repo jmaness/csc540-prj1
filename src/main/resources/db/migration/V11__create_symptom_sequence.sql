@@ -1,4 +1,4 @@
-CREATE SEQUENCE symptom_sequence START WITH 100;
+CREATE SEQUENCE symptom_sequence START WITH 101;
 
 CREATE OR REPLACE TRIGGER symptoms_on_insert
     BEFORE INSERT ON symptoms

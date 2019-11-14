@@ -159,13 +159,13 @@ CREATE TABLE patient_checkins (
 
 CREATE TABLE symptoms (
     code varchar2(100) NOT NULL,
-    name varchar2(100) NOT NULL,
-    severity_scale_id INTEGER NOT NULL,
-    body_part_code VARCHAR2(100),
-    PRIMARY KEY (code),
-    FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
-    FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
-    CHECK (upper(substr(code,1,3)) IN ('SYM'))
+	name varchar2(100) NOT NULL,
+	severity_scale_id INTEGER NOT NULL,
+	body_part_code VARCHAR2(100) NOT NULL,
+	PRIMARY KEY (code),
+	FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
+	FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
+	CHECK (upper(substr(code,1,3)) IN ('SYM'))
 );
 
 CREATE TABLE checkin_symptoms (
@@ -247,4 +247,13 @@ CREATE TABLE referral_reasons (
     PRIMARY KEY (checkin_id, code, service_code),
     FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
     FOREIGN KEY (service_code) REFERENCES services (code)
+);
+
+CREATE TABLE patient_vitals (
+    checkin_id INTEGER NOT NULL,
+    temperature INTEGER NOT NULL,
+    systolic_blood_pressure INTEGER NOT NULL,
+    diastolic_blood_pressure INTEGER NOT NULL,
+    PRIMARY KEY (checkin_id),
+    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id)
 );

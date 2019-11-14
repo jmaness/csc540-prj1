@@ -1,14 +1,8 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
-import edu.ncsu.csc540.health.model.AssessmentRule;
-import edu.ncsu.csc540.health.model.AssessmentSymptom;
-import edu.ncsu.csc540.health.model.BodyPart;
-import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.SeverityScale;
-import edu.ncsu.csc540.health.model.SeverityScaleValue;
-import edu.ncsu.csc540.health.model.Staff;
-import edu.ncsu.csc540.health.model.Symptom;
+import com.google.inject.internal.cglib.proxy.$Dispatcher;
+import edu.ncsu.csc540.health.model.*;
 import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.SymptomService;
@@ -167,8 +161,79 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm & Record", (TextIO tio) -> {
+                            PatientCheckIn checkIn = patientService.findCheckInByPatient(selectedPatient);
+                            patientService.addPatientVitals(new PatientVitals(checkIn.getId(),
+                                    temperature,
+                                    systolicBP,
+                                    diastolicBP));
                             patientService.updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
-                            //TODO: Implement assessment rules, place patient on priority list, display priority
+
+                            List<AssessmentRule> rules = assessmentRuleService.findAllAssessmentRules();
+                            List<CheckInSymptom> symptoms = checkIn.getSymptoms();
+
+                            List<AssessmentRule> applicableRules = new ArrayList<>();
+
+                            for (AssessmentRule rule : rules) {
+                                List<AssessmentSymptom> aSymptoms = rule.getAssessmentSymptoms();
+                                boolean ruleMatched = true;
+
+                                for (AssessmentSymptom aSymptom : aSymptoms) {
+                                    boolean symptomMatched = false;
+
+                                    for (CheckInSymptom symptom : symptoms) {
+                                        if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode())) {
+                                            Operation operation = aSymptom.getOperation();
+
+                                            switch (operation) {
+                                                case LESS_THAN:
+                                                    if (symptom.getSeverityScaleValueId() < aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case LESS_THAN_EQUAL_TO:
+                                                    if (symptom.getSeverityScaleValueId() <= aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case EQUAL_TO:
+                                                    if (symptom.getSeverityScaleValueId() == aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case GREATER_THAN_EQUAL_TO:
+                                                    if (symptom.getSeverityScaleValueId() >= aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case GREATER_THAN:
+                                                    if (symptom.getSeverityScaleValueId() > aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                default:
+                                                    //Oh god what have you done
+                                                    break;
+                                            }
+
+                                            if (symptomMatched)
+                                                break;
+                                        }
+                                    }
+
+                                    if (!symptomMatched) {
+                                        ruleMatched = false;
+                                        break;
+                                    }
+                                }
+
+                                if (ruleMatched)
+                                    applicableRules.add(rule);
+                            }
+
+                            Priority priority = Priority.NORMAL;
+
+                            for (AssessmentRule rule : applicableRules)
+                                priority = priority.ordinal() >= rule.getPriority().ordinal() ? priority : rule.getPriority();
+
+                            patientService.addPatientToPriorityList(checkIn, priority, new Timestamp(System.currentTimeMillis()));
+
+                            terminal.println("...Success!");
+                            terminal.println("The patient's check-in has been completed, and has been giving the following priority: " + priority.toString());
                             return this;
                         }),
                         Pair.of("Go Back", this)))
@@ -261,8 +326,7 @@ public class StaffMenuPage implements Action {
         BodyPart selectedBodyPart = textIO.<BodyPart>newGenericInputReader(null)
                 .withNumberedPossibleValues(bodyParts)
                 .withValueFormatter(BodyPart::getName)
-                .withDefaultValue(null)
-                .read("B. Please select the associated body part (leave blank if none applicable): ");
+                .read("B. Please select the associated body part: ");
 
         List<SeverityScale> severityScales = symptomService.findAllSeverityScales();
 
@@ -312,14 +376,8 @@ public class StaffMenuPage implements Action {
                     .withValueFormatter(SeverityScaleValue::getName)
                     .read("Please select a severity: ");
 
-            String operation = textIO.<String>newStringInputReader()
-                    .withNumberedPossibleValues(Arrays.asList(
-                            "<",
-                            "<=",
-                            "=",
-                            ">=",
-                            ">"
-                    ))
+            Operation operation = textIO.newEnumInputReader(Operation.class)
+                    .withValueFormatter(Operation::toString)
                     .read("Please select an operator to associate to the severity: ");
 
             assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue, operation));
@@ -335,13 +393,11 @@ public class StaffMenuPage implements Action {
                     .getValue();
         } while (repeat);
 
-        String priority = textIO.<String>newStringInputReader()
-                .withNumberedPossibleValues(Arrays.asList(
-                        "High",
-                        "Normal",
-                        "Quarantine"
-                ))
-                .read("Please select the priority to associate with this assessment rule:");
+
+
+        Priority priority = textIO.newEnumInputReader(Priority.class)
+                .withValueFormatter(Priority::toString)
+                .read("Please select an priority to associate to the assessment rule: ");
 
         String description = textIO.newStringInputReader()
                 .withDefaultValue("No description provided.")
@@ -357,6 +413,7 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
                             assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
+                            terminal.println("\nRule successfully added!\n")
                             return this;
                         }),
                         Pair.of("Go Back", this)))

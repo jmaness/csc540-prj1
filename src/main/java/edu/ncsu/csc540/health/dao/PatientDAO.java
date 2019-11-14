@@ -1,9 +1,6 @@
 package edu.ncsu.csc540.health.dao;
 
-import edu.ncsu.csc540.health.model.CheckInSymptom;
-import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.PatientCheckIn;
-import edu.ncsu.csc540.health.model.Symptom;
+import edu.ncsu.csc540.health.model.*;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -70,6 +67,19 @@ public interface PatientDAO {
     @UseRowReducer(PatientCheckInRowReducer.class)
     PatientCheckIn findActivePatientCheckin(@Bind("patientId") Integer patientId);
 
+    @SqlQuery("select c.id c_id, c.patient_id c_patient_id, c.start_time c_start_time, c.end_time c_end_time, " +
+            "cs.checkin_id cs_checkin_id, cs.symptom_code cs_symptom_code, cs.body_part_code cs_body_part_code, " +
+            "cs.severity_scale_value_id cs_severity_scale_value_id, cs.duration cs_duration, " +
+            "cs.reoccurring cs_reoccurring, cs.incident cs_incident " +
+            "from patient_checkins c " +
+            "left outer join checkin_symptoms cs " +
+            "  on c.id = cs.checkin_id " +
+            "where c.patient_id = :id and c.end_time is null")
+    @RegisterConstructorMapper(value = PatientCheckIn.class, prefix = "c")
+    @RegisterConstructorMapper(value = CheckInSymptom.class, prefix = "cs")
+    @UseRowReducer(PatientCheckInRowReducer.class)
+    PatientCheckIn findCheckInByPatient(@BindBean Patient patient);
+
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
             "from patients p, addresses a, patient_checkins c, priority_lists r " +
@@ -113,4 +123,27 @@ public interface PatientDAO {
 
     @SqlUpdate("update patient_checkins set active = 0 where id = :checkInId")
     void setComplete(@Bind("checkInId") Integer checkInId);
+
+    @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
+            "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
+            "from patients p, addresses a, priority_lists r, patient_checkins c " +
+            "where r.checkin_id = c.id and c.patient_id = p.id and p.address_id = a.id")
+    @RegisterConstructorMapper(value = Patient.class, prefix = "p")
+    List<Patient> getPatientPriorityList();
+
+    @SqlUpdate("insert into priority_lists (checkin_id, priority, start_time) " +
+            "values (:checkin_id, :priority, :start_time)")
+    void addPatientToPriorityList(@Bind("checkin_id") Integer checkinId,
+                                  @Bind("priority") String priority,
+                                  @Bind("start_time") Timestamp startTime);
+
+    @SqlUpdate("insert into patient_vitals (checkin_id, temperature, systolic_blood_pressure, diastolic_blood_pressure) " +
+            "values (:checkInId, :temperature, :systolicBloodPressure, :diastolicBloodPressure)")
+    void addPatientVitals(@BindBean PatientVitals vitals);
+
+    @SqlQuery("select v.checkin_id v_checkin_id, v.temperature v_temperature, v.systolic_blood_pressure v_systolic_blood_pressure, v.diastolic_blood_pressure, v_diastolic blood pressure " +
+            "from patient_vitals v" +
+            "where v.checkin_id = :checkin_id")
+    @RegisterConstructorMapper(value = PatientVitals.class, prefix = "v")
+    PatientVitals findPatientVitalsByCheckIn(@Bind("checkin_id") Integer checkInId);
 }

@@ -8,16 +8,16 @@ import javax.annotation.Nullable;
 public class AssessmentSymptom {
     private final Integer ruleId;
     private final Symptom symptom;
-    private final Integer severityScaleValueId;
+    private final SeverityScaleValue severityScaleValue;
     private final Operation operation;
 
     public AssessmentSymptom(@Nullable @ColumnName("rule_id") Integer ruleId,
                              @Nested("s") Symptom symptom,
-                             @ColumnName("severity_scale_value_id") Integer severityScaleValueId,
+                             @Nested("v") SeverityScaleValue severityScaleValue,
                              @ColumnName("operation") Operation operation) {
         this.ruleId = ruleId;
         this.symptom = symptom;
-        this.severityScaleValueId = severityScaleValueId;
+        this.severityScaleValue = severityScaleValue;
         this.operation = operation;
     }
 
@@ -29,8 +29,8 @@ public class AssessmentSymptom {
         return symptom;
     }
 
-    public Integer getSeverityScaleValueId() {
-        return severityScaleValueId;
+    public SeverityScaleValue getSeverityScaleValue() {
+        return severityScaleValue;
     }
 
     public Operation getOperation() {

@@ -13,12 +13,12 @@ import java.util.List;
 public interface AssessmentRuleDAO {
 
     @SqlUpdate("insert into assessment_rules (priority, description) " +
-            "values (:priority.name, :description)")
+            "values (:priority, :description)")
     @GetGeneratedKeys("id")
     Integer createAssessmentRule(@BindBean AssessmentRule assessmentRule);
 
     @SqlUpdate("insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) " +
-            "values (:ruleId, :symptom.code, :severityScaleValue.id, :operation.name)")
+            "values (:ruleId, :symptom.code, :severityScaleValue.id, :operation)")
     void createAssessmentSymptom(@BindBean AssessmentSymptom assessmentSymptom);
 
     @SqlQuery("select r.id r_id, r.priority pr_priority, r.description r_description " +
@@ -45,14 +45,16 @@ public interface AssessmentRuleDAO {
     @RegisterConstructorMapper(value = BodyPart.class, prefix = "b")
     List<AssessmentRule> findAllAssessmentRules();
 
-    @SqlQuery("select e.rule_id e_rule_id, e.severity_scale_value_id e_severity_scale_value_id, e.operation e_operation, " +
+    @SqlQuery("select e.rule_id e_rule_id, e.operation e_operation, " +
             "s.code es_code, s.name es_name, " +
             "c.id esc_id, c.name esc_name, " +
-            "b.code esb_code, b.name esb_name " +
-            "from assessment_symptoms e, symptoms s, severity_scales c, body_parts b " +
-            "where e.rule_id = :rule_id and e.symptom_code = s.code and s.severity_scale_id = c.id and s.body_part_code = b.code")
+            "b.code esb_code, b.name esb_name, " +
+            "v.id ev_id, v.severity_scale_id ev_severity_scale_id, v.name ev_name, v.ordinal ev_ordinal " +
+            "from assessment_symptoms e, symptoms s, severity_scales c, body_parts b, severity_scale_values v " +
+            "where e.rule_id = :rule_id and e.symptom_code = s.code and s.severity_scale_id = c.id and s.body_part_code = b.code and e.severity_scale_value_id = v.id")
     @RegisterConstructorMapper(value = AssessmentSymptom.class, prefix = "e")
     @RegisterConstructorMapper(value = Symptom.class, prefix = "s")
     @RegisterConstructorMapper(value = BodyPart.class, prefix = "b")
+    @RegisterConstructorMapper(value = SeverityScaleValue.class, prefix = "v")
     List<AssessmentSymptom> findAllAssessmentSymptomsByRule(@Bind("rule_id") Integer ruleId);
 }

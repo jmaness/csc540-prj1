@@ -5,6 +5,8 @@ import net.efabrika.util.DBTablePrinter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
+import org.jdbi.v3.core.result.ResultSetScanner;
+import org.jdbi.v3.core.statement.StatementContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.sql.ResultSet;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 @Singleton
 public class DemoQueryPage implements Action {
@@ -39,7 +42,7 @@ public class DemoQueryPage implements Action {
                         Pair.of("Find the facility with the most number of negative experiences overall", notYetImplemented),
                         Pair.of("Find each facility, list the patient encounters with the top five longest check-in phases", notYetImplemented),
                         Pair.of("Other", notYetImplemented),
-                        Pair.of("DUMMY: Find all facilities", this::findAllFacilities),
+                        Pair.of("DUMMY: Remove Me -> Find all facilities", this::findAllFacilities),
                         Pair.of("Go back", homePage)
                 ))
                 .withValueFormatter(Pair::getKey)
@@ -50,8 +53,12 @@ public class DemoQueryPage implements Action {
     private Action findAllFacilities(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
+        demoQueryService.findAllFacilities(getResultSetScanner(terminal));
+        return this;
+    }
 
-        demoQueryService.findAllFacilities((supplier, ctx) -> {
+    private ResultSetScanner<Void> getResultSetScanner(TextTerminal<?> terminal) {
+        return (Supplier<ResultSet> supplier, StatementContext ctx) -> {
             try (ResultSet rs = supplier.get()) {
                 DBTablePrinter.printResultSet(rs, new PrintWriter(new Writer() {
                     @Override
@@ -67,8 +74,6 @@ public class DemoQueryPage implements Action {
                 }));
             }
             return null;
-        });
-
-        return this;
+        };
     }
 }

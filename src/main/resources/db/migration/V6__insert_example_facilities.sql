@@ -5,6 +5,7 @@ insert into certifications (acronym, name) values ('CER003', 'Primary Stroke Cer
 insert into services (code, name) values ('SER01', 'Emergency');
 insert into services (code, name) values ('SGP01', 'General practice');
 insert into services (code, name) values ('VIS01', 'Vision');
+insert into services (code, name) values ('OTS01', 'Other');
 
 insert into addresses (num, street, city, state, country) values (2650, 'Wolf Village Way Box 7220', 'Raleigh', 'NC', 'US');
 insert into facilities (id, name, capacity, classification_code, address_id) values (1000, 'Wolf Hospital', 300, '03', 1);
@@ -37,9 +38,13 @@ insert into departments (code, name, type, facility_id) values ('ER001', 'Emerge
 
 insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'EYE000');
 insert into department_services (department_code, service_code) values ('ER000', 'SER01');
+insert into department_services (department_code, service_code) values ('ER000', 'OTS01');
 insert into department_services (department_code, service_code) values ('GP000', 'SGP01');
+insert into department_services (department_code, service_code) values ('GP000', 'OTS01');
 insert into department_services (department_code, service_code) values ('GP001', 'SGP01');
+insert into department_services (department_code, service_code) values ('GP001', 'OTS01');
 insert into department_services (department_code, service_code) values ('OP000', 'VIS01');
+insert into department_services (department_code, service_code) values ('OP000', 'OTS01');
 
 insert into service_equipment (service_code, name) values ('SER01', 'ER combo rack');
 insert into service_equipment (service_code, name) values ('SGP01', 'Blood pressure monitor');

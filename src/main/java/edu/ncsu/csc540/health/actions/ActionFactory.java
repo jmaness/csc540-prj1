@@ -8,5 +8,5 @@ public interface ActionFactory {
     PatientRoutingPage getPatientRoutingPage(Patient patient);
     PatientCheckInPage getPatientCheckinPage(Patient patient);
     StaffMenuPage getStaffMenuPage(Staff staff);
-    StaffPatientReportPage getStaffPatientReportPage(Staff staff, PatientCheckIn patientCheckIn, StaffMenuPage staffMenuPage);
+    StaffPatientReportPage getStaffPatientReportPage(Staff staff, Patient patient, StaffMenuPage staffMenuPage);
 }

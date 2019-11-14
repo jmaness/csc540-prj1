@@ -70,7 +70,11 @@ public class PatientService {
     }
 
     public boolean isCheckedIn(Patient patient) {
-        return patientDAO.findActivePatientCheckin(patient.getId()) != null;
+        return findActivePatientCheckIn(patient) != null;
+    }
+
+    public PatientCheckIn findActivePatientCheckIn(Patient patient) {
+        return patientDAO.findActivePatientCheckin(patient.getId());
     }
 
     @Transactional
@@ -81,6 +85,11 @@ public class PatientService {
             outcomeReportDAO.insertReferralStatus(outcomeReport.getReferralStatus());
             outcomeReport.getReferralStatus().getReasons().forEach(outcomeReportDAO::insertReferralReason);
         }
+
+        outcomeReport.getNegativeExperiences()
+                .forEach(outcomeReportDAO::insertNegativeExperience);
+
+        patientDAO.setComplete(outcomeReport.getCheckInId());
     }
 
     @Transactional
@@ -103,7 +112,7 @@ public class PatientService {
         patientDAO.updateCheckInEndTime(patient.getId(), endTime);
     }
 
-    public List<Patient> getTreatedPatientList() {
-        return patientDAO.getTreatedPatientList();
+    public List<Patient> getTreatedPatientList(Integer facilityId) {
+        return patientDAO.getTreatedPatientList(facilityId);
     }
 }

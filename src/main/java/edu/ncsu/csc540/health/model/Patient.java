@@ -59,6 +59,5 @@ public class Patient {
         return phone;
     }
 
-    public String getDisplayString() { return id + ": " + firstName + " " + lastName; }
-
+    public String getDisplayString() { return firstName + " " + lastName; }
 }

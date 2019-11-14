@@ -59,7 +59,7 @@ public class SignInPage implements Action {
                         Pair.of("Go Back", previousPage)
                 ))
                 .withValueFormatter(Pair::getKey)
-                .read("Sign In\n=====================")
+                .read("\nSign In:")
                 .getValue();
     }
 
@@ -76,7 +76,7 @@ public class SignInPage implements Action {
         Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
                 .withNumberedPossibleValues(facilities)
                 .withValueFormatter(Facility::getName)
-                .read("A. Please select your facility: ");
+                .read("\nA. Please select your facility: ");
 
         String lastName = textIO.newStringInputReader()
                 .read("\nB. Please enter your last name: ");

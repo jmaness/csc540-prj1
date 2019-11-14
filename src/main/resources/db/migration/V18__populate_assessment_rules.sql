@@ -3,7 +3,7 @@ insert into patients (first_name, last_name, dob, phone, address_id, facility_id
 
 insert into patient_checkins (patient_id, start_time, end_time) values (2005, TO_TIMESTAMP('12/24/2010 15:23:23', 'MM/DD/YYYY HH24:MI:SS'), null);
 insert into checkin_symptoms(checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1005, 'SYM103', 'NON000', 13, 3, 1, 'Fell off bike');
-insert into checkin_symptoms(checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1005, 'SYM108', 'HED000', 7, 3, 1, 'Fell off bike');
+insert into checkin_symptoms(checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1005, 'SYM108', 'HED000', 6, 3, 1, 'Fell off bike');
 
 insert into addresses (num, street, city, state, country) values (234, 'Street Ave', 'Chapel Hill', 'North Carolina', 'US');
 insert into patients (first_name, last_name, dob, phone, address_id, facility_id) values ('Logan', 'Willett', TO_DATE('02/29/2000', 'MM/DD/YYYY'), 9192453245, 5, 1000);

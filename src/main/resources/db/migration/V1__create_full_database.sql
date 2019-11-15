@@ -46,7 +46,9 @@ CREATE TABLE facility_certifications (
     expiration_date DATE NOT NULL,
     PRIMARY KEY (facility_id, certification_acronym),
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
-    FOREIGN KEY (certification_acronym) REFERENCES certifications (acronym)
+    FOREIGN KEY (certification_acronym) REFERENCES certifications (acronym),
+    CONSTRAINT exp_cert_order_check
+    CHECK (certification_date < expiration_date)
 );
 
 CREATE TABLE departments (

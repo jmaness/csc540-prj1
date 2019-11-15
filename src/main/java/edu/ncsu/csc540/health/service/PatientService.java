@@ -4,7 +4,16 @@ import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.AddressDAO;
 import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
-import edu.ncsu.csc540.health.model.*;
+import edu.ncsu.csc540.health.model.Address;
+import edu.ncsu.csc540.health.model.CheckInSymptom;
+import edu.ncsu.csc540.health.model.DischargeStatus;
+import edu.ncsu.csc540.health.model.OutcomeReport;
+import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.PatientVitals;
+import edu.ncsu.csc540.health.model.Priority;
+import edu.ncsu.csc540.health.model.ReferralStatus;
+import edu.ncsu.csc540.health.model.Symptom;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
@@ -72,10 +81,6 @@ public class PatientService {
         return patientDAO.findActivePatientCheckin(patient.getId());
     }
 
-    public PatientCheckIn findCheckInByPatient(Patient patient) {
-        return patientDAO.findCheckInByPatient(patient);
-    }
-
     @Transactional
     public void submitOutcomeReport(OutcomeReport outcomeReport) {
         outcomeReportDAO.insertOutcomeReport(outcomeReport);
@@ -87,8 +92,37 @@ public class PatientService {
 
         outcomeReport.getNegativeExperiences()
                 .forEach(outcomeReportDAO::insertNegativeExperience);
+    }
 
-        patientDAO.setComplete(outcomeReport.getCheckInId());
+    @Transactional
+    public void acknowledgeOutcomeReport(Integer checkInId) {
+        outcomeReportDAO.acknowledgeOutcomeReport(checkInId);
+        patientDAO.setVisitComplete(checkInId);
+    }
+
+    @Transactional
+    public void rejectOutcomeReport(Integer checkInId, String reason) {
+        outcomeReportDAO.rejectOutcomeReport(checkInId, reason);
+        patientDAO.setVisitComplete(checkInId);
+    }
+
+    @Transactional
+    public OutcomeReport findOutcomeReport(Integer checkInId) {
+        OutcomeReport outcomeReport = outcomeReportDAO.findOutcomeReportById(checkInId);
+
+        ReferralStatus referralStatus = null;
+        if (outcomeReport.getDischargeStatus() == DischargeStatus.REFERRED) {
+            referralStatus = outcomeReportDAO.findReferralStatusByCheckInId(checkInId);
+        }
+
+        return new OutcomeReport(outcomeReport.getCheckInId(),
+                outcomeReport.getDischargeStatus(),
+                referralStatus,
+                outcomeReport.getTreatment(),
+                outcomeReport.getOutTime(),
+                outcomeReport.getNegativeExperiences(),
+                outcomeReport.getPatientAcknowledged(),
+                outcomeReport.getPatientAcknowledgedReason());
     }
 
     @Transactional
@@ -115,19 +149,11 @@ public class PatientService {
         return patientDAO.getTreatedPatientList(facilityId);
     }
 
-    public List<Patient> getPatientPriorityList() {
-        return patientDAO.getPatientPriorityList();
-    }
-
     public void addPatientToPriorityList(PatientCheckIn checkIn, Priority priority, Timestamp timestamp) {
         patientDAO.addPatientToPriorityList(checkIn.getId(), priority.toString(), timestamp);
     }
 
     public void addPatientVitals(PatientVitals vitals) {
         patientDAO.addPatientVitals(vitals);
-    }
-
-    public PatientVitals findPatientVitalsByCheckIn(Integer checkInId) {
-        return patientDAO.findPatientVitalsByCheckIn(checkInId);
     }
 }

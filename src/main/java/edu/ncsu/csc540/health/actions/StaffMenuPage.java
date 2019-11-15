@@ -279,12 +279,14 @@ public class StaffMenuPage implements Action {
             return this;
         }
 
+        Integer checkInId = patientService.findPriorityListCheckInId(selectedPatient.getId());
+        patientService.updatePriorityListEndtime(checkInId, new Timestamp(System.currentTimeMillis()));
+
         terminal.println("Treating patient...");
         terminal.println("...");
         terminal.println("...Patient treated! You're the best doctor ever!");
 
-        //TODO: Replace this with a reference to the Patient Outcome Report page
-        return Actions.notYetImplemented.apply(this);
+        return this;
     }
 
     private Action treatedPatientListMenu(TextIO textIO) {

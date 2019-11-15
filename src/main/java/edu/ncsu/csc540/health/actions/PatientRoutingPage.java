@@ -2,7 +2,6 @@ package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
 import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.PatientCheckIn;
 import edu.ncsu.csc540.health.service.PatientService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
@@ -32,7 +31,6 @@ public class PatientRoutingPage implements Action {
     @Override
     public Action apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
-        Action notYetImplemented = Actions.notYetImplemented.apply(this);
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
@@ -45,7 +43,8 @@ public class PatientRoutingPage implements Action {
                                 return actionFactory.getPatientCheckinPage(patient);
                             }
                         }),
-                        Pair.of("Check-out acknowledgement", notYetImplemented),
+                        Pair.of("Check-out acknowledgement",
+                                actionFactory.getPatientCheckoutAcknowledgementPage(patient, this)),
                         Pair.of("Go back", homePage)
                 ))
                 .withValueFormatter(Pair::getKey)

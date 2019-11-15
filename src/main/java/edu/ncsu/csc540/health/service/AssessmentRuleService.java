@@ -6,6 +6,8 @@ import edu.ncsu.csc540.health.model.AssessmentSymptom;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssessmentRuleService {
     private final AssessmentRuleDAO assessmentRuleDAO;
@@ -16,14 +18,20 @@ public class AssessmentRuleService {
     }
 
     public Integer createAssessmentRule(AssessmentRule assessmentRule) {
-        Integer id = assessmentRuleDAO.createAssessmentRule(assessmentRule);
+        return assessmentRuleDAO.createAssessmentRule(assessmentRule);
+    }
 
-        for (AssessmentSymptom symptom : assessmentRule.getAssessmentSymptoms())
-            assessmentRuleDAO.createAssessmentSymptom(new AssessmentSymptom(id,
-                    symptom.getSymptom(),
-                    symptom.getSeverityScaleValue(),
-                    symptom.getOperation()));
+    public List<AssessmentRule> findAllAssessmentRules() {
+        List<AssessmentRule> tempRules = assessmentRuleDAO.findAllAssessmentRules();
+        List<AssessmentRule> rules = new ArrayList<>();
 
-        return id;
+        for (AssessmentRule rule : tempRules) {
+            rules.add(new AssessmentRule(rule.getId(),
+                    rule.getPriority(),
+                    rule.getDescription(),
+                    assessmentRuleDAO.findAllAssessmentSymptomsByRule(rule.getId())));
+        }
+
+        return rules;
     }
 }

@@ -1,4 +1,4 @@
-create sequence address_sequence START WITH 100;
+CREATE SEQUENCE address_sequence START WITH 2001;
 
 CREATE OR REPLACE TRIGGER addresses_on_insert
     BEFORE INSERT ON addresses

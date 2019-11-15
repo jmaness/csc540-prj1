@@ -16,7 +16,8 @@ public interface SymptomDAO {
             "c.id sc_id, c.name sc_name, " +
             "b.code sb_code, b.name sb_name " +
             "from symptoms s, severity_scales c, body_parts b " +
-            "where s.severity_scale_id = c.id and s.body_part_code = b.code";
+            "where s.severity_scale_id = c.id and s.body_part_code = b.code " +
+            "order by s.code";
 
     @SqlQuery(FIND_SYMPTOMS)
     @RegisterConstructorMapper(value = Symptom.class, prefix = "s")

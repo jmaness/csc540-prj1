@@ -1,4 +1,4 @@
-create sequence staff_sequence START WITH 100000;
+CREATE SEQUENCE staff_sequence START WITH 100001;
 
 CREATE OR REPLACE TRIGGER staff_on_insert
     BEFORE INSERT ON staff

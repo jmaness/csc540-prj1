@@ -6,9 +6,13 @@ import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
 import edu.ncsu.csc540.health.model.Address;
 import edu.ncsu.csc540.health.model.CheckInSymptom;
+import edu.ncsu.csc540.health.model.DischargeStatus;
 import edu.ncsu.csc540.health.model.OutcomeReport;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.PatientVitals;
+import edu.ncsu.csc540.health.model.Priority;
+import edu.ncsu.csc540.health.model.ReferralStatus;
 import edu.ncsu.csc540.health.model.Symptom;
 import org.jdbi.v3.core.Jdbi;
 
@@ -70,7 +74,11 @@ public class PatientService {
     }
 
     public boolean isCheckedIn(Patient patient) {
-        return patientDAO.findActivePatientCheckin(patient.getId()) != null;
+        return findActivePatientCheckIn(patient) != null;
+    }
+
+    public PatientCheckIn findActivePatientCheckIn(Patient patient) {
+        return patientDAO.findActivePatientCheckin(patient.getId());
     }
 
     @Transactional
@@ -81,16 +89,50 @@ public class PatientService {
             outcomeReportDAO.insertReferralStatus(outcomeReport.getReferralStatus());
             outcomeReport.getReferralStatus().getReasons().forEach(outcomeReportDAO::insertReferralReason);
         }
+
+        outcomeReport.getNegativeExperiences()
+                .forEach(outcomeReportDAO::insertNegativeExperience);
     }
 
     @Transactional
-    public List<Patient> findAllPriorityPatients() {
-        return patientDAO.findAllPriorityPatients();
+    public void acknowledgeOutcomeReport(Integer checkInId) {
+        outcomeReportDAO.acknowledgeOutcomeReport(checkInId);
+        patientDAO.setVisitComplete(checkInId);
     }
 
     @Transactional
-    public List<Patient> findAllVitalsPatients() {
-        return patientDAO.findAllVitalsPatients();
+    public void rejectOutcomeReport(Integer checkInId, String reason) {
+        outcomeReportDAO.rejectOutcomeReport(checkInId, reason);
+        patientDAO.setVisitComplete(checkInId);
+    }
+
+    @Transactional
+    public OutcomeReport findOutcomeReport(Integer checkInId) {
+        OutcomeReport outcomeReport = outcomeReportDAO.findOutcomeReportById(checkInId);
+
+        ReferralStatus referralStatus = null;
+        if (outcomeReport.getDischargeStatus() == DischargeStatus.REFERRED) {
+            referralStatus = outcomeReportDAO.findReferralStatusByCheckInId(checkInId);
+        }
+
+        return new OutcomeReport(outcomeReport.getCheckInId(),
+                outcomeReport.getDischargeStatus(),
+                referralStatus,
+                outcomeReport.getTreatment(),
+                outcomeReport.getOutTime(),
+                outcomeReport.getNegativeExperiences(),
+                outcomeReport.getPatientAcknowledged(),
+                outcomeReport.getPatientAcknowledgedReason());
+    }
+
+    @Transactional
+    public List<Patient> findAllPriorityPatients(Integer facilityId) {
+        return patientDAO.findAllPriorityPatients(facilityId);
+    }
+
+    @Transactional
+    public List<Patient> findAllVitalsPatients(Integer facilityId) {
+        return patientDAO.findAllVitalsPatients(facilityId);
     }
 
     @Transactional
@@ -103,7 +145,15 @@ public class PatientService {
         patientDAO.updateCheckInEndTime(patient.getId(), endTime);
     }
 
-    public List<Patient> getTreatedPatientList() {
-        return patientDAO.getTreatedPatientList();
+    public List<Patient> getTreatedPatientList(Integer facilityId) {
+        return patientDAO.getTreatedPatientList(facilityId);
+    }
+
+    public void addPatientToPriorityList(PatientCheckIn checkIn, Priority priority, Timestamp timestamp) {
+        patientDAO.addPatientToPriorityList(checkIn.getId(), priority.toString(), timestamp);
+    }
+
+    public void addPatientVitals(PatientVitals vitals) {
+        patientDAO.addPatientVitals(vitals);
     }
 }

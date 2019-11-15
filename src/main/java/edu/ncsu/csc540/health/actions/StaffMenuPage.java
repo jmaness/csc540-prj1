@@ -1,20 +1,26 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
+import edu.ncsu.csc540.health.model.AssessmentRule;
+import edu.ncsu.csc540.health.model.AssessmentSymptom;
 import edu.ncsu.csc540.health.model.BodyPart;
+import edu.ncsu.csc540.health.model.CheckInSymptom;
+import edu.ncsu.csc540.health.model.Operation;
 import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.PatientVitals;
+import edu.ncsu.csc540.health.model.Priority;
 import edu.ncsu.csc540.health.model.SeverityScale;
+import edu.ncsu.csc540.health.model.SeverityScaleValue;
 import edu.ncsu.csc540.health.model.Staff;
 import edu.ncsu.csc540.health.model.Symptom;
-import edu.ncsu.csc540.health.model.*;
 import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
-import edu.ncsu.csc540.health.service.SymptomService;
 import edu.ncsu.csc540.health.service.SeverityScaleService;
+import edu.ncsu.csc540.health.service.SymptomService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,6 +35,7 @@ import java.util.List;
  * or run some demo queries.
  */
 public class StaffMenuPage implements Action {
+    private final ActionFactory actionFactory;
     private final Action homePage;
     private final Staff staff;
     private final SymptomService symptomService;
@@ -40,12 +47,14 @@ public class StaffMenuPage implements Action {
     private List<SeverityScaleValue> scaleValues = new ArrayList<>();
 
     @Inject
-    public StaffMenuPage(@Named("home") Action homePage,
+    public StaffMenuPage(ActionFactory actionFactory,
+                         @Named("home") Action homePage,
                          @Assisted Staff staff,
                          SymptomService symptomService,
                          PatientService patientService,
                          AssessmentRuleService assessmentRuleService,
                          SeverityScaleService severityScaleService) {
+        this.actionFactory = actionFactory;
         this.homePage = homePage;
         this.staff = staff;
         this.symptomService = symptomService;
@@ -65,12 +74,11 @@ public class StaffMenuPage implements Action {
                         Pair.of("Add assessment rule", this::addAssessmentRule),
                         Pair.of("Go back", homePage)))
                 .withValueFormatter(Pair::getKey)
-                .read("Staff Menu")
+                .read("\nStaff Menu")
                 .getValue();
     }
 
     private Action addScale(TextIO textIO) {
-        TextTerminal<?> terminal = textIO.getTextTerminal();
         scaleValues.clear();
 
         String scaleName = textIO.newStringInputReader()
@@ -82,23 +90,18 @@ public class StaffMenuPage implements Action {
     }
 
     private Action scaleMenu(TextIO textIO) {
-        TextTerminal<?> terminal = textIO.getTextTerminal();
-
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Add level for this scale", this::addScaleValue),
                         Pair.of("Confirm scale: no more levels", this::writeScale),
-                        Pair.of("Go Back", this::apply)))
+                        Pair.of("Go Back", this)))
                 .withValueFormatter(Pair::getKey)
                 .read("Scale Menu")
                 .getValue();
     }
 
     private Action addScaleValue(TextIO textIO) {
-        TextTerminal<?> terminal = textIO.getTextTerminal();
-        String name;
-
-        name = textIO.newStringInputReader()
+        String name = textIO.newStringInputReader()
                 .read("\nEnter the severity scale value: ");
 
         this.scaleValues.add(new SeverityScaleValue(null, null, name, this.scaleValues.size() + 1));
@@ -119,7 +122,7 @@ public class StaffMenuPage implements Action {
                     )
             );
 
-        return this::apply;
+        return this;
     }
 
     private Action processPatient(TextIO textIO) {
@@ -144,7 +147,7 @@ public class StaffMenuPage implements Action {
     private Action enterVitals(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        List<Patient> patients = patientService.findAllVitalsPatients();
+        List<Patient> patients = patientService.findAllVitalsPatients(staff.getFacilityId());
 
         if (patients.isEmpty()) {
             terminal.println("Error: No patients currently waiting for vitals entry.");
@@ -153,7 +156,7 @@ public class StaffMenuPage implements Action {
 
         Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
                 .withNumberedPossibleValues(patients)
-                .withValueFormatter(Patient::getFirstName)
+                .withValueFormatter(Patient::getDisplayString)
                 .read("Please select the patient whose vitals you wish to record: ");
 
         Integer temperature = textIO.newIntInputReader().read("A. Please enter the patient's temperature in degrees Celsius: ");
@@ -161,7 +164,7 @@ public class StaffMenuPage implements Action {
         Integer diastolicBP = textIO.newIntInputReader().read("C. Please enter the patient's diastolic blood pressure: ");
 
         terminal.println("Please confirm the following information:\n");
-        terminal.println(String.format("Patient: %s %s", selectedPatient.getFirstName(), selectedPatient.getLastName()));
+        terminal.println(String.format("Patient: %s", selectedPatient.getDisplayString()));
         terminal.println(String.format("Temperature: %d", temperature));
         terminal.println(String.format("Systolic Blood Pressure: %d", systolicBP));
         terminal.println(String.format("Diastolic Blood Pressure: %d", diastolicBP));
@@ -169,8 +172,79 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm & Record", (TextIO tio) -> {
+                            PatientCheckIn checkIn = patientService.findActivePatientCheckIn(selectedPatient);
+                            patientService.addPatientVitals(new PatientVitals(checkIn.getId(),
+                                    temperature,
+                                    systolicBP,
+                                    diastolicBP));
                             patientService.updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
-                            //TODO: Implement assessment rules, place patient on priority list, display priority
+
+                            List<AssessmentRule> rules = assessmentRuleService.findAllAssessmentRules();
+                            List<CheckInSymptom> symptoms = checkIn.getSymptoms();
+
+                            List<AssessmentRule> applicableRules = new ArrayList<>();
+
+                            for (AssessmentRule rule : rules) {
+                                List<AssessmentSymptom> aSymptoms = rule.getAssessmentSymptoms();
+                                boolean ruleMatched = true;
+
+                                for (AssessmentSymptom aSymptom : aSymptoms) {
+                                    boolean symptomMatched = false;
+
+                                    for (CheckInSymptom symptom : symptoms) {
+                                        if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode())) {
+                                            Operation operation = aSymptom.getOperation();
+
+                                            switch (operation) {
+                                                case LESS_THAN:
+                                                    if (symptom.getSeverityScaleValueId() < aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case LESS_THAN_EQUAL_TO:
+                                                    if (symptom.getSeverityScaleValueId() <= aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case EQUAL_TO:
+                                                    if (symptom.getSeverityScaleValueId() == aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case GREATER_THAN_EQUAL_TO:
+                                                    if (symptom.getSeverityScaleValueId() >= aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                case GREATER_THAN:
+                                                    if (symptom.getSeverityScaleValueId() > aSymptom.getSeverityScaleValue().getId())
+                                                        symptomMatched = true;
+                                                    break;
+                                                default:
+                                                    //Oh god what have you done
+                                                    break;
+                                            }
+
+                                            if (symptomMatched)
+                                                break;
+                                        }
+                                    }
+
+                                    if (!symptomMatched) {
+                                        ruleMatched = false;
+                                        break;
+                                    }
+                                }
+
+                                if (ruleMatched)
+                                    applicableRules.add(rule);
+                            }
+
+                            Priority priority = Priority.NORMAL;
+
+                            for (AssessmentRule rule : applicableRules)
+                                priority = priority.ordinal() >= rule.getPriority().ordinal() ? priority : rule.getPriority();
+
+                            patientService.addPatientToPriorityList(checkIn, priority, new Timestamp(System.currentTimeMillis()));
+
+                            terminal.println("...Success!");
+                            terminal.println("The patient's check-in has been completed, and has been giving the following priority: " + priority.toString());
                             return this;
                         }),
                         Pair.of("Go Back", this)))
@@ -182,7 +256,7 @@ public class StaffMenuPage implements Action {
     private Action treatPatient(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        List<Patient> patients = patientService.findAllPriorityPatients();
+        List<Patient> patients = patientService.findAllPriorityPatients(staff.getFacilityId());
 
         if (patients.isEmpty()) {
             terminal.println("Error: No patients currently waiting for treatment.");
@@ -228,29 +302,28 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Checkout patient", this::treatedPatientList),
-                        Pair.of("Go back", this::apply)))
+                        Pair.of("Go back", this)))
                 .withValueFormatter(Pair::getKey)
-                .read("Treated Patient Menu")
+                .read("\nTreated Patient Menu")
                 .getValue();
     }
 
     private Action treatedPatientList(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        List<Patient> patients = patientService.getTreatedPatientList();
+        List<Patient> patients = patientService.getTreatedPatientList(staff.getFacilityId());
 
-        if (patients.size() == 0) {
-            terminal.println("There are currently no treated patients awaiting checkout.");
-            return this::apply;
+        if (patients.isEmpty()) {
+            terminal.println("\nThere are currently no treated patients awaiting checkout.");
+            return this;
         }
 
         Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
                 .withNumberedPossibleValues(patients)
                 .withValueFormatter(Patient::getDisplayString)
-                .read("Patient");
+                .read("\nPatient");
 
-        //Jeremy, patient info is above. Ready to hook up next step
-        return Actions.notYetImplemented.apply(this);
+        return actionFactory.getStaffPatientReportPage(staff, selectedPatient, this);
     }
 
     private Action addSymptoms(TextIO textIO) {
@@ -264,8 +337,7 @@ public class StaffMenuPage implements Action {
         BodyPart selectedBodyPart = textIO.<BodyPart>newGenericInputReader(null)
                 .withNumberedPossibleValues(bodyParts)
                 .withValueFormatter(BodyPart::getName)
-                .withDefaultValue(null)
-                .read("B. Please select the associated body part (leave blank if none applicable): ");
+                .read("B. Please select the associated body part: ");
 
         List<SeverityScale> severityScales = symptomService.findAllSeverityScales();
 
@@ -315,14 +387,8 @@ public class StaffMenuPage implements Action {
                     .withValueFormatter(SeverityScaleValue::getName)
                     .read("Please select a severity: ");
 
-            String operation = textIO.<String>newStringInputReader()
-                    .withNumberedPossibleValues(Arrays.asList(
-                            "<",
-                            "<=",
-                            "=",
-                            ">=",
-                            ">"
-                    ))
+            Operation operation = textIO.newEnumInputReader(Operation.class)
+                    .withValueFormatter(Operation::toString)
                     .read("Please select an operator to associate to the severity: ");
 
             assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue, operation));
@@ -338,13 +404,11 @@ public class StaffMenuPage implements Action {
                     .getValue();
         } while (repeat);
 
-        String priority = textIO.<String>newStringInputReader()
-                .withNumberedPossibleValues(Arrays.asList(
-                        "High",
-                        "Normal",
-                        "Quarantine"
-                ))
-                .read("Please select the priority to associate with this assessment rule:");
+
+
+        Priority priority = textIO.newEnumInputReader(Priority.class)
+                .withValueFormatter(Priority::toString)
+                .read("Please select an priority to associate to the assessment rule: ");
 
         String description = textIO.newStringInputReader()
                 .withDefaultValue("No description provided.")
@@ -360,6 +424,7 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
                             assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
+                            terminal.println("\nRule successfully added!\n");
                             return this;
                         }),
                         Pair.of("Go Back", this)))

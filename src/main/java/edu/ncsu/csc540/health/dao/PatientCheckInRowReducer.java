@@ -15,7 +15,7 @@ public class PatientCheckInRowReducer implements LinkedHashMapRowReducer<Integer
     @Override
     public void accumulate(Map<Integer, PatientCheckIn> container, RowView rowView) {
         final PatientCheckIn patientCheckIn = container.computeIfAbsent(rowView.getColumn("c_id", Integer.class),
-                id -> rowView.getRow(PatientCheckIn.class));
+            id -> rowView.getRow(PatientCheckIn.class));
 
         if (rowView.getColumn("cs_checkin_id", Integer.class) != null) {
             List<CheckInSymptom> allSymptoms = Optional.ofNullable(patientCheckIn.getSymptoms())

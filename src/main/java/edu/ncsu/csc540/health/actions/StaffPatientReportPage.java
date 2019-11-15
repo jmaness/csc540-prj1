@@ -6,6 +6,7 @@ import edu.ncsu.csc540.health.model.Facility;
 import edu.ncsu.csc540.health.model.NegativeExperience;
 import edu.ncsu.csc540.health.model.NegativeExperienceCode;
 import edu.ncsu.csc540.health.model.OutcomeReport;
+import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
 import edu.ncsu.csc540.health.model.ReferralReason;
 import edu.ncsu.csc540.health.model.ReferralReasonCode;
@@ -15,6 +16,7 @@ import edu.ncsu.csc540.health.model.Staff;
 import edu.ncsu.csc540.health.service.FacilityService;
 import edu.ncsu.csc540.health.service.PatientService;
 import edu.ncsu.csc540.health.service.StaffService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
@@ -24,15 +26,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class StaffPatientReportPage implements Action {
-    private Staff staff;
-    private PatientCheckIn patientCheckIn;
-    private StaffMenuPage staffMenuPage;
-    private PatientService patientService;
-    private FacilityService facilityService;
-    private StaffService staffService;
+    private final Staff staff;
+    private final PatientCheckIn patientCheckIn;
+
+    private final StaffMenuPage staffMenuPage;
+    private final PatientService patientService;
+    private final FacilityService facilityService;
+    private final StaffService staffService;
 
     private DischargeStatus selectedDischargeStatus;
     private ReferralStatus referralStatus;
@@ -41,33 +43,33 @@ public class StaffPatientReportPage implements Action {
 
     @Inject
     public StaffPatientReportPage(@Assisted Staff staff,
-                                  @Assisted PatientCheckIn patientCheckIn,
+                                  @Assisted Patient patient,
                                   @Assisted StaffMenuPage staffMenuPage,
                                   PatientService patientService,
                                   FacilityService facilityService,
                                   StaffService staffService) {
         this.staff = staff;
-        this.patientCheckIn = patientCheckIn;
         this.staffMenuPage = staffMenuPage;
         this.patientService = patientService;
         this.facilityService = facilityService;
         this.staffService = staffService;
+
+        this.patientCheckIn = patientService.findActivePatientCheckIn(patient);
     }
 
     @Override
     public Action apply(TextIO textIO) {
-        Action notYetImplemented = Actions.notYetImplemented.apply(this);
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Discharge Status", this::selectDischargeStatus),
                         Pair.of("Referral Status", this::addReferralStatus),
                         Pair.of("Treatment", this::addTreatment),
                         Pair.of("Negative Experience", this::addNegativeExperience),
-                        Pair.of("Go back", notYetImplemented),
+                        Pair.of("Go back", staffMenuPage),
                         Pair.of("Submit", this::confirm)
                 ))
                 .withValueFormatter(Pair::getKey)
-                .read("Staff - Patient Report")
+                .read("\nStaff-Patient Report")
                 .getValue();
     }
 
@@ -81,7 +83,7 @@ public class StaffPatientReportPage implements Action {
         selectedDischargeStatus = textIO.newEnumInputReader(DischargeStatus.class)
                 .withAllValuesNumbered()
                 .withValueFormatter(DischargeStatus::getLabel)
-                .read("Discharge Status");
+                .read("\nDischarge Status");
 
         return this;
     }
@@ -97,18 +99,19 @@ public class StaffPatientReportPage implements Action {
 
         // Referral Status should allow be set if the discharge status is "Referred"
         if (selectedDischargeStatus != DischargeStatus.REFERRED) {
-            terminal.println(String.format("Discharge status is not \"%s\"", DischargeStatus.REFERRED.getLabel()));
+            terminal.println(String.format("\nDischarge status is not \"%s\"", DischargeStatus.REFERRED.getLabel()));
             return this;
         }
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
-                        Pair.of("Facility id", this::selectFacility),
-                        Pair.of("Referrer id", this::selectReferrer),
+                        Pair.of("Facility", this::selectFacility),
+                        Pair.of("Referrer", this::selectReferrer),
                         Pair.of("Add reason", this::addReferralStatusReason),
                         Pair.of("Go back", this)
                 ))
-                .read()
+                .withValueFormatter(Pair::getKey)
+                .read("\nReferral Status")
                 .getValue();
     }
 
@@ -117,37 +120,37 @@ public class StaffPatientReportPage implements Action {
         Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
                 .withNumberedPossibleValues(facilities)
                 .withValueFormatter(Facility::getName)
-                .read("Facility:");
+                .read("\nFacility:");
+
+        if (referralStatus == null) {
+            referralStatus = new ReferralStatus(patientCheckIn.getId(), null, null, null);
+        }
 
         referralStatus = new ReferralStatus(
                 referralStatus.getCheckInId(),
                 selectedFacility.getId(),
                 referralStatus.getStaffId(),
-                referralStatus.getTreatment(),
                 referralStatus.getReasons());
 
         return this::addReferralStatus;
     }
 
     private Action selectReferrer(TextIO textIO) {
-
-        if (referralStatus.getFacilityId() == null) {
-            textIO.getTextTerminal().println("Please select a facility.");
-            return this::addReferralStatus;
-        }
-
-        List<Staff> staff = staffService.findAllMedicalStaffByFacility(referralStatus.getFacilityId());
+        List<Staff> medicalStaff = staffService.findAllMedicalStaffByFacility(staff.getFacilityId());
 
         Staff referrer = textIO.<Staff>newGenericInputReader(null)
-                .withNumberedPossibleValues(staff)
+                .withNumberedPossibleValues(medicalStaff)
                 .withValueFormatter(s -> String.format("%s, %s", s.getLastName(), s.getFirstName()))
-                .read("Referrer:");
+                .read("\nReferrer");
+
+        if (referralStatus == null) {
+            referralStatus = new ReferralStatus(patientCheckIn.getId(), null, null, null);
+        }
 
         referralStatus = new ReferralStatus(
                 referralStatus.getCheckInId(),
                 referralStatus.getFacilityId(),
                 referrer.getId(),
-                referralStatus.getTreatment(),
                 referralStatus.getReasons());
 
         return this::addReferralStatus;
@@ -163,30 +166,23 @@ public class StaffPatientReportPage implements Action {
                 .read("Description");
 
         List<Service> services = facilityService.findAllServicesByFacility(referralStatus.getFacilityId());
-        List<String> serviceNames = services.stream()
-                .map(s -> String.format("%s: %s", s.getCode(), s.getName()))
-                .collect(Collectors.toList());
 
-        serviceNames.add("Other");
-
-        String serviceName = textIO.newStringInputReader()
-                .withNumberedPossibleValues(serviceNames)
+        Service service = textIO.<Service>newGenericInputReader(null)
+                .withNumberedPossibleValues(services)
+                .withValueFormatter(Service::getDisplayString)
                 .read("Service");
 
         ReferralReason referralReason = new ReferralReason(
                 referralStatus.getCheckInId(),
                 reasonCode,
-                serviceName,
+                service.getCode(),
                 description);
 
-        referralStatus.getReasons().add(referralReason);
+        if (referralStatus == null) {
+            referralStatus = new ReferralStatus(patientCheckIn.getId(), null, null, null);
+        }
 
-        referralStatus = new ReferralStatus(
-                referralStatus.getCheckInId(),
-                referralStatus.getFacilityId(),
-                referralStatus.getStaffId(),
-                referralStatus.getTreatment(),
-                referralStatus.getReasons());
+        referralStatus.getReasons().add(referralReason);
 
         return this::addReferralStatus;
     }
@@ -234,20 +230,39 @@ public class StaffPatientReportPage implements Action {
      */
     private Action confirm(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
-        terminal.println(String.format("Discharge status: %s", selectedDischargeStatus.getLabel()));
+
+        if (!validateFields(textIO)) {
+            return this;
+        }
+
+        terminal.println(String.format("\nDischarge status: %s", selectedDischargeStatus.getLabel()));
 
         if (selectedDischargeStatus == DischargeStatus.REFERRED) {
-            terminal.println(String.format("Referral Status: %s", "TODO"));
+            Facility facility = facilityService.findById(referralStatus.getFacilityId());
+            Staff referrer = staffService.findById(referralStatus.getStaffId());
+
+            terminal.println("Referral Status:");
+            terminal.println(String.format("    Facility: %s", facility.getName()));
+            terminal.println(String.format("    Referrer: %s", referrer.getDisplayString()));
+            terminal.println("    Reasons:");
+
+            referralStatus.getReasons().forEach(reason -> {
+                Service service = facilityService.findServiceByCode(reason.getServiceCode());
+
+                terminal.println(String.format("      - Reason code: %s", reason.getCode().getLabel()));
+                terminal.println(String.format("        Description: %s", reason.getDescription()));
+                terminal.println(String.format("        Service: %s", service.getDisplayString()));
+            });
         }
 
         terminal.println(String.format("Treatment: %s", treatment));
-        terminal.println("Negative Experiences:" + (negativeExperiences.isEmpty() ? " NONE": ""));
+        terminal.println("Negative Experiences:" + (negativeExperiences.isEmpty() ? " None" : ""));
 
         if (!negativeExperiences.isEmpty()) {
-            negativeExperiences.forEach( negativeExperience -> {
-                terminal.println(String.format("    Code: %s", negativeExperience.getCode().getLabel()));
-                terminal.println(String.format("    Description: %s", negativeExperience.getDescription()));
-            });
+            negativeExperiences.forEach(negativeExperience ->
+                terminal.println(String.format("  - Code: %s\n    Description: %s",
+                        negativeExperience.getCode().getLabel(),
+                        negativeExperience.getDescription())));
         }
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
@@ -255,8 +270,36 @@ public class StaffPatientReportPage implements Action {
                         Pair.of("Confirm", this::submit),
                         Pair.of("Go Back", this)
                 ))
+                .withValueFormatter(Pair::getKey)
                 .read()
                 .getValue();
+    }
+
+    /**
+     * Returns true if all required fields have been specified in the form. Prints
+     * validation error message to the console.
+     *
+     * @param textIO TextIO
+     * @return true if all required fields have been specified, false otherwise
+     */
+    private boolean validateFields(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
+        if (selectedDischargeStatus == null) {
+            terminal.println("\nDischarge status is required.\n");
+            return false;
+        }
+
+        if (selectedDischargeStatus == DischargeStatus.REFERRED && referralStatus == null) {
+            terminal.println("\nReferral status is required since the discharge status is \"Referred\"\n");
+            return false;
+        }
+
+        if (StringUtils.isBlank(treatment)) {
+            terminal.println("\nTreatment description is required.\n");
+            return false;
+        }
+
+        return true;
     }
 
     /**

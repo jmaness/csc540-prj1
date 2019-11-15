@@ -9,16 +9,13 @@ public class Service {
     private String code;
     private String name;
     private Set<Equipment> equipment;
-    private Set<String> bodyPartCodes;
 
     public Service(@ColumnName("code") String code,
                    @ColumnName("name") String name,
-                   @Nullable Set<Equipment> equipment,
-                   @Nullable Set<String> bodyPartCodes) {
+                   @Nullable Set<Equipment> equipment) {
         this.code = code;
         this.name = name;
         this.equipment = equipment;
-        this.bodyPartCodes = bodyPartCodes;
     }
 
     public String getCode() {
@@ -33,7 +30,7 @@ public class Service {
         return equipment;
     }
 
-    public Set<String> getBodyPartCodes() {
-        return bodyPartCodes;
+    public String getDisplayString() {
+        return code + " " + name;
     }
 }

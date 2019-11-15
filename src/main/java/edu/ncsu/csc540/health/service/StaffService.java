@@ -46,6 +46,10 @@ public class StaffService {
         return staff;
     }
 
+    public Staff findById(Integer staffId) {
+        return staffDAO.findById(staffId);
+    }
+
     public List<Staff> findAllMedicalStaffByFacility(Integer facilityId) {
         return staffDAO.findAllMedicalStaffByFacility(facilityId);
     }

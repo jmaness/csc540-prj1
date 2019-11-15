@@ -1,2 +1,1 @@
-insert into patient_checkins (id, patient_id, start_time, end_time) values (2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-insert into priority_lists (checkin_id, priority, start_time, end_time) values (2, 'Low', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+

@@ -92,13 +92,13 @@ public class PatientService {
     }
 
     @Transactional
-    public List<Patient> findAllPriorityPatients() {
-        return patientDAO.findAllPriorityPatients();
+    public List<Patient> findAllPriorityPatients(Integer facilityId) {
+        return patientDAO.findAllPriorityPatients(facilityId);
     }
 
     @Transactional
-    public List<Patient> findAllVitalsPatients() {
-        return patientDAO.findAllVitalsPatients();
+    public List<Patient> findAllVitalsPatients(Integer facilityId) {
+        return patientDAO.findAllVitalsPatients(facilityId);
     }
 
     @Transactional

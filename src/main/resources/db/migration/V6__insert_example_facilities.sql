@@ -8,17 +8,17 @@ insert into services (code, name) values ('VIS01', 'Vision');
 insert into services (code, name) values ('OTS01', 'Other');
 
 insert into addresses (id, num, street, city, state, country) values (1, 2650, 'Wolf Village Way Box 7220', 'Raleigh', 'NC', 'US');
-insert into facilities (id, name, capacity, classification_code, address_id) values (1000, 'Wolf Hospital', 300, '03', 1);
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1000, 'CER001', TO_DATE('11/12/1990', 'MM/DD/YYYY'), TO_DATE('11/11/2025', 'MM/DD/YYYY'));
+insert into facilities (name, capacity, classification_code, address_id) values ('Wolf Hospital', 300, '03', 1);
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (2001, 'CER001', TO_DATE('11/12/1990', 'MM/DD/YYYY'), TO_DATE('11/11/2025', 'MM/DD/YYYY'));
 
 insert into addresses (id, num, street, city, state, country) values (2, 2650, '2500 Sacramento', 'Santa Cruz', 'CA', 'US');
-insert into facilities (id, name, capacity, classification_code, address_id) values (1001, 'California Health Care', 150, '02', 2);
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1001, 'CER002', TO_DATE('05/09/2011', 'MM/DD/YYYY'), TO_DATE('02/08/2024', 'MM/DD/YYYY'));
+insert into facilities (name, capacity, classification_code, address_id) values ('California Health Care', 150, '02', 2);
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (2002, 'CER002', TO_DATE('05/09/2011', 'MM/DD/YYYY'), TO_DATE('02/08/2024', 'MM/DD/YYYY'));
 
 insert into addresses (id, num, street, city, state, country) values (3, 489, 'First Avenue', 'New York', 'NY', 'US');
-insert into facilities (id, name, capacity, classification_code, address_id) values (1002, 'Suny Medical Center', 10, '01', 3);
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'CER002', TO_DATE('05/09/2011', 'MM/DD/YYYY'), TO_DATE('02/08/2024', 'MM/DD/YYYY'));
-insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (1002, 'CER003', TO_DATE('01/01/2018', 'MM/DD/YYYY'), TO_DATE('12/31/2028', 'MM/DD/YYYY'));
+insert into facilities (name, capacity, classification_code, address_id) values ('Suny Medical Center', 10, '01', 3);
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (2003, 'CER002', TO_DATE('05/09/2011', 'MM/DD/YYYY'), TO_DATE('02/08/2024', 'MM/DD/YYYY'));
+insert into facility_certifications (facility_id, certification_acronym, certification_date, expiration_date) values (2003, 'CER003', TO_DATE('01/01/2018', 'MM/DD/YYYY'), TO_DATE('12/31/2028', 'MM/DD/YYYY'));
 
 insert into body_parts (code, name) values ('ARM000', 'Left Arm');
 insert into body_parts (code, name) values ('ARM001', 'Right Arm');
@@ -29,12 +29,12 @@ insert into body_parts (code, name) values ('CST000', 'Chest');
 insert into body_parts (code, name) values ('HED000', 'Head');
 insert into body_parts (code, name) values ('NON000', 'None');
 
-insert into departments (code, name, type, facility_id) values ('GP000', 'General Practice department', 'medical', 1000);
-insert into departments (code, name, type, facility_id) values ('OP000', 'Optometry', 'medical', 1000);
-insert into departments (code, name, type, facility_id) values ('SE000', 'Security', 'non-medical', 1000);
-insert into departments (code, name, type, facility_id) values ('ER000', 'Emergency room', 'medical', 1001);
-insert into departments (code, name, type, facility_id) values ('GP001', 'General Practice department', 'medical', 1001);
-insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'medical', 1002);
+insert into departments (code, name, type, facility_id) values ('GP000', 'General Practice department', 'medical', 2001);
+insert into departments (code, name, type, facility_id) values ('OP000', 'Optometry', 'medical', 2001);
+insert into departments (code, name, type, facility_id) values ('SE000', 'Security', 'non-medical', 2001);
+insert into departments (code, name, type, facility_id) values ('ER000', 'Emergency room', 'medical', 2002);
+insert into departments (code, name, type, facility_id) values ('GP001', 'General Practice department', 'medical', 2002);
+insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'medical', 2003);
 
 insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'EYE000');
 insert into department_services (department_code, service_code) values ('ER000', 'SER01');

@@ -83,16 +83,16 @@ public interface PatientDAO {
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
             "from patients p, addresses a, patient_checkins c, priority_lists r " +
-            "where p.address_id = a.id and p.id = c.patient_id and r.checkin_id = c.id")
+            "where p.address_id = a.id and p.id = c.patient_id and r.checkin_id = c.id and p.facility_id = :facility_id")
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
-    List<Patient> findAllPriorityPatients();
+    List<Patient> findAllPriorityPatients(@Bind("facility_id") Integer facilityId);
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
             "from patients p, addresses a, patient_checkins c " +
-            "where p.address_id = a.id and p.id = c.patient_id and c.end_time is null")
+            "where p.address_id = a.id and p.id = c.patient_id and c.end_time is null and p.facility_id = :facility_id")
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
-    List<Patient> findAllVitalsPatients();
+    List<Patient> findAllVitalsPatients(@Bind("facility_id") Integer facilityId);
 
     @SqlQuery("select s.code s_code, s.name s_name, " +
             "c.id sc_id, c.name sc_name, " +

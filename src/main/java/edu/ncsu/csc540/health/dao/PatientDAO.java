@@ -4,6 +4,7 @@ import edu.ncsu.csc540.health.model.CheckInSymptom;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
 import edu.ncsu.csc540.health.model.PatientVitals;
+import edu.ncsu.csc540.health.model.Priority;
 import edu.ncsu.csc540.health.model.Symptom;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -30,13 +31,13 @@ public interface PatientDAO {
     @SqlUpdate("insert into patients (facility_id, first_name, last_name, dob, address_id, phone) " +
                "values (:facilityId, :firstName, :lastName, :dob, :address.id, :phone)")
     @GetGeneratedKeys("id")
-    Integer create(@BindBean Patient patient);
+    Integer createPatient(@BindBean Patient patient);
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
             "from patients p, addresses a where p.id = :id and p.address_id = a.id")
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
-    Patient findById(@Bind("id") Integer id);
+    Patient findPatientById(@Bind("id") Integer id);
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +

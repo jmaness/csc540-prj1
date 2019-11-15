@@ -18,6 +18,7 @@ import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class PatientCheckoutAcknowledgementPage implements Action {
     private final PatientService patientService;
@@ -69,11 +70,12 @@ public class PatientCheckoutAcknowledgementPage implements Action {
         terminal.println(String.format("Discharge status: %s", outcomeReport.getDischargeStatus().getLabel()));
 
         if (outcomeReport.getDischargeStatus() == DischargeStatus.REFERRED) {
-            Facility facility = facilityService.findById(outcomeReport.getReferralStatus().getFacilityId());
+            Optional<Facility> facility = Optional.ofNullable(outcomeReport.getReferralStatus().getFacilityId())
+                    .map(facilityService::findById);
             Staff referrer = staffService.findById(outcomeReport.getReferralStatus().getStaffId());
 
             terminal.println("Referral Status:");
-            terminal.println(String.format("    Facility: %s", facility.getName()));
+            terminal.println(String.format("    Facility: %s", facility.map(Facility::getName).orElse("None")));
             terminal.println(String.format("    Referrer: %s", referrer.getDisplayString()));
             terminal.println("    Reasons:");
 
@@ -99,6 +101,7 @@ public class PatientCheckoutAcknowledgementPage implements Action {
 
     private Action acknowledge(TextIO textIO) {
         patientService.acknowledgeOutcomeReport(patientCheckIn.getId());
+        textIO.getTextTerminal().println("\nYou have successfully acknowledged the Patient Outcome Report.");
         return patientRoutingPage;
     }
 
@@ -107,6 +110,8 @@ public class PatientCheckoutAcknowledgementPage implements Action {
                 .withMaxLength(1000)
                 .read("\nReason");
         patientService.rejectOutcomeReport(patientCheckIn.getId(), reason);
+
+        textIO.getTextTerminal().println("\nYou have successfully acknowledged concerns regarding the Patient Outcome Report.");
         return patientRoutingPage;
     }
 }

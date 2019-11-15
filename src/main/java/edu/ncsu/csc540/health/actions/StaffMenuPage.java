@@ -4,7 +4,6 @@ import com.google.inject.assistedinject.Assisted;
 import edu.ncsu.csc540.health.model.AssessmentRule;
 import edu.ncsu.csc540.health.model.AssessmentSymptom;
 import edu.ncsu.csc540.health.model.BodyPart;
-import edu.ncsu.csc540.health.model.CheckInSymptom;
 import edu.ncsu.csc540.health.model.Operation;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
@@ -173,75 +172,10 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm & Record", (TextIO tio) -> {
                             PatientCheckIn checkIn = patientService.findActivePatientCheckIn(selectedPatient);
-                            patientService.addPatientVitals(new PatientVitals(checkIn.getId(),
+                            Priority priority = patientService.confirmPatientVitals(new PatientVitals(checkIn.getId(),
                                     temperature,
                                     systolicBP,
                                     diastolicBP));
-                            patientService.updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
-
-                            List<AssessmentRule> rules = assessmentRuleService.findAllAssessmentRules();
-                            List<CheckInSymptom> symptoms = checkIn.getSymptoms();
-
-                            List<AssessmentRule> applicableRules = new ArrayList<>();
-
-                            for (AssessmentRule rule : rules) {
-                                List<AssessmentSymptom> aSymptoms = rule.getAssessmentSymptoms();
-                                boolean ruleMatched = true;
-
-                                for (AssessmentSymptom aSymptom : aSymptoms) {
-                                    boolean symptomMatched = false;
-
-                                    for (CheckInSymptom symptom : symptoms) {
-                                        if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode())) {
-                                            Operation operation = aSymptom.getOperation();
-
-                                            switch (operation) {
-                                                case LESS_THAN:
-                                                    if (symptom.getSeverityScaleValueId() < aSymptom.getSeverityScaleValue().getId())
-                                                        symptomMatched = true;
-                                                    break;
-                                                case LESS_THAN_EQUAL_TO:
-                                                    if (symptom.getSeverityScaleValueId() <= aSymptom.getSeverityScaleValue().getId())
-                                                        symptomMatched = true;
-                                                    break;
-                                                case EQUAL_TO:
-                                                    if (symptom.getSeverityScaleValueId() == aSymptom.getSeverityScaleValue().getId())
-                                                        symptomMatched = true;
-                                                    break;
-                                                case GREATER_THAN_EQUAL_TO:
-                                                    if (symptom.getSeverityScaleValueId() >= aSymptom.getSeverityScaleValue().getId())
-                                                        symptomMatched = true;
-                                                    break;
-                                                case GREATER_THAN:
-                                                    if (symptom.getSeverityScaleValueId() > aSymptom.getSeverityScaleValue().getId())
-                                                        symptomMatched = true;
-                                                    break;
-                                                default:
-                                                    //Oh god what have you done
-                                                    break;
-                                            }
-
-                                            if (symptomMatched)
-                                                break;
-                                        }
-                                    }
-
-                                    if (!symptomMatched) {
-                                        ruleMatched = false;
-                                        break;
-                                    }
-                                }
-
-                                if (ruleMatched)
-                                    applicableRules.add(rule);
-                            }
-
-                            Priority priority = Priority.NORMAL;
-
-                            for (AssessmentRule rule : applicableRules)
-                                priority = priority.ordinal() >= rule.getPriority().ordinal() ? priority : rule.getPriority();
-
-                            patientService.addPatientToPriorityList(checkIn, priority, new Timestamp(System.currentTimeMillis()));
 
                             terminal.println("...Success!");
                             terminal.println("The patient's check-in has been completed, and has been giving the following priority: " + priority.toString());
@@ -265,7 +199,7 @@ public class StaffMenuPage implements Action {
 
         Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
                 .withNumberedPossibleValues(patients)
-                .withValueFormatter(Patient::getFirstName)
+                .withValueFormatter(Patient::getDisplayString)
                 .read("Please select a patient to treat: ");
 
         boolean treatable = false;

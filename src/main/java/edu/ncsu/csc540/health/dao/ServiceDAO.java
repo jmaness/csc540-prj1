@@ -39,6 +39,15 @@ public interface ServiceDAO {
     @UseRowReducer(ServiceRowReducer.class)
     List<Service> findAllServicesByFacilityId(@Bind("facilityId") Integer facilityId);
 
+    @SqlQuery("select s.code s_code, s.name s_name, se.name se_name " +
+            "from services s " +
+            "    left outer join service_equipment se " +
+            "        on s.code = se.service_code ")
+    @RegisterConstructorMapper(value = Service.class, prefix = "s")
+    @RegisterConstructorMapper(value = Equipment.class, prefix = "se")
+    @UseRowReducer(ServiceRowReducer.class)
+    List<Service> findAllServices();
+
     class ServiceRowReducer implements LinkedHashMapRowReducer<String, Service> {
 
         @Override

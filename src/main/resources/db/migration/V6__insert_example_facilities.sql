@@ -38,6 +38,14 @@ insert into departments (code, name, type, facility_id) values ('ER001', 'Emerge
 
 insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'EYE000');
 insert into departments_body_parts (department_code, body_part_code) values ('GP001', 'HED000');
+
+insert into departments_body_parts (department_code, body_part_code) values ('GP000', 'NON000');
+insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'NON000');
+insert into departments_body_parts (department_code, body_part_code) values ('SE000', 'NON000');
+insert into departments_body_parts (department_code, body_part_code) values ('ER000', 'NON000');
+insert into departments_body_parts (department_code, body_part_code) values ('GP001', 'NON000');
+insert into departments_body_parts (department_code, body_part_code) values ('ER001', 'NON000');
+
 insert into department_services (department_code, service_code) values ('ER000', 'SER01');
 insert into department_services (department_code, service_code) values ('ER000', 'OTS01');
 insert into department_services (department_code, service_code) values ('GP000', 'SGP01');

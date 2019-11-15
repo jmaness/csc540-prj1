@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class StaffPatientReportPage implements Action {
     private final Staff staff;
@@ -117,9 +119,14 @@ public class StaffPatientReportPage implements Action {
 
     private Action selectFacility(TextIO textIO) {
         List<Facility> facilities = facilityService.findAllFacilities();
-        Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
-                .withNumberedPossibleValues(facilities)
-                .withValueFormatter(Facility::getName)
+        List<Optional<Facility>> facilityOptions = facilities.stream()
+                .map(Optional::of)
+                .collect(Collectors.toList());
+        facilityOptions.add(Optional.empty());
+
+        Optional<Facility> selectedFacility = textIO.<Optional<Facility>>newGenericInputReader(null)
+                .withNumberedPossibleValues(facilityOptions)
+                .withValueFormatter(f -> f.map(Facility::getName).orElse("None"))
                 .read("\nFacility:");
 
         if (referralStatus == null) {
@@ -128,7 +135,7 @@ public class StaffPatientReportPage implements Action {
 
         referralStatus = new ReferralStatus(
                 referralStatus.getCheckInId(),
-                selectedFacility.getId(),
+                selectedFacility.map(Facility::getId).orElse(null),
                 referralStatus.getStaffId(),
                 referralStatus.getReasons());
 
@@ -165,7 +172,13 @@ public class StaffPatientReportPage implements Action {
                 .withMaxLength(2000)
                 .read("Description");
 
-        List<Service> services = facilityService.findAllServicesByFacility(referralStatus.getFacilityId());
+        List<Service> services;
+
+        if (referralStatus.getFacilityId() != null) {
+            services = facilityService.findAllServicesByFacility(referralStatus.getFacilityId());
+        } else {
+            services = facilityService.findAllServices();
+        }
 
         Service service = textIO.<Service>newGenericInputReader(null)
                 .withNumberedPossibleValues(services)
@@ -242,7 +255,9 @@ public class StaffPatientReportPage implements Action {
             Staff referrer = staffService.findById(referralStatus.getStaffId());
 
             terminal.println("Referral Status:");
-            terminal.println(String.format("    Facility: %s", facility.getName()));
+            terminal.println(String.format("    Facility: %s", Optional.ofNullable(facility)
+                    .map(Facility::getName)
+                    .orElse("None")));
             terminal.println(String.format("    Referrer: %s", referrer.getDisplayString()));
             terminal.println("    Reasons:");
 

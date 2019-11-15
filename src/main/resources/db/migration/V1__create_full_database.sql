@@ -171,9 +171,6 @@ CREATE TABLE patient_checkins (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP,
     active NUMBER(1) DEFAULT 1 NOT NULL,
-    temperature INTEGER CHECK (temperature > 0),
-    bp_systolic INTEGER CHECK (bp_systolic > 0),
-    bp_diastolic INTEGER CHECK (bp_diastolic > 0),
     PRIMARY KEY (id),
     FOREIGN KEY (patient_id) REFERENCES patients (id)
 );
@@ -199,7 +196,7 @@ CREATE TABLE checkin_symptoms (
     reoccurring NUMBER(1) NOT NULL,
     incident VARCHAR2(1000),
     PRIMARY KEY (checkin_id, symptom_code),
-    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
+    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id) ON DELETE CASCADE,
     FOREIGN KEY (symptom_code) REFERENCES symptoms (code),
     FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
     FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values (id),
@@ -219,9 +216,9 @@ CREATE TABLE outcome_reports (
     CONSTRAINT treatment_not_empty
     CHECK (treatment <> ''),
 	CONSTRAINT check_discharge
-    CHECK (discharge_status = 'Treated Successfully'
-        OR discharge_status = 'Referred'
-        OR discharge_status = 'Deceased')
+    CHECK (discharge_status = 'TREATED_SUCCESSFULLY'
+        OR discharge_status = 'REFERRED'
+        OR discharge_status = 'DECEASED')
 );
 
 CREATE TABLE negative_experiences (
@@ -231,7 +228,7 @@ CREATE TABLE negative_experiences (
     PRIMARY KEY (checkin_id, code),
     FOREIGN KEY (checkin_id) REFERENCES outcome_reports (checkin_id),
     CONSTRAINT check_code
-    CHECK (code = '1' OR code = '2')
+    CHECK (code = 'MISDIAGNOSIS' OR code = 'ACQUIRED_INFECTION')
 );
 
 CREATE TABLE priority_lists (
@@ -286,7 +283,7 @@ CREATE TABLE referral_reasons (
     FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
     FOREIGN KEY (service_code) REFERENCES services (code),
     CONSTRAINT check_ref_code
-    CHECK (code = '1' OR code = '2' OR code = '3')
+    CHECK (code = 'SERVICE_UNAVAILABLE' OR code = 'SERVICE_NOT_PRESENT_AT_FACILITY' OR code = 'NONPAYMENT')
 );
 
 CREATE TABLE patient_vitals (

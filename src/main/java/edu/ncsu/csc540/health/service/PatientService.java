@@ -5,8 +5,11 @@ import edu.ncsu.csc540.health.dao.AddressDAO;
 import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
 import edu.ncsu.csc540.health.model.Address;
+import edu.ncsu.csc540.health.model.AssessmentRule;
+import edu.ncsu.csc540.health.model.AssessmentSymptom;
 import edu.ncsu.csc540.health.model.CheckInSymptom;
 import edu.ncsu.csc540.health.model.DischargeStatus;
+import edu.ncsu.csc540.health.model.Operation;
 import edu.ncsu.csc540.health.model.OutcomeReport;
 import edu.ncsu.csc540.health.model.Patient;
 import edu.ncsu.csc540.health.model.PatientCheckIn;
@@ -20,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -27,12 +31,14 @@ public class PatientService {
     private final AddressDAO addressDAO;
     private final PatientDAO patientDAO;
     private final OutcomeReportDAO outcomeReportDAO;
+    private AssessmentRuleService assessmentRuleService;
 
     @Inject
-    public PatientService(Jdbi jdbi) {
-        addressDAO = jdbi.onDemand(AddressDAO.class);
-        patientDAO = jdbi.onDemand(PatientDAO.class);
-        outcomeReportDAO = jdbi.onDemand(OutcomeReportDAO.class);
+    public PatientService(Jdbi jdbi, AssessmentRuleService assessmentRuleService) {
+        this.addressDAO = jdbi.onDemand(AddressDAO.class);
+        this.patientDAO = jdbi.onDemand(PatientDAO.class);
+        this.outcomeReportDAO = jdbi.onDemand(OutcomeReportDAO.class);
+        this.assessmentRuleService = assessmentRuleService;
     }
 
     @Transactional
@@ -42,7 +48,7 @@ public class PatientService {
         Address address = addressDAO.findById(addressId);
 
         // Store the patient referencing the new address
-        int patientId = patientDAO.create(new Patient(null,
+        int patientId = patientDAO.createPatient(new Patient(null,
                 patient.getFacilityId(),
                 patient.getFirstName(),
                 patient.getLastName(),
@@ -50,7 +56,7 @@ public class PatientService {
                 address,
                 patient.getPhone()));
 
-        return patientDAO.findById(patientId);
+        return patientDAO.findPatientById(patientId);
     }
 
     @Transactional
@@ -153,10 +159,6 @@ public class PatientService {
         patientDAO.updatePriorityListEndTime(checkInId, endTime);
     }
 
-    public List<Patient> getPatientPriorityList() {
-        return patientDAO.getPatientPriorityList();
-    }
-
     public Integer findPriorityListCheckInId(Integer patientId) {
         return patientDAO.findPriorityListCheckInId(patientId);
     }
@@ -165,7 +167,77 @@ public class PatientService {
         patientDAO.addPatientToPriorityList(checkIn.getId(), priority, timestamp);
     }
 
-    public void addPatientVitals(PatientVitals vitals) {
+    @Transactional
+    public Priority confirmPatientVitals(PatientVitals vitals) {
+        PatientCheckIn checkIn = patientDAO.findCheckInById(vitals.getCheckInId());
+        Patient selectedPatient = patientDAO.findPatientById(checkIn.getPatientId());
+
         patientDAO.addPatientVitals(vitals);
+        updateCheckInEndtime(selectedPatient, new Timestamp(System.currentTimeMillis()));
+
+        List<AssessmentRule> rules = assessmentRuleService.findAllAssessmentRules();
+        List<CheckInSymptom> symptoms = checkIn.getSymptoms();
+
+        List<AssessmentRule> applicableRules = new ArrayList<>();
+
+        for (AssessmentRule rule : rules) {
+            List<AssessmentSymptom> aSymptoms = rule.getAssessmentSymptoms();
+            boolean ruleMatched = true;
+
+            for (AssessmentSymptom aSymptom : aSymptoms) {
+                boolean symptomMatched = false;
+
+                for (CheckInSymptom symptom : symptoms) {
+                    if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode())) {
+                        Operation operation = aSymptom.getOperation();
+
+                        switch (operation) {
+                            case LESS_THAN:
+                                if (symptom.getSeverityScaleValueId() < aSymptom.getSeverityScaleValue().getId())
+                                    symptomMatched = true;
+                                break;
+                            case LESS_THAN_EQUAL_TO:
+                                if (symptom.getSeverityScaleValueId() <= aSymptom.getSeverityScaleValue().getId())
+                                    symptomMatched = true;
+                                break;
+                            case EQUAL_TO:
+                                if (symptom.getSeverityScaleValueId() == aSymptom.getSeverityScaleValue().getId())
+                                    symptomMatched = true;
+                                break;
+                            case GREATER_THAN_EQUAL_TO:
+                                if (symptom.getSeverityScaleValueId() >= aSymptom.getSeverityScaleValue().getId())
+                                    symptomMatched = true;
+                                break;
+                            case GREATER_THAN:
+                                if (symptom.getSeverityScaleValueId() > aSymptom.getSeverityScaleValue().getId())
+                                    symptomMatched = true;
+                                break;
+                            default:
+                                //Oh god what have you done
+                                break;
+                        }
+
+                        if (symptomMatched)
+                            break;
+                    }
+                }
+
+                if (!symptomMatched) {
+                    ruleMatched = false;
+                    break;
+                }
+            }
+
+            if (ruleMatched)
+                applicableRules.add(rule);
+        }
+
+        Priority priority = Priority.NORMAL;
+
+        for (AssessmentRule rule : applicableRules)
+            priority = priority.ordinal() >= rule.getPriority().ordinal() ? priority : rule.getPriority();
+
+        addPatientToPriorityList(checkIn, priority, new Timestamp(System.currentTimeMillis()));
+        return priority;
     }
 }

@@ -36,4 +36,8 @@ public class FacilityService {
     public List<Service> findAllServicesByFacility(Integer facilityId) {
         return serviceDAO.findAllServicesByFacilityId(facilityId);
     }
+
+    public List<Service> findAllServices() {
+        return serviceDAO.findAllServices();
+    }
 }

@@ -298,3 +298,18 @@ CREATE TABLE patient_vitals (
     CONSTRAINT blood_pressure_check
     CHECK (0 < systolic_blood_pressure AND 0 < diastolic_blood_pressure)
 );
+
+CREATE OR REPLACE TRIGGER referral_reasons_count_check
+    BEFORE INSERT OR UPDATE ON referral_reasons
+    FOR EACH ROW
+DECLARE
+    reason_count number;
+BEGIN
+    SELECT COUNT(*) INTO reason_count FROM referral_reasons WHERE checkin_id = :new.checkin_id;
+
+    IF (reason_count >= 4)
+    THEN
+        RAISE_APPLICATION_ERROR( -20001,
+                                 'Maximum number of allowed referral reasons exceeded');
+    END IF;
+END;

@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -164,7 +165,22 @@ public class StaffPatientReportPage implements Action {
     }
 
     private Action addReferralStatusReason(TextIO textIO) {
-        ReferralReasonCode reasonCode = textIO.newEnumInputReader(ReferralReasonCode.class)
+        TextTerminal<?> terminal = textIO.getTextTerminal();
+
+        if (referralStatus != null && referralStatus.getReasons().size() > 4) {
+            terminal.println("At most four (4) reasons are allowed.");
+            return this::addReferralStatus;
+        }
+
+        List<ReferralReasonCode> reasonCodes = Arrays.stream(ReferralReasonCode.values())
+                .filter(code -> Optional.ofNullable(referralStatus.getReasons())
+                        .orElse(Collections.emptyList()).stream()
+                        .map(ReferralReason::getCode)
+                        .noneMatch(reasonCode -> reasonCode.equals(code)))
+                .collect(Collectors.toList());
+
+        ReferralReasonCode reasonCode = textIO.<ReferralReasonCode>newGenericInputReader(null)
+                .withNumberedPossibleValues(reasonCodes)
                 .withValueFormatter(ReferralReasonCode::getLabel)
                 .read("Reason code");
 

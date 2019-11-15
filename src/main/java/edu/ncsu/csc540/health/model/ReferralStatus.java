@@ -10,7 +10,6 @@ public class ReferralStatus {
     private Integer checkInId;
     private Integer facilityId;
     private Integer staffId;
-    private String treatment;
     private List<ReferralReason> reasons;
 
     public ReferralStatus(@ColumnName("checkin_id") Integer checkInId,

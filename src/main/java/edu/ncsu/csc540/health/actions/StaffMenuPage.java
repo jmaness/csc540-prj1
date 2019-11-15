@@ -1,12 +1,23 @@
 package edu.ncsu.csc540.health.actions;
 
 import com.google.inject.assistedinject.Assisted;
-import com.google.inject.internal.cglib.proxy.$Dispatcher;
-import edu.ncsu.csc540.health.model.*;
+import edu.ncsu.csc540.health.model.AssessmentRule;
+import edu.ncsu.csc540.health.model.AssessmentSymptom;
+import edu.ncsu.csc540.health.model.BodyPart;
+import edu.ncsu.csc540.health.model.CheckInSymptom;
+import edu.ncsu.csc540.health.model.Operation;
+import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.PatientVitals;
+import edu.ncsu.csc540.health.model.Priority;
+import edu.ncsu.csc540.health.model.SeverityScale;
+import edu.ncsu.csc540.health.model.SeverityScaleValue;
+import edu.ncsu.csc540.health.model.Staff;
+import edu.ncsu.csc540.health.model.Symptom;
 import edu.ncsu.csc540.health.service.AssessmentRuleService;
 import edu.ncsu.csc540.health.service.PatientService;
-import edu.ncsu.csc540.health.service.SymptomService;
 import edu.ncsu.csc540.health.service.SeverityScaleService;
+import edu.ncsu.csc540.health.service.SymptomService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
@@ -161,7 +172,7 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm & Record", (TextIO tio) -> {
-                            PatientCheckIn checkIn = patientService.findCheckInByPatient(selectedPatient);
+                            PatientCheckIn checkIn = patientService.findActivePatientCheckIn(selectedPatient);
                             patientService.addPatientVitals(new PatientVitals(checkIn.getId(),
                                     temperature,
                                     systolicBP,

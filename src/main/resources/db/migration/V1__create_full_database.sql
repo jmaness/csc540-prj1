@@ -12,6 +12,7 @@ CREATE TABLE addresses (
     street VARCHAR2(100) NOT NULL CHECK (street <> ''),
     city VARCHAR2(100) NOT NULL CHECK (city <> ''),
     state VARCHAR2(100) NOT NULL CHECK (state <> ''),
+	  zip VARCHAR2(100),
     country VARCHAR2(100) NOT NULL CHECK (country <> ''),
     PRIMARY KEY (id),
     CONSTRAINT check_num

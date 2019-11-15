@@ -1,6 +1,10 @@
 package edu.ncsu.csc540.health.dao;
 
-import edu.ncsu.csc540.health.model.*;
+import edu.ncsu.csc540.health.model.CheckInSymptom;
+import edu.ncsu.csc540.health.model.Patient;
+import edu.ncsu.csc540.health.model.PatientCheckIn;
+import edu.ncsu.csc540.health.model.PatientVitals;
+import edu.ncsu.csc540.health.model.Symptom;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -58,27 +62,11 @@ public interface PatientDAO {
     @UseRowReducer(PatientCheckInRowReducer.class)
     PatientCheckIn findCheckInById(@Bind("id") int id);
 
-    @SqlQuery(FIND_CHECKINS +
-            "left outer join outcome_reports r " +
-            "    on c.id = r.checkin_id " +
-            "where c.patient_id = :patientId and r.out_time is null")
+    @SqlQuery(FIND_CHECKINS + " where c.patient_id = :patientId and c.active = 1")
     @RegisterConstructorMapper(value = PatientCheckIn.class, prefix = "c")
     @RegisterConstructorMapper(value = CheckInSymptom.class, prefix = "cs")
     @UseRowReducer(PatientCheckInRowReducer.class)
     PatientCheckIn findActivePatientCheckin(@Bind("patientId") Integer patientId);
-
-    @SqlQuery("select c.id c_id, c.patient_id c_patient_id, c.start_time c_start_time, c.end_time c_end_time, " +
-            "cs.checkin_id cs_checkin_id, cs.symptom_code cs_symptom_code, cs.body_part_code cs_body_part_code, " +
-            "cs.severity_scale_value_id cs_severity_scale_value_id, cs.duration cs_duration, " +
-            "cs.reoccurring cs_reoccurring, cs.incident cs_incident " +
-            "from patient_checkins c " +
-            "left outer join checkin_symptoms cs " +
-            "  on c.id = cs.checkin_id " +
-            "where c.patient_id = :id and c.end_time is null")
-    @RegisterConstructorMapper(value = PatientCheckIn.class, prefix = "c")
-    @RegisterConstructorMapper(value = CheckInSymptom.class, prefix = "cs")
-    @UseRowReducer(PatientCheckInRowReducer.class)
-    PatientCheckIn findCheckInByPatient(@BindBean Patient patient);
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
@@ -110,14 +98,16 @@ public interface PatientDAO {
 
     @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
             "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
-            "from patients p, addresses a, patient_checkins pc, priority_lists pl " +
+            "from patients p, addresses a, priority_lists pl, patient_checkins pc " +
+            "    left outer join outcome_reports r on pc.id = r.checkin_id " +
             "where p.address_id = a.id " +
             "    and p.id = pc.patient_id " +
             "    and pc.active = 1 " +
             "    and pc.end_time is not null " +
             "    and pc.id = pl.checkin_id " +
             "    and pl.end_time is not null " +
-            "    and p.facility_id = :facilityId")
+            "    and p.facility_id = :facilityId " +
+            "    and r.out_time is null")
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     List<Patient> getTreatedPatientList(@Bind("facilityId") Integer facilityId);
 
@@ -152,9 +142,6 @@ public interface PatientDAO {
             "values (:checkInId, :temperature, :systolicBloodPressure, :diastolicBloodPressure)")
     void addPatientVitals(@BindBean PatientVitals vitals);
 
-    @SqlQuery("select v.checkin_id v_checkin_id, v.temperature v_temperature, v.systolic_blood_pressure v_systolic_blood_pressure, v.diastolic_blood_pressure, v_diastolic blood pressure " +
-            "from patient_vitals v" +
-            "where v.checkin_id = :checkin_id")
-    @RegisterConstructorMapper(value = PatientVitals.class, prefix = "v")
-    PatientVitals findPatientVitalsByCheckIn(@Bind("checkin_id") Integer checkInId);
+    @SqlUpdate("update patient_checkins set active = 0 where id = :checkInId")
+    void setVisitComplete(@Bind("checkInId") Integer checkInId);
 }

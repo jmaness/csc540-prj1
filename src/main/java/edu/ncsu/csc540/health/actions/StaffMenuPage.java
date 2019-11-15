@@ -136,7 +136,7 @@ public class StaffMenuPage implements Action {
     private Action enterVitals(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        List<Patient> patients = patientService.findAllVitalsPatients();
+        List<Patient> patients = patientService.findAllVitalsPatients(staff.getFacilityId());
 
         if (patients.isEmpty()) {
             terminal.println("Error: No patients currently waiting for vitals entry.");
@@ -245,7 +245,7 @@ public class StaffMenuPage implements Action {
     private Action treatPatient(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        List<Patient> patients = patientService.findAllPriorityPatients();
+        List<Patient> patients = patientService.findAllPriorityPatients(staff.getFacilityId());
 
         if (patients.isEmpty()) {
             terminal.println("Error: No patients currently waiting for treatment.");
@@ -413,7 +413,7 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
                             assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
-                            terminal.println("\nRule successfully added!\n")
+                            terminal.println("\nRule successfully added!\n");
                             return this;
                         }),
                         Pair.of("Go Back", this)))

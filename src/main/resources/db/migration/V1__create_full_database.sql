@@ -1,26 +1,26 @@
 CREATE TABLE classifications (
     code VARCHAR2(100) NOT NULL,
-    name VARCHAR2(100) NOT NULL,
+    name VARCHAR2(100) NOT NULL CHECK (name <> ''),
     PRIMARY KEY (code),
-    CONSTRAINT check_code
+    CONSTRAINT check_class_code
     CHECK (code = '01' OR code = '02' OR code = '03')
 );
 
 CREATE TABLE addresses (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL CHECK (id > 0),
     num INTEGER NOT NULL,
-    street VARCHAR2(100) NOT NULL,
-    city VARCHAR2(100) NOT NULL,
-    state VARCHAR2(100) NOT NULL,
-    country VARCHAR2(100) NOT NULL,
+    street VARCHAR2(100) NOT NULL CHECK (street <> ''),
+    city VARCHAR2(100) NOT NULL CHECK (city <> ''),
+    state VARCHAR2(100) NOT NULL CHECK (state <> ''),
+    country VARCHAR2(100) NOT NULL CHECK (country <> ''),
     PRIMARY KEY (id),
     CONSTRAINT check_num
     CHECK (0 <= num)
 );
 
 CREATE TABLE facilities (
-    id INTEGER NOT NULL,
-    name VARCHAR2(100) NOT NULL,
+    id INTEGER CHECK (id > 0),
+    name VARCHAR2(100) NOT NULL CHECK (name <> ''),
     capacity INTEGER NOT NULL,
     classification_code VARCHAR2(100) NOT NULL,
     address_id INTEGER NOT NULL,
@@ -33,8 +33,10 @@ CREATE TABLE facilities (
 
 CREATE TABLE certifications (
     acronym VARCHAR2(100) NOT NULL,
-    name VARCHAR2(100) NOT NULL,
-    PRIMARY KEY (acronym)
+    name VARCHAR2(100) NOT NULL CHECK (name <> ''),
+    PRIMARY KEY (acronym),
+    CONSTRAINT check_acronym_alphanum
+    CHECK (regexp_like(acronym,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE facility_certifications (
@@ -49,21 +51,21 @@ CREATE TABLE facility_certifications (
 
 CREATE TABLE departments (
     code VARCHAR2(100) NOT NULL,
-    name VARCHAR2(100) NOT NULL,
+    name VARCHAR2(100) NOT NULL CHECK (name <> ''),
     type VARCHAR2(100) NOT NULL,
     facility_id INTEGER NOT NULL,
     PRIMARY KEY (code),
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
     CONSTRAINT check_type
     CHECK (type = 'Medical' OR type = 'Non-medical'),
-    CONSTRAINT check_code_alphanum
+    CONSTRAINT check_dept_alphanum
     CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE staff (
-    id INTEGER NOT NULL,
-    first_name VARCHAR2(100) NOT NULL,
-    last_name VARCHAR2(100) NOT NULL,
+    id INTEGER NOT NULL CHECK (id > 0),
+    first_name VARCHAR2(100) NOT NULL CHECK (first_name <> ''),
+    last_name VARCHAR2(100) NOT NULL CHECK (last_name <> ''),
     designation VARCHAR2(100) NOT NULL,
     hire_date DATE NOT NULL,
     address_id INTEGER NOT NULL,
@@ -96,7 +98,9 @@ CREATE TABLE staff_secondary_departments (
 CREATE TABLE services (
     code varchar2(100) NOT NULL,
     name varchar2(100) NOT NULL,
-    PRIMARY KEY (code)
+    PRIMARY KEY (code),
+    CONSTRAINT check_svc_alphanum
+    CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE department_services (
@@ -109,17 +113,17 @@ CREATE TABLE department_services (
 
 CREATE TABLE service_equipment (
     service_code VARCHAR2(100) NOT NULL,
-    name VARCHAR2(100) NOT NULL,
+    name VARCHAR2(100) NOT NULL CHECK (name <> ''),
     PRIMARY KEY (service_code, name),
     FOREIGN KEY (service_code) REFERENCES services (code)
 );
 
 CREATE TABLE patients (
-    id INTEGER NOT NULL,
-    first_name VARCHAR2(100) NOT NULL,
-    last_name VARCHAR2(100) NOT NULL,
+    id INTEGER NOT NULL CHECK (id > 0),
+    first_name VARCHAR2(100) NOT NULL CHECK (first_name <> ''),
+    last_name VARCHAR2(100) NOT NULL CHECK (last_name <> ''),
     dob DATE NOT NULL,
-    phone VARCHAR2(100) NOT NULL,
+    phone VARCHAR2(100) NOT NULL CHECK (LENGTH(phone) >= 10),
     address_id INTEGER NOT NULL,
     facility_id INTEGER NOT NULL,
     PRIMARY KEY (id),
@@ -130,7 +134,9 @@ CREATE TABLE patients (
 CREATE TABLE body_parts (
     code VARCHAR2(100) NOT NULL,
     name VARCHAR2(100) NOT NULL,
-    PRIMARY KEY (code)
+    PRIMARY KEY (code),
+    CONSTRAINT check_part_alphanum
+    CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE departments_body_parts (
@@ -142,36 +148,36 @@ CREATE TABLE departments_body_parts (
 );
 
 CREATE TABLE severity_scales (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL CHECK (id > 0),
     name VARCHAR2(100) NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE severity_scale_values (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL CHECK (id > 0),
     severity_scale_id INTEGER NOT NULL,
-    name VARCHAR2(100) NOT NULL,
+    name VARCHAR2(100) NOT NULL CHECK (name <> ''),
     ordinal INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id)
 );
 
 CREATE TABLE patient_checkins (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL CHECK (id > 0),
     patient_id INTEGER NOT NULL,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP,
     active NUMBER(1) DEFAULT 1 NOT NULL,
-    temperature INTEGER,
-    bp_systolic INTEGER,
-    bp_diastolic INTEGER,
+    temperature INTEGER CHECK (temperature > 0),
+    bp_systolic INTEGER CHECK (bp_systolic > 0),
+    bp_diastolic INTEGER CHECK (bp_diastolic > 0),
     PRIMARY KEY (id),
     FOREIGN KEY (patient_id) REFERENCES patients (id)
 );
 
 CREATE TABLE symptoms (
     code varchar2(100) NOT NULL,
-	name varchar2(100) NOT NULL,
+    name varchar2(100) NOT NULL CHECK (name <> ''),
 	severity_scale_id INTEGER NOT NULL,
 	body_part_code VARCHAR2(100) NOT NULL,
 	PRIMARY KEY (code),
@@ -186,7 +192,7 @@ CREATE TABLE checkin_symptoms (
     symptom_code VARCHAR2(100) NOT NULL,
     body_part_code VARCHAR2(100) NOT NULL,
     severity_scale_value_id INTEGER NOT NULL,
-    duration INTEGER NOT NULL,
+    duration INTEGER NOT NULL CHECK (duration > 0),
     reoccurring NUMBER(1) NOT NULL,
     incident VARCHAR2(1000),
     PRIMARY KEY (checkin_id, symptom_code),
@@ -208,7 +214,11 @@ CREATE TABLE outcome_reports (
     PRIMARY KEY (checkin_id),
     FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
     CONSTRAINT treatment_not_empty
-    CHECK (treatment <> '')
+    CHECK (treatment <> ''),
+	CONSTRAINT check_discharge
+    CHECK (discharge_status = 'Treated Successfully'
+        OR discharge_status = 'Referred'
+        OR discharge_status = 'Deceased')
 );
 
 CREATE TABLE negative_experiences (
@@ -216,7 +226,9 @@ CREATE TABLE negative_experiences (
     code VARCHAR2(100) NOT NULL,
     description CLOB,
     PRIMARY KEY (checkin_id, code),
-    FOREIGN KEY (checkin_id) REFERENCES outcome_reports (checkin_id)
+    FOREIGN KEY (checkin_id) REFERENCES outcome_reports (checkin_id),
+    CONSTRAINT check_code
+    CHECK (code = '1' OR code = '2')
 );
 
 CREATE TABLE priority_lists (
@@ -231,7 +243,7 @@ CREATE TABLE priority_lists (
 );
 
 CREATE TABLE assessment_rules (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL CHECK (id > 0),
     priority VARCHAR2(100) NOT NULL,
     description CLOB NOT NULL,
     PRIMARY KEY (id),
@@ -269,7 +281,9 @@ CREATE TABLE referral_reasons (
     description CLOB,
     PRIMARY KEY (checkin_id, code, service_code),
     FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
-    FOREIGN KEY (service_code) REFERENCES services (code)
+    FOREIGN KEY (service_code) REFERENCES services (code),
+    CONSTRAINT check_ref_code
+    CHECK (code = '1' OR code = '2' OR code = '3')
 );
 
 CREATE TABLE patient_vitals (

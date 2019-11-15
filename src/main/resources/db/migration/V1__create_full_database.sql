@@ -290,9 +290,13 @@ CREATE TABLE referral_reasons (
 
 CREATE TABLE patient_vitals (
     checkin_id INTEGER NOT NULL,
-    temperature INTEGER NOT NULL,
+    temperature NUMBER NOT NULL,
     systolic_blood_pressure INTEGER NOT NULL,
     diastolic_blood_pressure INTEGER NOT NULL,
     PRIMARY KEY (checkin_id),
-    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id)
+    FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
+    CONSTRAINT temperature_check
+    CHECK (0 < temperature),
+    CONSTRAINT blood_pressure_check
+    CHECK (0 < systolic_blood_pressure AND 0 < diastolic_blood_pressure)
 );

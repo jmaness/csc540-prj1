@@ -29,12 +29,12 @@ insert into body_parts (code, name) values ('CST000', 'Chest');
 insert into body_parts (code, name) values ('HED000', 'Head');
 insert into body_parts (code, name) values ('NON000', 'None');
 
-insert into departments (code, name, type, facility_id) values ('GP000', 'General Practice department', 'medical', 2001);
-insert into departments (code, name, type, facility_id) values ('OP000', 'Optometry', 'medical', 2001);
-insert into departments (code, name, type, facility_id) values ('SE000', 'Security', 'non-medical', 2001);
-insert into departments (code, name, type, facility_id) values ('ER000', 'Emergency room', 'medical', 2002);
-insert into departments (code, name, type, facility_id) values ('GP001', 'General Practice department', 'medical', 2002);
-insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'medical', 2003);
+insert into departments (code, name, type, facility_id) values ('GP000', 'General Practice department', 'Medical', 2001);
+insert into departments (code, name, type, facility_id) values ('OP000', 'Optometry', 'Medical', 2001);
+insert into departments (code, name, type, facility_id) values ('SE000', 'Security', 'Non-medical', 2001);
+insert into departments (code, name, type, facility_id) values ('ER000', 'Emergency room', 'Medical', 2002);
+insert into departments (code, name, type, facility_id) values ('GP001', 'General Practice department', 'Medical', 2002);
+insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'Medical', 2003);
 
 insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'EYE000');
 insert into department_services (department_code, service_code) values ('ER000', 'SER01');

@@ -111,10 +111,31 @@ public interface PatientDAO {
     @RegisterConstructorMapper(value = Patient.class, prefix = "p")
     List<Patient> getTreatedPatientList(@Bind("facilityId") Integer facilityId);
 
+    @SqlUpdate("update priority_lists " +
+            "set end_time = :end_time " +
+            "where checkin_id = :checkin_id")
+    void updatePriorityListEndTime(@Bind("checkin_id") int checkInId,
+                                   @Bind("end_time") Timestamp endTime);
+
+    @SqlUpdate("update patient_checkins set active = 0 where id = :checkInId")
+    void setComplete(@Bind("checkInId") Integer checkInId);
+
+    @SqlQuery("select p.id p_id, p.facility_id p_facility_id, p.first_name p_first_name, p.last_name p_last_name, p.dob p_dob, p.phone p_phone, " +
+            "a.id pa_id, a.num pa_num, a.street pa_street, a.city pa_city, a.state pa_state, a.country pa_country " +
+            "from patients p, addresses a, priority_lists r, patient_checkins c " +
+            "where r.checkin_id = c.id and c.patient_id = p.id and p.address_id = a.id")
+    @RegisterConstructorMapper(value = Patient.class, prefix = "p")
+    List<Patient> getPatientPriorityList();
+
+    @SqlQuery("select r.checkin_id " +
+            "from patient_checkins c, priority_lists r " +
+            "where c.patient_id = :patient_id and r.checkin_id = c.id")
+    Integer findPriorityListCheckInId(@Bind("patient_id") Integer patientId);
+
     @SqlUpdate("insert into priority_lists (checkin_id, priority, start_time) " +
             "values (:checkin_id, :priority, :start_time)")
     void addPatientToPriorityList(@Bind("checkin_id") Integer checkinId,
-                                  @Bind("priority") String priority,
+                                  @Bind("priority") Priority priority,
                                   @Bind("start_time") Timestamp startTime);
 
     @SqlUpdate("insert into patient_vitals (checkin_id, temperature, systolic_blood_pressure, diastolic_blood_pressure) " +

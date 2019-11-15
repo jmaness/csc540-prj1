@@ -149,8 +149,20 @@ public class PatientService {
         return patientDAO.getTreatedPatientList(facilityId);
     }
 
+    public void updatePriorityListEndtime(Integer checkInId, Timestamp endTime) {
+        patientDAO.updatePriorityListEndTime(checkInId, endTime);
+    }
+
+    public List<Patient> getPatientPriorityList() {
+        return patientDAO.getPatientPriorityList();
+    }
+
+    public Integer findPriorityListCheckInId(Integer patientId) {
+        return patientDAO.findPriorityListCheckInId(patientId);
+    }
+
     public void addPatientToPriorityList(PatientCheckIn checkIn, Priority priority, Timestamp timestamp) {
-        patientDAO.addPatientToPriorityList(checkIn.getId(), priority.toString(), timestamp);
+        patientDAO.addPatientToPriorityList(checkIn.getId(), priority, timestamp);
     }
 
     public void addPatientVitals(PatientVitals vitals) {

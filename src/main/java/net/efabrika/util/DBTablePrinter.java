@@ -541,6 +541,14 @@ public class DBTablePrinter {
             } // END of while (rs.next)
 
             /*
+             * Instead of printing an empty table, print a message that there were no results found.
+             */
+            if (rowCount == 0) {
+                writer.println("No results found");
+                return;
+            }
+
+            /*
             At this point we have gone through meta data, get the
             columns and created all Column objects, iterated over the
             ResultSet rows, populated the column values and adjusted

@@ -30,7 +30,7 @@ public interface SeverityScaleDAO {
             "values (:severityScaleId, :name, :ordinal)")
     void createScaleValue(@BindBean SeverityScaleValue scaleValue);
 
-    @SqlUpdate("select * " +
+    @SqlQuery("select * " +
             "from severity_scale_values " +
             "where id = :id")
     @RegisterConstructorMapper(SeverityScaleValue.class)

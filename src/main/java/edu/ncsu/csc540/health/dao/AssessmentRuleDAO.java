@@ -45,7 +45,7 @@ public interface AssessmentRuleDAO {
     @RegisterConstructorMapper(value = BodyPart.class, prefix = "b")
     List<AssessmentRule> findAllAssessmentRules();
 
-    @SqlQuery("select e.rule_id e_rule_id, e.body_part_code re_body_part_code, e.operation e_operation, " +
+    @SqlQuery("select e.rule_id e_rule_id, e.body_part_code e_body_part_code, e.operation e_operation, " +
             "s.code es_code, s.name es_name, " +
             "c.id esc_id, c.name esc_name, " +
             "b.code esb_code, b.name esb_name, " +

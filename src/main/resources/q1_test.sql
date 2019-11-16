@@ -33,3 +33,21 @@ insert into negative_experiences (checkin_id, code, description)
 values (1011, 'MISDIAGNOSIS', 'I do not have cancer');
 insert into negative_experiences (checkin_id, code, description)
 values (1013, 'MISDIAGNOSIS', 'I do not have the flu');
+
+insert into outcome_reports (checkin_id, discharge_status, patient_acknowledged, patient_acknowledge_reason, out_time, treatment)
+values (1001, 'TREATED_SUCCESSFULLY', 1,'because acknowledged',TO_TIMESTAMP('12/12/2011 16:31:29', 'MM/DD/YYYY HH24:MI:SS'), 'Got a test');
+insert into outcome_reports (checkin_id, discharge_status, patient_acknowledged, patient_acknowledge_reason, out_time, treatment)
+values (1002, 'TREATED_SUCCESSFULLY', 1,'because acknowledged',TO_TIMESTAMP('5/16/2014 9:21:14', 'MM/DD/YYYY HH24:MI:SS'), 'Got a test');
+insert into outcome_reports (checkin_id, discharge_status, patient_acknowledged, patient_acknowledge_reason, out_time, treatment)
+values (1003, 'TREATED_SUCCESSFULLY', 1,'because acknowledged',TO_TIMESTAMP('3/25/2016 11:59:59', 'MM/DD/YYYY HH24:MI:SS'), 'Got a test');
+insert into outcome_reports (checkin_id, discharge_status, patient_acknowledged, patient_acknowledge_reason, out_time, treatment)
+values (1004, 'TREATED_SUCCESSFULLY', 1,'because acknowledged',TO_TIMESTAMP('12/26/2018 22:22:22', 'MM/DD/YYYY HH24:MI:SS'), 'Got a test');
+
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1001, 2005, 89001);
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1002, 2005, 89001);
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1003, 2001, 89001);
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1004, 2001, 89001);
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1009, 2001, 89001);
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1011, 2001, 89001);
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1012, 2004, 89001);
+insert into referral_statuses(checkin_id, facility_id, staff_id) values (1013, 2001, 89001);

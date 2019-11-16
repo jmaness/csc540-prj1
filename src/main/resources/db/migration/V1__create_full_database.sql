@@ -1,3 +1,7 @@
+-- noinspection SqlDialectInspectionForFile
+
+-- noinspection SqlNoDataSourceInspectionForFile
+
 CREATE TABLE classifications (
     code VARCHAR2(100) NOT NULL,
     name VARCHAR2(100) NOT NULL CHECK (name <> ''),

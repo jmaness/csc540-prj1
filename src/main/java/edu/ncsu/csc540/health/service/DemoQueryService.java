@@ -94,19 +94,24 @@ public class DemoQueryService {
     }
 
     public void findFacilitiesWithMostNegativeExperiences(ResultSetScanner<Void> scanner) {
-        runQuery(scanner, "SELECT id\n" +
-                "FROM\n" +
-                "    (SELECT f.id id,\n" +
-                "            count(*) AS num_experiences\n" +
-                "     FROM facilities f,\n" +
+        runQuery(scanner, "SELECT f2.id, f2.name\n" +
+                "FROM facilities f2\n" +
+                "WHERE\n" +
+                "  (SELECT id FROM " +
+                "    (SELECT id\n" +
+                "     FROM\n" +
+                "      (SELECT f.id id,\n" +
+                "         count(*) AS num_experiences\n" +
+                "       FROM facilities f,\n" +
                 "          patients p,\n" +
                 "          patient_checkins c,\n" +
                 "          negative_experiences n\n" +
-                "     WHERE f.id = p.facility_id\n" +
-                "       AND p.id = c.patient_id\n" +
-                "       AND c.id = n.checkin_id\n" +
-                "     GROUP BY f.id)\n" +
-                "ORDER BY num_experiences DESC\n");
+                "       WHERE f.id = p.facility_id\n" +
+                "         AND p.id = c.patient_id\n" +
+                "         AND c.id = n.checkin_id\n" +
+                "       GROUP BY f.id)\n" +
+                "  ORDER BY num_experiences DESC)\n" +
+                "  WHERE ROWNUM <= 1) = f2.id");
     }
 
     public void findLongestCheckinPhases(ResultSetScanner<Void> scanner) {

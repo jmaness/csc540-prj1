@@ -3,7 +3,7 @@ CREATE TABLE classifications (
     name VARCHAR2(100) NOT NULL CHECK (name <> ''),
     PRIMARY KEY (code),
     CONSTRAINT check_class_code
-    CHECK (code = '01' OR code = '02' OR code = '03')
+        CHECK (code = '01' OR code = '02' OR code = '03')
 );
 
 CREATE TABLE addresses (
@@ -12,11 +12,11 @@ CREATE TABLE addresses (
     street VARCHAR2(100) NOT NULL CHECK (street <> ''),
     city VARCHAR2(100) NOT NULL CHECK (city <> ''),
     state VARCHAR2(100) NOT NULL CHECK (state <> ''),
-	  zip VARCHAR2(100),
+    zip VARCHAR2(100),
     country VARCHAR2(100) NOT NULL CHECK (country <> ''),
     PRIMARY KEY (id),
     CONSTRAINT check_num
-    CHECK (0 <= num)
+        CHECK (0 <= num)
 );
 
 CREATE TABLE facilities (
@@ -29,27 +29,27 @@ CREATE TABLE facilities (
     FOREIGN KEY (classification_code) REFERENCES classifications (code),
     FOREIGN KEY (address_id) REFERENCES addresses (id),
     CONSTRAINT check_capacity
-    CHECK (0 <= capacity)
+        CHECK (0 <= capacity)
 );
 
-CREATE TABLE certifications (
+CREATE TABLE certificates (
     acronym VARCHAR2(100) NOT NULL,
     name VARCHAR2(100) NOT NULL CHECK (name <> ''),
+    certification_date DATE NOT NULL,
+    expiration_date DATE NOT NULL,
     PRIMARY KEY (acronym),
     CONSTRAINT check_acronym_alphanum
-    CHECK (regexp_like(acronym,'^[a-zA-Z0-9]*$'))
+        CHECK (regexp_like(acronym,'^[a-zA-Z0-9]*$')),
+    CONSTRAINT exp_cert_order_check
+        CHECK (certification_date < expiration_date)
 );
 
 CREATE TABLE facility_certifications (
     facility_id INTEGER NOT NULL,
     certification_acronym VARCHAR2(100) NOT NULL,
-    certification_date DATE NOT NULL,
-    expiration_date DATE NOT NULL,
     PRIMARY KEY (facility_id, certification_acronym),
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
-    FOREIGN KEY (certification_acronym) REFERENCES certifications (acronym),
-    CONSTRAINT exp_cert_order_check
-    CHECK (certification_date < expiration_date)
+    FOREIGN KEY (certification_acronym) REFERENCES certificates (acronym)
 );
 
 CREATE TABLE departments (
@@ -60,9 +60,9 @@ CREATE TABLE departments (
     PRIMARY KEY (code),
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
     CONSTRAINT check_type
-    CHECK (type = 'Medical' OR type = 'Non-medical'),
+        CHECK (type = 'Medical' OR type = 'Non-medical'),
     CONSTRAINT check_dept_alphanum
-    CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
+        CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE staff (
@@ -80,7 +80,7 @@ CREATE TABLE staff (
     FOREIGN KEY (address_id) REFERENCES addresses (id),
     FOREIGN KEY (primary_department_code) REFERENCES departments (code),
     CONSTRAINT designation_check
-    CHECK (designation = 'Medical' OR designation = 'Non-medical')
+        CHECK (designation = 'Medical' OR designation = 'Non-medical')
 );
 
 CREATE TABLE department_directors (
@@ -104,7 +104,7 @@ CREATE TABLE services (
     name varchar2(100) NOT NULL,
     PRIMARY KEY (code),
     CONSTRAINT check_svc_alphanum
-    CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
+        CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE department_services (
@@ -140,7 +140,7 @@ CREATE TABLE body_parts (
     name VARCHAR2(100) NOT NULL,
     PRIMARY KEY (code),
     CONSTRAINT check_part_alphanum
-    CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
+        CHECK (regexp_like(code,'^[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE departments_body_parts (
@@ -179,13 +179,13 @@ CREATE TABLE patient_checkins (
 CREATE TABLE symptoms (
     code varchar2(100) NOT NULL,
     name varchar2(100) NOT NULL CHECK (name <> ''),
-	severity_scale_id INTEGER NOT NULL,
-	body_part_code VARCHAR2(100) NOT NULL,
-	PRIMARY KEY (code),
-	FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
-	FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
+    severity_scale_id INTEGER NOT NULL,
+    body_part_code VARCHAR2(100) NOT NULL,
+    PRIMARY KEY (code),
+    FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
+    FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
     CONSTRAINT check_sys_alphanum
-    CHECK (regexp_like(code,'^SYM[a-zA-Z0-9]*$'))
+        CHECK (regexp_like(code,'^SYM[a-zA-Z0-9]*$'))
 );
 
 CREATE TABLE checkin_symptoms (
@@ -202,7 +202,7 @@ CREATE TABLE checkin_symptoms (
     FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
     FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values (id),
     CONSTRAINT reoccuring_bool
-    CHECK (reoccurring = 0 OR reoccurring = 1)
+        CHECK (reoccurring = 0 OR reoccurring = 1)
 );
 
 CREATE TABLE outcome_reports (
@@ -215,8 +215,8 @@ CREATE TABLE outcome_reports (
     PRIMARY KEY (checkin_id),
     FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
     CONSTRAINT treatment_not_empty
-    CHECK (treatment <> ''),
-	CONSTRAINT check_discharge
+        CHECK (treatment <> ''),
+    CONSTRAINT check_discharge
     CHECK (discharge_status = 'TREATED_SUCCESSFULLY'
         OR discharge_status = 'REFERRED'
         OR discharge_status = 'DECEASED')
@@ -229,7 +229,7 @@ CREATE TABLE negative_experiences (
     PRIMARY KEY (checkin_id, code),
     FOREIGN KEY (checkin_id) REFERENCES outcome_reports (checkin_id),
     CONSTRAINT check_code
-    CHECK (code = 'MISDIAGNOSIS' OR code = 'ACQUIRED_INFECTION')
+        CHECK (code = 'MISDIAGNOSIS' OR code = 'ACQUIRED_INFECTION')
 );
 
 CREATE TABLE priority_lists (
@@ -240,7 +240,7 @@ CREATE TABLE priority_lists (
     PRIMARY KEY (checkin_id),
     FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
     CONSTRAINT priority_check_lists
-    CHECK (priority = 'HIGH' OR priority = 'NORMAL' OR priority = 'QUARANTINE')
+        CHECK (priority = 'HIGH' OR priority = 'NORMAL' OR priority = 'QUARANTINE')
 );
 
 CREATE TABLE assessment_rules (
@@ -249,17 +249,19 @@ CREATE TABLE assessment_rules (
     description CLOB NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT priority_check_rules
-    CHECK (priority = 'HIGH' OR priority = 'NORMAL' OR priority = 'QUARANTINE')
+        CHECK (priority = 'HIGH' OR priority = 'NORMAL' OR priority = 'QUARANTINE')
 );
 
 CREATE TABLE assessment_symptoms(
     rule_id INTEGER NOT NULL,
     symptom_code VARCHAR2(100) NOT NULL,
+    body_part_code VARCHAR2(100),
     severity_scale_value_id INTEGER NOT NULL,
     operation VARCHAR2(100) NOT NULL,
     PRIMARY KEY (rule_id, symptom_code),
     FOREIGN KEY (rule_id) REFERENCES assessment_rules (id),
     FOREIGN KEY (symptom_code) REFERENCES symptoms (code),
+    FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
     FOREIGN KEY (severity_scale_value_id) REFERENCES severity_scale_values (id)
 );
 
@@ -272,7 +274,7 @@ CREATE TABLE referral_statuses (
     FOREIGN KEY (facility_id) REFERENCES facilities (id),
     FOREIGN KEY (staff_id) REFERENCES staff (id),
     CONSTRAINT facility_id_check
-    CHECK (0 <= facility_id OR facility_id = null)
+        CHECK (0 <= facility_id OR facility_id IS NULL)
 );
 
 CREATE TABLE referral_reasons (
@@ -284,7 +286,9 @@ CREATE TABLE referral_reasons (
     FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
     FOREIGN KEY (service_code) REFERENCES services (code),
     CONSTRAINT check_ref_code
-    CHECK (code = 'SERVICE_UNAVAILABLE' OR code = 'SERVICE_NOT_PRESENT_AT_FACILITY' OR code = 'NONPAYMENT')
+        CHECK (code = 'SERVICE_UNAVAILABLE'
+                   OR code = 'SERVICE_NOT_PRESENT_AT_FACILITY'
+                   OR code = 'NONPAYMENT')
 );
 
 CREATE TABLE patient_vitals (
@@ -295,9 +299,9 @@ CREATE TABLE patient_vitals (
     PRIMARY KEY (checkin_id),
     FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
     CONSTRAINT temperature_check
-    CHECK (0 < temperature),
+        CHECK (0 < temperature),
     CONSTRAINT blood_pressure_check
-    CHECK (0 < systolic_blood_pressure AND 0 < diastolic_blood_pressure)
+        CHECK (0 < systolic_blood_pressure AND 0 < diastolic_blood_pressure)
 );
 
 CREATE OR REPLACE TRIGGER referral_reasons_count_check
@@ -314,3 +318,148 @@ BEGIN
                                  'Maximum number of allowed referral reasons exceeded');
     END IF;
 END;
+/
+
+CREATE SEQUENCE address_sequence START WITH 2001;
+
+CREATE OR REPLACE TRIGGER addresses_on_insert
+    BEFORE INSERT ON addresses
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, address_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE patient_sequence START WITH 2001;
+
+CREATE OR REPLACE TRIGGER patients_on_insert
+    BEFORE INSERT ON patients
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, patient_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE facility_sequence START WITH 2001;
+
+CREATE OR REPLACE TRIGGER facilities_on_insert
+    BEFORE INSERT ON facilities
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, facility_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE staff_sequence START WITH 100001;
+
+CREATE OR REPLACE TRIGGER staff_on_insert
+    BEFORE INSERT ON staff
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, staff_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE patient_checkin_sequence START WITH 1001;
+
+CREATE OR REPLACE TRIGGER patient_checkin_on_insert
+    BEFORE INSERT ON patient_checkins
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, patient_checkin_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE symptom_sequence START WITH 101;
+
+CREATE OR REPLACE TRIGGER symptoms_on_insert
+    BEFORE INSERT ON symptoms
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.code, 'SYM' || LPAD(symptom_sequence.nextval, 3, '0'))
+    INTO :new.code
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE assessment_rule_sequence START WITH 1001;
+
+CREATE OR REPLACE TRIGGER assessment_rules_on_insert
+    BEFORE INSERT ON assessment_rules
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, assessment_rule_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE severity_scales_sequence START WITH 1001;
+
+CREATE OR REPLACE TRIGGER severity_scales_on_insert
+    BEFORE INSERT ON severity_scales
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, severity_scales_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE SEQUENCE scale_values_sequence START WITH 1001;
+
+CREATE OR REPLACE TRIGGER scale_values_on_insert
+    BEFORE INSERT ON severity_scale_values
+    FOR EACH ROW
+BEGIN
+    SELECT COALESCE(:new.id, scale_values_sequence.nextval)
+    INTO :new.id
+    FROM dual;
+END;
+/
+
+CREATE OR REPLACE TRIGGER certification_date_check
+    BEFORE INSERT OR UPDATE ON certificates
+    FOR EACH ROW
+BEGIN
+    IF( :new.certification_date >= CURRENT_DATE )
+    THEN
+        RAISE_APPLICATION_ERROR( -20001,
+                                 'Invalid date' );
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER staff_hire_date_check
+    BEFORE INSERT OR UPDATE ON staff
+    FOR EACH ROW
+BEGIN
+    IF( :new.hire_date >= CURRENT_DATE )
+    THEN
+        RAISE_APPLICATION_ERROR( -20001,
+                                 'Invalid date' );
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER patient_dob_check
+    BEFORE INSERT OR UPDATE ON patients
+    FOR EACH ROW
+BEGIN
+    IF( :new.dob >= CURRENT_DATE )
+    THEN
+        RAISE_APPLICATION_ERROR( -20001,
+                                 'Invalid date' );
+    END IF;
+END;
+/

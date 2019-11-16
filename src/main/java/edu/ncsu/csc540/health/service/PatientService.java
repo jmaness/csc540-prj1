@@ -193,7 +193,7 @@ public class PatientService {
                                     symptomMatched = true;
                                 break;
                             case EQUAL_TO:
-                                if (value.getOrdinal() == aSymptom.getSeverityScaleValue().getOrdinal())
+                                if (value.getOrdinal().equals(aSymptom.getSeverityScaleValue().getOrdinal()))
                                     symptomMatched = true;
                                 break;
                             case GREATER_THAN_EQUAL_TO:

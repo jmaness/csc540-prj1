@@ -70,6 +70,7 @@ CREATE TABLE staff (
     first_name VARCHAR2(100) NOT NULL CHECK (first_name <> ''),
     last_name VARCHAR2(100) NOT NULL CHECK (last_name <> ''),
     designation VARCHAR2(100) NOT NULL,
+    dob DATE NOT NULL,
     hire_date DATE NOT NULL,
     address_id INTEGER NOT NULL,
     facility_id INTEGER NOT NULL,

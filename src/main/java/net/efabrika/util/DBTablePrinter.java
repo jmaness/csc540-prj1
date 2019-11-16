@@ -668,7 +668,7 @@ public class DBTablePrinter {
      */
     private static int whichCategory(Column column) {
         if (column.type == Types.NUMERIC) {
-            if (column.scale == 0) {
+            if (column.scale <= 0) {
                 return CATEGORY_INTEGER;
             } else {
                 return CATEGORY_DOUBLE;

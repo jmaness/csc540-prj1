@@ -20,7 +20,7 @@ CREATE TABLE addresses (
 );
 
 CREATE TABLE facilities (
-    id INTEGER CHECK (id > 0),
+    id INTEGER NOT NULL CHECK (id > 0),
     name VARCHAR2(100) NOT NULL CHECK (name <> ''),
     capacity INTEGER NOT NULL,
     classification_code VARCHAR2(100) NOT NULL,

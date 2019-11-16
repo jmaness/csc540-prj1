@@ -32,7 +32,7 @@ public interface SeverityScaleDAO {
 
     @SqlUpdate("select * " +
             "from severity_scale_values " +
-            "where id = :severity_scale_value_id")
+            "where id = :id")
     @RegisterConstructorMapper(SeverityScaleValue.class)
-    SeverityScaleValue findSeverityScaleValueById(@Bind("severity_scale_value_id") Integer severityScaleValueId);
+    SeverityScaleValue findSeverityScaleValueById(@Bind("id") Integer severityScaleValueId);
 }

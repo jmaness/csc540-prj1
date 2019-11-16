@@ -41,11 +41,11 @@ insert into departments (code, name, type, facility_id) values ('GP001', 'Genera
 insert into departments (code, name, type, facility_id) values ('ER001', 'Emergency room', 'Medical', 2003);
 
 insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'EYE000');
+/*
 insert into departments_body_parts (department_code, body_part_code) values ('GP001', 'HED000');
-
-
-insert into departments_body_parts (department_code, body_part_code) values ('GP000', 'NON000');
 insert into departments_body_parts (department_code, body_part_code) values ('OP000', 'NON000');
+*/
+insert into departments_body_parts (department_code, body_part_code) values ('GP000', 'NON000');
 insert into departments_body_parts (department_code, body_part_code) values ('SE000', 'NON000');
 insert into departments_body_parts (department_code, body_part_code) values ('ER000', 'NON000');
 insert into departments_body_parts (department_code, body_part_code) values ('GP001', 'NON000');
@@ -65,14 +65,14 @@ insert into service_equipment (service_code, name) values ('SGP01', 'Blood press
 insert into service_equipment (service_code, name) values ('SGP01', 'Thermometer');
 insert into service_equipment (service_code, name) values ('VIS01', 'Vision Screener');
 
-/* Old hospitals. Still using their addresses. */
+/* Old hospitals. Still using their addresses.
 insert into addresses (id, num, street, city, state, country) values (4, 100, 'UNC Street', 'Chapel Hill', 'North Carolina', 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('UNC Hospital', 500, '01', 4);
 insert into addresses (id, num, street, city, state, country) values (5, 200, 'Duke Street', 'Durham', 'North Carolina', 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('Duke Hospital', 500, '01', 5);
 insert into addresses (id, num, street, city, state, country) values (6, 300, 'NCSU Street', 'Raleigh', 'North Carolina', 'US');
 insert into facilities (name, capacity, classification_code, address_id) values ('NCSU Hospital', 500, '01', 6);
-
+*/
 
 insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (89001, 'Medical', 'Robot', 'Medical', TO_DATE('06/21/2019', 'MM/DD/YYYY'), 4, 2001, 'OP000');
 
@@ -157,6 +157,7 @@ insert into symptoms (name, severity_scale_id, body_part_code) values ('Tightnes
 insert into symptoms (name, severity_scale_id, body_part_code) values ('Numbness', 1, 'NON000');
 insert into symptoms (name, severity_scale_id, body_part_code) values ('Shortness of breath', 1, 'CST000');
 
+/*
 insert into patient_checkins (patient_id, start_time, end_time) values (2001, TO_TIMESTAMP('09/14/2015 06:14:00', 'MM/DD/YYYY HH24:MI:SS'), TO_TIMESTAMP('09/15/2015 06:14:00', 'MM/DD/YYYY HH24:MI:SS'));
 insert into checkin_symptoms (checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1001, 'SYM103', 'NON000', 14, 1, 0, 'Unknown');
 
@@ -171,7 +172,7 @@ insert into patient_checkins (patient_id, start_time, end_time) values (2004, TO
 insert into checkin_symptoms (checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1004, 'SYM106', 'EYE000', 11, 1, 0, 'Unknown');
 
 
-/*
+
 insert into addresses (num, street, city, state, country) values (123, 'Street Ave', 'Chapel Hill', 'North Carolina', 'US');
 insert into patients (first_name, last_name, dob, phone, address_id, facility_id) values ('Jamie', 'Gachie', TO_DATE('01/01/1990', 'MM/DD/YYYY'), 9007004567, 5, 2002);
 

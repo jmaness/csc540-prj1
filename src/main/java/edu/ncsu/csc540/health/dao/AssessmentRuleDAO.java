@@ -17,8 +17,8 @@ public interface AssessmentRuleDAO {
     @GetGeneratedKeys("id")
     Integer createAssessmentRule(@BindBean AssessmentRule assessmentRule);
 
-    @SqlUpdate("insert into assessment_symptoms (rule_id, symptom_code, severity_scale_value_id, operation) " +
-            "values (:ruleId, :symptom.code, :severityScaleValue.id, :operation)")
+    @SqlUpdate("insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) " +
+            "values (:ruleId, :symptom.code, :bodyPartCode, :severityScaleValue.id, :operation)")
     void createAssessmentSymptom(@BindBean AssessmentSymptom assessmentSymptom);
 
     @SqlQuery("select r.id r_id, r.priority pr_priority, r.description r_description " +
@@ -33,7 +33,7 @@ public interface AssessmentRuleDAO {
     AssessmentRule findById(@Bind("id") Integer id);
 
     @SqlQuery("select r.id r_id, r.priority r_priority, r.description r_description, " +
-            "e.rule_id re_rule_id, e.severity_scale_value_id re_severity_scale_value_id, e.operation re_operation, " +
+            "e.rule_id re_rule_id, e.body_part_code re_body_part_code, e.severity_scale_value_id re_severity_scale_value_id, e.operation re_operation, " +
             "s.code res_code, s.name res_name, " +
             "c.id resc_id, c.name resc_name, " +
             "b.code resb_code, b.name resb_name " +
@@ -45,7 +45,7 @@ public interface AssessmentRuleDAO {
     @RegisterConstructorMapper(value = BodyPart.class, prefix = "b")
     List<AssessmentRule> findAllAssessmentRules();
 
-    @SqlQuery("select e.rule_id e_rule_id, e.operation e_operation, " +
+    @SqlQuery("select e.rule_id e_rule_id, e.body_part_code e_body_part_code, e.operation e_operation, " +
             "s.code es_code, s.name es_name, " +
             "c.id esc_id, c.name esc_name, " +
             "b.code esb_code, b.name esb_name, " +

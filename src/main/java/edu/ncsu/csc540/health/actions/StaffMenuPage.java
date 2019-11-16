@@ -318,16 +318,22 @@ public class StaffMenuPage implements Action {
                     .withValueFormatter(Symptom::getName)
                     .read("Please select a symptom: ");
 
+            List<BodyPart> bodyParts = symptomService.findAllBodyParts();
+            BodyPart selectedBodyPart = textIO.<BodyPart>newGenericInputReader(null)
+                    .withNumberedPossibleValues(bodyParts)
+                    .withValueFormatter(BodyPart::getName)
+                    .read("Please select a body part to associate to the symptom: ");
+
             SeverityScaleValue selectedValue = textIO.<SeverityScaleValue>newGenericInputReader(null)
                     .withNumberedPossibleValues(symptomService.findSeverityScaleValues(selectedSymptom.getSeverityScale().getId()))
                     .withValueFormatter(SeverityScaleValue::getName)
-                    .read("Please select a severity: ");
+                    .read("Please select a severity to associate to the symptom: ");
 
             Operation operation = textIO.newEnumInputReader(Operation.class)
                     .withValueFormatter(Operation::toString)
                     .read("Please select an operator to associate to the severity: ");
 
-            assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedValue, operation));
+            assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedBodyPart.getCode(), selectedValue, operation));
 
             terminal.println("Would you like to enter another symptom, or move on to choosing the assessment rule priority?");
 

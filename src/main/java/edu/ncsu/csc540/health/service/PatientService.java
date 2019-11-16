@@ -4,19 +4,8 @@ import com.google.inject.persist.Transactional;
 import edu.ncsu.csc540.health.dao.AddressDAO;
 import edu.ncsu.csc540.health.dao.OutcomeReportDAO;
 import edu.ncsu.csc540.health.dao.PatientDAO;
-import edu.ncsu.csc540.health.model.Address;
-import edu.ncsu.csc540.health.model.AssessmentRule;
-import edu.ncsu.csc540.health.model.AssessmentSymptom;
-import edu.ncsu.csc540.health.model.CheckInSymptom;
-import edu.ncsu.csc540.health.model.DischargeStatus;
-import edu.ncsu.csc540.health.model.Operation;
-import edu.ncsu.csc540.health.model.OutcomeReport;
-import edu.ncsu.csc540.health.model.Patient;
-import edu.ncsu.csc540.health.model.PatientCheckIn;
-import edu.ncsu.csc540.health.model.PatientVitals;
-import edu.ncsu.csc540.health.model.Priority;
-import edu.ncsu.csc540.health.model.ReferralStatus;
-import edu.ncsu.csc540.health.model.Symptom;
+import edu.ncsu.csc540.health.dao.SeverityScaleDAO;
+import edu.ncsu.csc540.health.model.*;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
@@ -30,6 +19,7 @@ import java.util.List;
 public class PatientService {
     private final AddressDAO addressDAO;
     private final PatientDAO patientDAO;
+    private final SeverityScaleDAO severityScaleDAO;
     private final OutcomeReportDAO outcomeReportDAO;
     private AssessmentRuleService assessmentRuleService;
 
@@ -37,6 +27,7 @@ public class PatientService {
     public PatientService(Jdbi jdbi, AssessmentRuleService assessmentRuleService) {
         this.addressDAO = jdbi.onDemand(AddressDAO.class);
         this.patientDAO = jdbi.onDemand(PatientDAO.class);
+        this.severityScaleDAO = jdbi.onDemand(SeverityScaleDAO.class);
         this.outcomeReportDAO = jdbi.onDemand(OutcomeReportDAO.class);
         this.assessmentRuleService = assessmentRuleService;
     }
@@ -188,28 +179,29 @@ public class PatientService {
                 boolean symptomMatched = false;
 
                 for (CheckInSymptom symptom : symptoms) {
-                    if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode())) {
+                    if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode()) && symptom.getBodyPartCode().equalsIgnoreCase(aSymptom.getBodyPartCode())) {
                         Operation operation = aSymptom.getOperation();
+                        SeverityScaleValue value = severityScaleDAO.findSeverityScaleValueById(symptom.getSeverityScaleValueId());
 
                         switch (operation) {
                             case LESS_THAN:
-                                if (symptom.getSeverityScaleValueId() < aSymptom.getSeverityScaleValue().getId())
+                                if (value.getOrdinal() < aSymptom.getSeverityScaleValue().getOrdinal())
                                     symptomMatched = true;
                                 break;
                             case LESS_THAN_EQUAL_TO:
-                                if (symptom.getSeverityScaleValueId() <= aSymptom.getSeverityScaleValue().getId())
+                                if (value.getOrdinal() <= aSymptom.getSeverityScaleValue().getOrdinal())
                                     symptomMatched = true;
                                 break;
                             case EQUAL_TO:
-                                if (symptom.getSeverityScaleValueId() == aSymptom.getSeverityScaleValue().getId())
+                                if (value.getOrdinal().equals(aSymptom.getSeverityScaleValue().getOrdinal()))
                                     symptomMatched = true;
                                 break;
                             case GREATER_THAN_EQUAL_TO:
-                                if (symptom.getSeverityScaleValueId() >= aSymptom.getSeverityScaleValue().getId())
+                                if (value.getOrdinal() >= aSymptom.getSeverityScaleValue().getOrdinal())
                                     symptomMatched = true;
                                 break;
                             case GREATER_THAN:
-                                if (symptom.getSeverityScaleValueId() > aSymptom.getSeverityScaleValue().getId())
+                                if (value.getOrdinal() > aSymptom.getSeverityScaleValue().getOrdinal())
                                     symptomMatched = true;
                                 break;
                             default:

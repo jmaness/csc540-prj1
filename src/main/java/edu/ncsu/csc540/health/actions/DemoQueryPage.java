@@ -46,7 +46,7 @@ public class DemoQueryPage implements Action {
                                 safelyRun(this::findFacilitiesWithNoNegativeCardiacExperiences)),
                         Pair.of("Find the facility with the most number of negative experiences overall",
                                 safelyRun(this::findFacilitiesWithMostNegativeExperiences)),
-                        Pair.of("Find each facility, list the patient encounters with the top five longest check-in phases",
+                        Pair.of("For each facility, list the patient encounters with the top five longest check-in phases",
                                 safelyRun(this::findLongestCheckinPhases)),
                         Pair.of("Other", safelyRun(this::runOtherQuery)),
                         Pair.of("Go back", homePage)

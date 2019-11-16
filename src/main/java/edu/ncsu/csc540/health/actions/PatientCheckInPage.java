@@ -57,10 +57,14 @@ public class PatientCheckInPage implements Action {
 
     private Action getSymptomMeta(Symptom symptom, Action next) {
         return (TextIO textIO) -> {
-            BodyPart bodyPart = textIO.<BodyPart>newGenericInputReader(null)
-                    .withNumberedPossibleValues(symptomService.findAllBodyParts())
-                    .withValueFormatter(BodyPart::getName)
-                    .read("Body part");
+            BodyPart bodyPart = symptom.getBodyPart();
+
+            if (bodyPart.getCode().equalsIgnoreCase("NON000")) {
+                bodyPart = textIO.<BodyPart>newGenericInputReader(null)
+                        .withNumberedPossibleValues(symptomService.findAllBodyParts())
+                        .withValueFormatter(BodyPart::getName)
+                        .read("Body part");
+            }
 
             int duration = textIO.newIntInputReader()
                     .withMinVal(0)

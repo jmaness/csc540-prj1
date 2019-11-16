@@ -211,7 +211,7 @@ CREATE TABLE outcome_reports (
     treatment VARCHAR2(1024) NOT NULL,
     out_time TIMESTAMP NOT NULL,
     patient_acknowledged NUMBER(1),
-    patient_acknowledge_reason CLOB,
+    patient_acknowledge_reason VARCHAR2(1000),
     PRIMARY KEY (checkin_id),
     FOREIGN KEY (checkin_id) REFERENCES patient_checkins (id),
     CONSTRAINT treatment_not_empty
@@ -225,7 +225,7 @@ CREATE TABLE outcome_reports (
 CREATE TABLE negative_experiences (
     checkin_id INTEGER NOT NULL,
     code VARCHAR2(100) NOT NULL,
-    description CLOB,
+    description VARCHAR2(1000),
     PRIMARY KEY (checkin_id, code),
     FOREIGN KEY (checkin_id) REFERENCES outcome_reports (checkin_id),
     CONSTRAINT check_code
@@ -246,7 +246,7 @@ CREATE TABLE priority_lists (
 CREATE TABLE assessment_rules (
     id INTEGER NOT NULL CHECK (id > 0),
     priority VARCHAR2(100) NOT NULL,
-    description CLOB NOT NULL,
+    description VARCHAR2(1000) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT priority_check_rules
         CHECK (priority = 'HIGH' OR priority = 'NORMAL' OR priority = 'QUARANTINE')
@@ -281,7 +281,7 @@ CREATE TABLE referral_reasons (
     checkin_id INTEGER NOT NULL,
     code VARCHAR2(100) NOT NULL,
     service_code VARCHAR2(100) NOT NULL,
-    description CLOB,
+    description VARCHAR2(1000),
     PRIMARY KEY (checkin_id, code, service_code),
     FOREIGN KEY (checkin_id) REFERENCES referral_statuses (checkin_id),
     FOREIGN KEY (service_code) REFERENCES services (code),

@@ -27,9 +27,7 @@ values (104, 'TREATED_SUCCESSFULLY', 1,'because acknowledged',TO_TIMESTAMP('12/2
 insert into outcome_reports (checkin_id, discharge_status, patient_acknowledged, patient_acknowledge_reason, out_time, treatment)
 values (105, 'TREATED_SUCCESSFULLY', 1,'because acknowledged',TO_TIMESTAMP('3/27/2016 12:00:00', 'MM/DD/YYYY HH24:MI:SS'), 'Got a test');
 
-insert into negative_experiences (checkin_id, code, description)
-values (102, 'ACQUIRED_INFECTION', 'the facility is dirty');
-insert into negative_experiences (checkin_id, code, description)
-values (103, 'MISDIAGNOSIS', 'I do not have cancer');
-insert into negative_experiences (checkin_id, code, description)
-values (105, 'MISDIAGNOSIS', 'I do not have the flu');
+insert into negative_experiences (checkin_id, code, description) values (102, 'ACQUIRED_INFECTION', 'the facility is dirty');
+insert into negative_experiences (checkin_id, code, description) values (102, 'MISDIAGNOSIS', 'I do not have asthma');
+insert into negative_experiences (checkin_id, code, description) values (103, 'MISDIAGNOSIS', 'I do not have cancer');
+insert into negative_experiences (checkin_id, code, description) values (105, 'MISDIAGNOSIS', 'I do not have the flu');

@@ -74,6 +74,16 @@ insert into addresses (id, num, street, city, state, country) values (6, 300, 'N
 insert into facilities (name, capacity, classification_code, address_id) values ('NCSU Hospital', 500, '01', 6);
 */
 
+insert into addresses (id, num, street, city, state, zip, country) values (4, 83, 'Vernon St', 'Scotch Plains', 'NJ', '07076', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (5, 69, 'Holly Drive', 'Blacksburg', 'VA', '24060', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (6, 7540, 'Plymouth Court', 'Derry', 'NH', '03038', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (7, 8196, 'Big Rock Cove Road', 'Lutherville Timonium', 'MD', '21093', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (8, 697, 'Lawrence Ave.', 'Teaneck', 'NJ', '07666', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (9, 685, 'South Chapel Lane', 'Branford', 'CT', '06405', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (10, 7056, 'W. Piper Dr.', 'Macon', 'GA', '31204', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (11, 40, 'N. Peachtree Drive', 'Sunnyside', 'NY', '11104', 'US');
+insert into addresses (id, num, street, city, state, zip, country) values (12, 22, 'Sutor St.', 'Laurel', 'MD', '20707', 'US');
+
 insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (89001, 'Medical', 'Robot', 'Medical', TO_DATE('06/21/2019', 'MM/DD/YYYY'), 4, 2001, 'OP000');
 
 insert into staff (id, first_name, last_name, designation, hire_date, address_id, facility_id, primary_department_code) values (93001, 'Musical', 'Robert', 'Medical', TO_DATE('08/29/2018', 'MM/DD/YYYY'), 5, 2002, 'ER000');

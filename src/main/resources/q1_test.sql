@@ -10,6 +10,12 @@ insert into patient_checkins (patient_id, start_time, end_time) values (2011, TO
 insert into patient_checkins (patient_id, start_time, end_time) values (2012, TO_TIMESTAMP('12/25/2018 10:10:10', 'MM/DD/YYYY HH24:MI:SS'), TO_TIMESTAMP('12/25/2018 22:22:22', 'MM/DD/YYYY HH24:MI:SS'));
 insert into patient_checkins (patient_id, start_time, end_time) values (2013, TO_TIMESTAMP('3/16/2016 03:16:15', 'MM/DD/YYYY HH24:MI:SS'), TO_TIMESTAMP('3/24/2016 11:59:59', 'MM/DD/YYYY HH24:MI:SS'));
 
+insert into symptoms (name, severity_scale_id, body_part_code) values ('Arrhythmia', 1, 'HRT000');
+insert into checkin_symptoms (checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1009, 'SYM113', 'HRT000', 6, 1, 0, 'Unknown');
+insert into checkin_symptoms (checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1010, 'SYM113', 'HRT000', 6, 1, 0, 'Unknown');
+insert into checkin_symptoms (checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1011, 'SYM113', 'HRT000', 6, 1, 0, 'Unknown');
+insert into checkin_symptoms (checkin_id, symptom_code, body_part_code, severity_scale_value_id, duration, reoccurring, incident) values (1013, 'SYM113', 'HRT000', 14, 1, 0, 'Unknown');
+
 insert into outcome_reports (checkin_id, discharge_status, patient_acknowledged, patient_acknowledge_reason, out_time, treatment)
 values (1009, 'TREATED_SUCCESSFULLY', 1,'because acknowledged',TO_TIMESTAMP('12/12/2011 16:31:29', 'MM/DD/YYYY HH24:MI:SS'), 'Got a test');
 insert into outcome_reports (checkin_id, discharge_status, patient_acknowledged, patient_acknowledge_reason, out_time, treatment)

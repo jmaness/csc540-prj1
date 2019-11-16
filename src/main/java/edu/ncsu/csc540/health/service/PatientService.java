@@ -179,7 +179,7 @@ public class PatientService {
                 boolean symptomMatched = false;
 
                 for (CheckInSymptom symptom : symptoms) {
-                    if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode())) {
+                    if (symptom.getSymptomCode().equalsIgnoreCase(aSymptom.getSymptom().getCode()) && symptom.getBodyPartCode().equalsIgnoreCase(aSymptom.getBodyPartCode())) {
                         Operation operation = aSymptom.getOperation();
                         SeverityScaleValue value = severityScaleDAO.findSeverityScaleValueById(symptom.getSeverityScaleValueId());
 

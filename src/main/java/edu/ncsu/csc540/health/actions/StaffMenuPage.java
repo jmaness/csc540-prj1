@@ -318,23 +318,17 @@ public class StaffMenuPage implements Action {
                     .withValueFormatter(Symptom::getName)
                     .read("Please select a symptom: ");
 
-            List<BodyPart> bodyParts = symptomService.findAllBodyParts();
             BodyPart selectedBodyPart = null;
 
             if (selectedSymptom.getBodyPart().getCode().equalsIgnoreCase("NON000")) {
+                List<BodyPart> bodyParts = symptomService.findAllBodyParts();
                 selectedBodyPart = textIO.<BodyPart>newGenericInputReader(null)
                         .withNumberedPossibleValues(bodyParts)
                         .withValueFormatter(BodyPart::getName)
                         .read("Please select a body part to associate to the symptom: ");
             }
-            else {
-                for (BodyPart bodyPart : bodyParts) {
-                    if (bodyPart.getCode().equalsIgnoreCase("NON000")) {
-                        selectedBodyPart = bodyPart;
-                        break;
-                    }
-                }
-            }
+            else
+                selectedBodyPart = selectedSymptom.getBodyPart();
 
             SeverityScaleValue selectedValue = textIO.<SeverityScaleValue>newGenericInputReader(null)
                     .withNumberedPossibleValues(symptomService.findSeverityScaleValues(selectedSymptom.getSeverityScale().getId()))

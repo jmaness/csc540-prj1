@@ -322,7 +322,7 @@ public class StaffMenuPage implements Action {
             BodyPart selectedBodyPart = textIO.<BodyPart>newGenericInputReader(null)
                     .withNumberedPossibleValues(bodyParts)
                     .withValueFormatter(BodyPart::getName)
-                    .read("Please select a body part ot associate to the symptom: ");
+                    .read("Please select a body part to associate to the symptom: ");
 
             SeverityScaleValue selectedValue = textIO.<SeverityScaleValue>newGenericInputReader(null)
                     .withNumberedPossibleValues(symptomService.findSeverityScaleValues(selectedSymptom.getSeverityScale().getId()))

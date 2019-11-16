@@ -18,7 +18,7 @@ public interface AssessmentRuleDAO {
     Integer createAssessmentRule(@BindBean AssessmentRule assessmentRule);
 
     @SqlUpdate("insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) " +
-            "values (:ruleId, :symptom.code, :body_part_code, :severityScaleValue.id, :operation)")
+            "values (:ruleId, :symptom.code, :bodyPartCode, :severityScaleValue.id, :operation)")
     void createAssessmentSymptom(@BindBean AssessmentSymptom assessmentSymptom);
 
     @SqlQuery("select r.id r_id, r.priority pr_priority, r.description r_description " +

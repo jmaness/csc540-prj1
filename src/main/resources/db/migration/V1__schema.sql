@@ -184,6 +184,7 @@ CREATE TABLE symptoms (
     PRIMARY KEY (code),
     FOREIGN KEY (severity_scale_id) REFERENCES severity_scales (id),
     FOREIGN KEY (body_part_code) REFERENCES body_parts (code),
+    CONSTRAINT symptom_unique UNIQUE (name, severity_scale_id, body_part_code),
     CONSTRAINT check_sys_alphanum
         CHECK (regexp_like(code,'^SYM[a-zA-Z0-9]*$'))
 );

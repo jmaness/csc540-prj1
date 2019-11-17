@@ -81,10 +81,10 @@ public class HealthApp {
         TextIO textIO = new TextIO(terminal);
 
         Injector injector = Guice.createInjector(new HealthModule(configuration));
-        Action page = injector.getInstance(HomePage.class);
+        Action action = injector.getInstance(HomePage.class);
 
-        while (page != null) {
-            page = page.apply(textIO);
+        while (action != null) {
+            action = action.apply(textIO);
         }
     }
 

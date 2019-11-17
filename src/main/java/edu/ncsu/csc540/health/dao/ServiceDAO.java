@@ -17,6 +17,11 @@ import java.util.Set;
 
 public interface ServiceDAO {
 
+    /**
+     * Finds the service matching the provided code
+     * @param code The code of the desired service
+     * @return The matching service
+     */
     @SqlQuery("select s.code s_code, s.name s_name, se.name se_name " +
             "from services s" +
             "    left outer join service_equipment se " +
@@ -27,6 +32,11 @@ public interface ServiceDAO {
     @UseRowReducer(ServiceRowReducer.class)
     Service findServiceByCode(@Bind("code") String code);
 
+    /**
+     * Finds all services provided by the facility matching the provided ID
+     * @param facilityId The ID of the desired facility
+     * @return A List containing all matching services
+     */
     @SqlQuery("select s.code s_code, s.name s_name, se.name se_name " +
             "from department_services ds, departments d, services s" +
             "    left outer join service_equipment se " +
@@ -39,6 +49,10 @@ public interface ServiceDAO {
     @UseRowReducer(ServiceRowReducer.class)
     List<Service> findAllServicesByFacilityId(@Bind("facilityId") Integer facilityId);
 
+    /**
+     * Finds all services in the database
+     * @return A List containing all of the services
+     */
     @SqlQuery("select s.code s_code, s.name s_name, se.name se_name " +
             "from services s " +
             "    left outer join service_equipment se " +

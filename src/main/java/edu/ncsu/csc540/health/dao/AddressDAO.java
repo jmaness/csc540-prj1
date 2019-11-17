@@ -11,14 +11,28 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface AddressDAO {
 
+    /**
+     * Adds an address to the database
+     * @param address The address being added
+     * @return The generated ID of the address
+     */
     @SqlUpdate("insert into addresses (num, street, city, state, country) values (:streetNum, :street, :city, :state, :country)")
     @GetGeneratedKeys("id")
     Integer create(@BindBean Address address);
 
+    /**
+     * Finds the address matching the provided ID
+     * @param id The ID of the desired address
+     * @return The matched address
+     */
     @SqlQuery("select * from addresses where id = :id")
     @RegisterConstructorMapper(Address.class)
     Address findById(@Bind("id") Integer id);
 
+    /**
+     * Updates a given address's attributes
+     * @param address The address being updated
+     */
     @SqlUpdate("update addresses " +
                "set num = :streetNum, " +
                "    street = :street, " +

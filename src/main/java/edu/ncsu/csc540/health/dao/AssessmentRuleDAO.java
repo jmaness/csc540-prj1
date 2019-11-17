@@ -12,15 +12,29 @@ import java.util.List;
 
 public interface AssessmentRuleDAO {
 
+    /**
+     * Adds an assessment rule to the database
+     * @param assessmentRule The assessment rule being added
+     * @return The generated ID of the assessment rule
+     */
     @SqlUpdate("insert into assessment_rules (priority, description) " +
             "values (:priority, :description)")
     @GetGeneratedKeys("id")
     Integer createAssessmentRule(@BindBean AssessmentRule assessmentRule);
 
+    /**
+     * Adds an assessment symptom to the database
+     * @param assessmentSymptom The assessment symptom being added
+     */
     @SqlUpdate("insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) " +
             "values (:ruleId, :symptom.code, :bodyPartCode, :severityScaleValue.id, :operation)")
     void createAssessmentSymptom(@BindBean AssessmentSymptom assessmentSymptom);
 
+    /**
+     * Finds the assessment rule matching the provided ID
+     * @param id The ID of the desired assessment rule
+     * @return The matched assessment rule
+     */
     @SqlQuery("select r.id r_id, r.priority pr_priority, r.description r_description " +
             "s.code rs_code, s.name rs_name, " +
             "c.id sc_id, c.name sc_name, " +
@@ -32,6 +46,10 @@ public interface AssessmentRuleDAO {
     @RegisterConstructorMapper(value = Priority.class, prefix = "p")
     AssessmentRule findById(@Bind("id") Integer id);
 
+    /**
+     * Finds all assessment rules in the database
+     * @return A List containing all of the assessment rules
+     */
     @SqlQuery("select r.id r_id, r.priority r_priority, r.description r_description, " +
             "e.rule_id re_rule_id, e.body_part_code re_body_part_code, e.severity_scale_value_id re_severity_scale_value_id, e.operation re_operation, " +
             "s.code res_code, s.name res_name, " +
@@ -45,6 +63,11 @@ public interface AssessmentRuleDAO {
     @RegisterConstructorMapper(value = BodyPart.class, prefix = "b")
     List<AssessmentRule> findAllAssessmentRules();
 
+    /**
+     * Finds all assessment symptoms for a given rule (specified by a provided rule ID)
+     * @param ruleId The ID of the desired rule
+     * @return A List containing all of the assessment symptoms
+     */
     @SqlQuery("select e.rule_id e_rule_id, e.body_part_code e_body_part_code, e.operation e_operation, " +
             "s.code es_code, s.name es_name, " +
             "c.id esc_id, c.name esc_name, " +

@@ -255,7 +255,7 @@ CREATE TABLE assessment_rules (
 CREATE TABLE assessment_symptoms(
     rule_id INTEGER NOT NULL,
     symptom_code VARCHAR2(100) NOT NULL,
-    body_part_code VARCHAR2(100),
+    body_part_code VARCHAR2(100) NOT NULL,
     severity_scale_value_id INTEGER NOT NULL,
     operation VARCHAR2(100) NOT NULL,
     PRIMARY KEY (rule_id, symptom_code),

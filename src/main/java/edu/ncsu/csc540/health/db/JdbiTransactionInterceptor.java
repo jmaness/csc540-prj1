@@ -79,6 +79,7 @@ public class JdbiTransactionInterceptor implements MethodInterceptor {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private Transactional readTransactionMetadata(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
         Class targetClass = methodInvocation.getThis().getClass();

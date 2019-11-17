@@ -119,8 +119,7 @@ public class DemoQueryService {
                 "   f_groups.first_name,\n" +
                 "   f_groups.last_name,\n" +
                 "   TO_CHAR(cast(f_groups.start_time as date)) AS start_date,\n" +
-                "   TO_CHAR(cast((COALESCE(f_groups.end_time, CURRENT_TIMESTAMP)\n" +
-                "           - f_groups.start_time)\n" +
+                "   TO_CHAR(cast((f_groups.end_time - f_groups.start_time)\n" +
                 "       as INTERVAL DAY(3) TO SECOND(0))) AS duration,\n" +
                 "   f_groups.top_rows AS facility_rank,\n" +
                 "   f_groups.sname AS symptom_name\n" +

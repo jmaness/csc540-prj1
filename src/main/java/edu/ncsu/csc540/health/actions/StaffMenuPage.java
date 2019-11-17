@@ -78,9 +78,10 @@ public class StaffMenuPage implements Action {
     }
 
     private Action addScale(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
         scaleValues.clear();
 
-        terminal.println("Add Severity Scale");
+        terminal.println("\nAdd Severity Scale");
         terminal.println("=====================");
 
         String scaleName = textIO.newStringInputReader()
@@ -268,7 +269,7 @@ public class StaffMenuPage implements Action {
     private Action addSymptoms(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        terminal.println("Add Symptom");
+        terminal.println("\nAdd Symptom");
         terminal.println("=====================");
 
         String name = textIO.newStringInputReader()
@@ -381,7 +382,7 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
                             assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
-                            terminal.println("\nRule successfully added!\n");
+                            terminal.println("\nRule successfully added!");
                             return this;
                         }),
                         Pair.of("Go Back", this)))

@@ -47,16 +47,17 @@ public class SignUpPage implements Action {
             return previousPage;
         }
 
+        terminal.println();
         terminal.println("Sign Up");
         terminal.println("=====================");
-        terminal.println();
+
 
         Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
                 .withNumberedPossibleValues(facilities)
                 .withValueFormatter(Facility::getName)
                 .read("Facility");
 
-        terminal.println();
+        //terminal.println();
 
         String firstName = textIO.newStringInputReader()
                 .withMaxLength(255)
@@ -104,9 +105,9 @@ public class SignUpPage implements Action {
         terminal.println(String.format("Last name: %s", lastName));
         terminal.println(String.format("Date of birth: %s", dob));
         terminal.println(String.format("Address: %d %s \n         %s, %s, %s", streetNum, street, city, state, country));
-        terminal.println(String.format("Phone: %s", phone));
+        terminal.print(String.format("Phone: %s", phone));
 
-        terminal.println();
+        //terminal.println();
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(

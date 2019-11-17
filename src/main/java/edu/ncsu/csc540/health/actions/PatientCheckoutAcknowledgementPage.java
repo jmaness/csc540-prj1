@@ -45,23 +45,26 @@ public class PatientCheckoutAcknowledgementPage implements Action {
     public Action apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
-        if (patientCheckIn == null) {
-            terminal.println("\nNo active check-in found for patient");
-            return patientRoutingPage;
-        }
+        return Optional.ofNullable(patientCheckIn)
+                .map(PatientCheckIn::getId)
+                .flatMap(patientService::findOutcomeReport)
+                .map(outcomeReport -> {
+                    printOutcomeReportSummary(terminal, outcomeReport);
 
-        OutcomeReport outcomeReport = patientService.findOutcomeReport(patientCheckIn.getId());
-        printOutcomeReportSummary(terminal, outcomeReport);
-
-        return textIO.<Pair<String, Action>>newGenericInputReader(null)
-                .withNumberedPossibleValues(Arrays.asList(
-                        Pair.of("Yes", this::acknowledge),
-                        Pair.of("No", this::reject),
-                        Pair.of("Go Back", patientRoutingPage)
-                ))
-                .withValueFormatter(Pair::getKey)
-                .read("\nDo you acknowledge this summary is correct?")
-                .getValue();
+                    return textIO.<Pair<String, Action>>newGenericInputReader(null)
+                            .withNumberedPossibleValues(Arrays.asList(
+                                    Pair.of("Yes", this::acknowledge),
+                                    Pair.of("No", this::reject),
+                                    Pair.of("Go Back", patientRoutingPage)
+                            ))
+                            .withValueFormatter(Pair::getKey)
+                            .read("\nDo you acknowledge this summary is correct?")
+                            .getValue();
+                })
+                .orElse((TextIO tio) -> {
+                    terminal.println("\nPatient is not ready for check-out.");
+                    return patientRoutingPage;
+                });
     }
 
     private void printOutcomeReportSummary(TextTerminal<?> terminal, OutcomeReport outcomeReport) {

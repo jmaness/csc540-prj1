@@ -43,12 +43,3 @@ HEALTH_DB_USER=your_unity_id HEALTH_DB_PASSWORD=your_pass ./run_app.sh
 ```
 2. Extract build/distributions/csc540-prj1.zip to a temporary directory
 
-
-
-# Code conventions
-Checkstyle is configured to enforce some basic conventions, but we as a group can decide to relax or change these. This
-will automatically be run when building the application, but if you want to run checkstyle explicitly, you can run:
-
-```
-./gradlew checkstyleMain
-```

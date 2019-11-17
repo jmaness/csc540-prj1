@@ -43,7 +43,7 @@ public class HomePage implements Action {
                         Pair.of("Demo Queries", demoQueryPage),
                         Pair.of("Exit", Actions.exit)))
                 .withValueFormatter(Pair::getKey)
-                .read("Home Page")
+                .read("\nHome Page")
                 .getValue();
     }
 }

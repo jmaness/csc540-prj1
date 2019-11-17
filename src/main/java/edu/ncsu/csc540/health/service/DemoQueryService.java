@@ -50,8 +50,8 @@ public class DemoQueryService {
     }
 
     public void findFacilitiesMostReferred(ResultSetScanner<Void> scanner) {
-        runQuery(scanner, "SELECT f1.name,\n" +
-                "       f2.name\n" +
+        runQuery(scanner, "SELECT f1.name \"FACILITY\",\n" +
+                "       f2.name \"MOST REFERRED FACILITY\"\n" +
                 "FROM facilities f1,\n" +
                 "     facilities f2,\n" +
                 "     (SELECT f.id,\n" +
@@ -115,19 +115,33 @@ public class DemoQueryService {
     }
 
     public void findLongestCheckinPhases(ResultSetScanner<Void> scanner) {
-        runQuery(scanner, "SELECT * FROM " +
-                "(SELECT p.id, p.first_name,\n" +
-                "       p.last_name,\n" +
-                "       f.name,\n" +
-                "       c.start_time,\n" +
-                "       c.end_time\n" +
-                "FROM patient_checkins c,\n" +
-                "     patients p,\n" +
-                "     facilities f\n" +
-                "WHERE c.patient_id = p.id\n" +
-                "  AND p.facility_id = f.id\n" +
-                "ORDER BY (c.end_time - c.start_time) DESC)\n" +
-                "WHERE ROWNUM <= 5");
+        runQuery(scanner, "SELECT f_groups.name AS facility_name,\n" +
+                "   f_groups.first_name,\n" +
+                "   f_groups.last_name,\n" +
+                "   TO_CHAR(cast(f_groups.start_time as date)) AS start_date,\n" +
+                "   TO_CHAR(cast((f_groups.end_time - f_groups.start_time)\n" +
+                "       as INTERVAL DAY(3) TO SECOND(0))) AS duration,\n" +
+                "   f_groups.top_rows AS facility_rank,\n" +
+                "   f_groups.sname AS symptom_name\n" +
+                "FROM (\n" +
+                "   SELECT g.name, g.id, g.first_name, g.last_name,\n" +
+                "            g.start_time, g.end_time, sname,\n" +
+                "       ROW_NUMBER() OVER (\n" +
+                "       PARTITION BY g.name\n" +
+                "       ORDER BY (g.end_time - g.start_time) DESC\n" +
+                "       ) AS top_rows\n" +
+                "   FROM ( SELECT f.name, p.id, p.first_name,\n" +
+                "               p.last_name, c.start_time,\n" +
+                "               COALESCE(c.end_time, CURRENT_TIMESTAMP) as end_time,\n" +
+                "               s.name AS sname\n"+
+                "          FROM facilities f, patients p, patient_checkins c,\n" +
+                "               checkin_symptoms cs, symptoms s\n" +
+                "          WHERE c.patient_id = p.id\n" +
+                "            AND p.facility_id = f.id\n" +
+                "            AND cs.symptom_code = s.code\n" +
+                "            AND cs.checkin_id = c.id) g\n" +
+                ") f_groups\n" +
+                "WHERE f_groups.top_rows <= 5");
     }
 
     public void runQuery(ResultSetScanner<Void> scanner, String sql, Object... args) {

@@ -37,6 +37,7 @@ public class PatientRoutingPage implements Action {
     public Action apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
+
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Check-in", (TextIO tio) -> {
@@ -53,7 +54,7 @@ public class PatientRoutingPage implements Action {
                         Pair.of("Go back", homePage)
                 ))
                 .withValueFormatter(Pair::getKey)
-                .read()
+                .read("\nPatient Routing Menu:")
                 .getValue();
     }
 }

@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class PatientService {
@@ -150,22 +151,23 @@ public class PatientService {
      * @return The matching outcome report
      */
     @Transactional
-    public OutcomeReport findOutcomeReport(Integer checkInId) {
-        OutcomeReport outcomeReport = outcomeReportDAO.findOutcomeReportById(checkInId);
+    public Optional<OutcomeReport> findOutcomeReport(Integer checkInId) {
+        return Optional.ofNullable(outcomeReportDAO.findOutcomeReportById(checkInId))
+                .map(outcomeReport -> {
+                    ReferralStatus referralStatus = null;
+                    if (outcomeReport.getDischargeStatus() == DischargeStatus.REFERRED) {
+                        referralStatus = outcomeReportDAO.findReferralStatusByCheckInId(checkInId);
+                    }
 
-        ReferralStatus referralStatus = null;
-        if (outcomeReport.getDischargeStatus() == DischargeStatus.REFERRED) {
-            referralStatus = outcomeReportDAO.findReferralStatusByCheckInId(checkInId);
-        }
-
-        return new OutcomeReport(outcomeReport.getCheckInId(),
-                outcomeReport.getDischargeStatus(),
-                referralStatus,
-                outcomeReport.getTreatment(),
-                outcomeReport.getOutTime(),
-                outcomeReport.getNegativeExperiences(),
-                outcomeReport.getPatientAcknowledged(),
-                outcomeReport.getPatientAcknowledgedReason());
+                    return new OutcomeReport(outcomeReport.getCheckInId(),
+                            outcomeReport.getDischargeStatus(),
+                            referralStatus,
+                            outcomeReport.getTreatment(),
+                            outcomeReport.getOutTime(),
+                            outcomeReport.getNegativeExperiences(),
+                            outcomeReport.getPatientAcknowledged(),
+                            outcomeReport.getPatientAcknowledgedReason());
+                });
     }
 
     /**

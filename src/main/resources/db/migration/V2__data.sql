@@ -168,13 +168,13 @@ insert into checkin_symptoms (checkin_id, symptom_code, body_part_code, severity
 -- Assessment Rules
 insert into assessment_rules (id, priority, description) values (1, 'HIGH', 'Pain in chest > 7 plus high Fever is high priority');
 insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (1, 'SYM001', 'CST000', 7, 'GREATER_THAN');
-insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (1, 'SYM003', null, 14, 'EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (1, 'SYM003', 'NON000', 14, 'EQUAL_TO');
 
 insert into assessment_rules (id, priority, description) values (2, 'HIGH', 'headache of scale > 7, plus blurred vision, plus lightheadedness is priority high');
 insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (2, 'SYM001', 'HED000', 7, 'GREATER_THAN');
-insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (2, 'SYM006', null, 11, 'GREATER_THAN_EQUAL_TO');
-insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (2, 'SYM005', null, 11, 'GREATER_THAN_EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (2, 'SYM006', 'NON000', 11, 'GREATER_THAN_EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (2, 'SYM005', 'NON000', 11, 'GREATER_THAN_EQUAL_TO');
 
 insert into assessment_rules (id, priority, description) values (3, 'NORMAL', 'headache of scale <=7, plus blurred vision is priority normal');
 insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (3, 'SYM001', 'HED000', 7, 'LESS_THAN_EQUAL_TO');
-insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (3, 'SYM006', null, 11, 'GREATER_THAN_EQUAL_TO');
+insert into assessment_symptoms (rule_id, symptom_code, body_part_code, severity_scale_value_id, operation) values (3, 'SYM006', 'NON000', 11, 'GREATER_THAN_EQUAL_TO');

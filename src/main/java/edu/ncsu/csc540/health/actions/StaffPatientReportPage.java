@@ -77,7 +77,7 @@ public class StaffPatientReportPage implements Action {
                         Pair.of("Submit", this::confirm)
                 ))
                 .withValueFormatter(Pair::getKey)
-                .read("\nStaff-Patient Report")
+                .read("Staff-Patient Report")
                 .getValue();
     }
 
@@ -119,7 +119,7 @@ public class StaffPatientReportPage implements Action {
                         Pair.of("Go back", this)
                 ))
                 .withValueFormatter(Pair::getKey)
-                .read("\nReferral Status")
+                .read("\nReferral Status\n")
                 .getValue();
     }
 

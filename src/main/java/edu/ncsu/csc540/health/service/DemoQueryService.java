@@ -119,7 +119,8 @@ public class DemoQueryService {
                 "   f_groups.first_name,\n" +
                 "   f_groups.last_name,\n" +
                 "   TO_CHAR(cast(f_groups.start_time as date)) AS start_date,\n" +
-                "   TO_CHAR(cast((f_groups.end_time - f_groups.start_time)\n" +
+                "   TO_CHAR(cast((COALESCE(f_groups.end_time, CURRENT_TIMESTAMP)\n" +
+                "           - f_groups.start_time)\n" +
                 "       as INTERVAL DAY(3) TO SECOND(0))) AS duration,\n" +
                 "   f_groups.top_rows AS facility_rank,\n" +
                 "   f_groups.sname AS symptom_name\n" +
@@ -128,7 +129,8 @@ public class DemoQueryService {
                 "            g.start_time, g.end_time, sname,\n" +
                 "       ROW_NUMBER() OVER (\n" +
                 "       PARTITION BY g.name\n" +
-                "       ORDER BY (g.end_time - g.start_time) DESC\n" +
+                "       ORDER BY (COALESCE(g.end_time, CURRENT_TIMESTAMP)\n" +
+                "                  - g.start_time) DESC\n" +
                 "       ) AS top_rows\n" +
                 "   FROM ( SELECT f.name, p.id, p.first_name,\n" +
                 "               p.last_name, c.start_time, c.end_time,\n" +

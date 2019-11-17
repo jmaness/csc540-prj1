@@ -129,11 +129,11 @@ public class DemoQueryService {
                 "            g.start_time, g.end_time, sname,\n" +
                 "       ROW_NUMBER() OVER (\n" +
                 "       PARTITION BY g.name\n" +
-                "       ORDER BY (COALESCE(g.end_time, CURRENT_TIMESTAMP)\n" +
-                "                  - g.start_time) DESC\n" +
+                "       ORDER BY (g.end_time - g.start_time) DESC\n" +
                 "       ) AS top_rows\n" +
                 "   FROM ( SELECT f.name, p.id, p.first_name,\n" +
-                "               p.last_name, c.start_time, c.end_time,\n" +
+                "               p.last_name, c.start_time,\n" +
+                "               COALESCE(c.end_time, CURRENT_TIMESTAMP) as end_time,\n" +
                 "               s.name AS sname\n"+
                 "          FROM facilities f, patients p, patient_checkins c,\n" +
                 "               checkin_symptoms cs, symptoms s\n" +

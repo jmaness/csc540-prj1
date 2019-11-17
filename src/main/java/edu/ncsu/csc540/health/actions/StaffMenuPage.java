@@ -78,10 +78,14 @@ public class StaffMenuPage implements Action {
     }
 
     private Action addScale(TextIO textIO) {
+        TextTerminal<?> terminal = textIO.getTextTerminal();
         scaleValues.clear();
 
+        terminal.println("\nAdd Severity Scale");
+        terminal.println("=====================");
+
         String scaleName = textIO.newStringInputReader()
-                .read("\nEnter the name of the new scale: ");
+                .read("Enter the name of the new scale: ");
 
         this.scale = new SeverityScale(null, scaleName);
 
@@ -95,7 +99,7 @@ public class StaffMenuPage implements Action {
                         Pair.of("Confirm scale: no more levels", this::writeScale),
                         Pair.of("Go Back", this)))
                 .withValueFormatter(Pair::getKey)
-                .read("Scale Menu")
+                .read("\nScale Menu")
                 .getValue();
     }
 
@@ -139,7 +143,7 @@ public class StaffMenuPage implements Action {
                         Pair.of("Treat Patient", this::treatPatient),
                         Pair.of("Go Back", this)))
                 .withValueFormatter(Pair::getKey)
-                .read()
+                .read("\nPatient Processing Menu:")
                 .getValue();
     }
 
@@ -156,17 +160,17 @@ public class StaffMenuPage implements Action {
         Patient selectedPatient = textIO.<Patient>newGenericInputReader(null)
                 .withNumberedPossibleValues(patients)
                 .withValueFormatter(Patient::getDisplayString)
-                .read("Please select the patient whose vitals you wish to record: ");
+                .read("\nPlease select the patient whose vitals you wish to record: ");
 
-        Integer temperature = textIO.newIntInputReader().read("A. Please enter the patient's temperature in degrees Celsius: ");
-        Integer systolicBP = textIO.newIntInputReader().read("B. Please enter the patient's systolic blood pressure: ");
-        Integer diastolicBP = textIO.newIntInputReader().read("C. Please enter the patient's diastolic blood pressure: ");
+        Integer temperature = textIO.newIntInputReader().read("\nPlease enter the patient's temperature in degrees Celsius: ");
+        Integer systolicBP = textIO.newIntInputReader().read("Please enter the patient's systolic blood pressure: ");
+        Integer diastolicBP = textIO.newIntInputReader().read("Please enter the patient's diastolic blood pressure: ");
 
         terminal.println("Please confirm the following information:\n");
         terminal.println(String.format("Patient: %s", selectedPatient.getDisplayString()));
         terminal.println(String.format("Temperature: %d", temperature));
         terminal.println(String.format("Systolic Blood Pressure: %d", systolicBP));
-        terminal.println(String.format("Diastolic Blood Pressure: %d", diastolicBP));
+        terminal.print(String.format("Diastolic Blood Pressure: %d", diastolicBP));
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
@@ -265,15 +269,18 @@ public class StaffMenuPage implements Action {
     private Action addSymptoms(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
+        terminal.println("\nAdd Symptom");
+        terminal.println("=====================");
+
         String name = textIO.newStringInputReader()
-                .read("A. Please enter the name of the symptom: ");
+                .read("Please enter the name of the symptom: ");
 
         List<BodyPart> bodyParts = symptomService.findAllBodyParts();
 
         BodyPart selectedBodyPart = textIO.<BodyPart>newGenericInputReader(null)
                 .withNumberedPossibleValues(bodyParts)
                 .withValueFormatter(BodyPart::getName)
-                .read("B. Please select the associated body part: ");
+                .read("Please select the associated body part: ");
 
         List<SeverityScale> severityScales = symptomService.findAllSeverityScales();
 
@@ -281,12 +288,12 @@ public class StaffMenuPage implements Action {
                 .withNumberedPossibleValues(severityScales)
                 .withValueFormatter(SeverityScale::getName)
                 .withDefaultValue(null)
-                .read("C. Please select the associated severity scale (leave blank if none applicable): ");
+                .read("Please select the associated severity scale (leave blank if none applicable): ");
 
         terminal.println("\nPlease confirm the following information:\n");
         terminal.println(String.format("Symptom Name: %s", name));
         terminal.println(String.format("Associated Body Part: %s", selectedBodyPart.getName()));
-        terminal.println(String.format("Associated Severity Scale: %s", selectedScale.getName()));
+        terminal.print(String.format("Associated Severity Scale: %s", selectedScale.getName()));
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
@@ -308,6 +315,9 @@ public class StaffMenuPage implements Action {
 
         boolean repeat = false;
         List<AssessmentSymptom> assessmentSymptoms = new ArrayList<>();
+
+        terminal.println("\nAdd Assessment Rule");
+        terminal.println("=====================");
 
         do {
 
@@ -341,7 +351,7 @@ public class StaffMenuPage implements Action {
 
             assessmentSymptoms.add(new AssessmentSymptom(null, selectedSymptom, selectedBodyPart.getCode(), selectedValue, operation));
 
-            terminal.println("Would you like to enter another symptom, or move on to choosing the assessment rule priority?");
+            terminal.print("Would you like to enter another symptom, or move on to choosing the assessment rule priority?");
 
             repeat = textIO.<Pair<String, Boolean>>newGenericInputReader(null)
                     .withNumberedPossibleValues(Arrays.asList(
@@ -366,13 +376,13 @@ public class StaffMenuPage implements Action {
         for (AssessmentSymptom assessmentSymptom : assessmentSymptoms)
             terminal.println(String.format("Symptom: %s | Severity: %s", assessmentSymptom.getSymptom().getName(), assessmentSymptom.getSeverityScaleValue().getName()));
 
-        terminal.println(String.format("Rule priority: %s", priority));
+        terminal.print(String.format("Rule priority: %s", priority));
 
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
                             assessmentRuleService.createAssessmentRule(new AssessmentRule(null, priority, description, assessmentSymptoms));
-                            terminal.println("\nRule successfully added!\n");
+                            terminal.println("\nRule successfully added!");
                             return this;
                         }),
                         Pair.of("Go Back", this)))

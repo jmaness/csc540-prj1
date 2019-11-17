@@ -60,14 +60,14 @@ public class DemoQueryPage implements Action {
         return (TextIO textIO) -> {
             TextTerminal<?> terminal = textIO.getTextTerminal();
             try {
-                terminal.println();
+                //terminal.println();
                 action.apply(textIO);
             } catch (Exception e) {
                 String message = e.getMessage();
                 if (e.getCause() != null) {
                     message = e.getCause().getMessage();
                 }
-                terminal.println("Error: " + message);
+                terminal.print("Error: " + message);
             }
 
             return this;

@@ -59,7 +59,7 @@ public class SignInPage implements Action {
                         Pair.of("Go Back", previousPage)
                 ))
                 .withValueFormatter(Pair::getKey)
-                .read("\nSign In:")
+                .read("\nSign In")
                 .getValue();
     }
 
@@ -76,27 +76,27 @@ public class SignInPage implements Action {
         Facility selectedFacility = textIO.<Facility>newGenericInputReader(null)
                 .withNumberedPossibleValues(facilities)
                 .withValueFormatter(Facility::getName)
-                .read("\nA. Please select your facility: ");
+                .read("\nPlease select your facility: ");
 
         String lastName = textIO.newStringInputReader()
-                .read("\nB. Please enter your last name: ");
+                .read("Please enter your last name: ");
 
         String dobString = textIO.newStringInputReader()
                 .withPattern("\\d{1,2}/\\d{1,2}/\\d{4}")
-                .read("\nC. Please enter your date of birth (mm/dd/yyyy): ");
+                .read("Please enter your date of birth (mm/dd/yyyy): ");
         LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("M/d/yyyy"));
 
         String city = textIO.newStringInputReader()
-                .read("\nD. Please enter the city listed on your home address: ");
+                .read("Please enter the city listed on your home address: ");
 
         boolean isPatient = textIO.newBooleanInputReader()
-                .read("\nE. Are you a patient?");
+                .read("Are you a patient?");
 
         if (isPatient) {
             Patient patient = patientService.signIn(selectedFacility.getId(), lastName, dob, city);
 
             if (patient == null) {
-                terminal.println("\nError: Patient not found. Please try again.\n");
+                terminal.println("\nError: Patient not found. Please try again.");
                 return this;
             } else {
                 return actionFactory.getPatientRoutingPage(patient);
@@ -105,7 +105,7 @@ public class SignInPage implements Action {
             Staff staff = staffService.signIn(selectedFacility.getId(), lastName, city);
 
             if (staff == null) {
-                terminal.println("\nError: Staff not found. Please try again.\n");
+                terminal.println("\nError: Staff not found. Please try again.");
                 return this;
             }
             else {

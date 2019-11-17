@@ -1,6 +1,5 @@
 plugins {
     id 'application'
-    id 'checkstyle'
 }
 
 sourceCompatibility = '1.8'
@@ -44,9 +43,4 @@ dependencies {
 
     // Logging
     implementation 'ch.qos.logback:logback-classic:1.2.3'
-}
-
-checkstyle {
-    configFile file('config/checkstyle/checkstyle.xml')
-    toolVersion '8.25'
 }

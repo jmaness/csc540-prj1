@@ -20,9 +20,11 @@ import edu.ncsu.csc540.health.service.SymptomService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
+import org.jdbi.v3.core.JdbiException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -298,10 +300,19 @@ public class StaffMenuPage implements Action {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
                         Pair.of("Confirm", (TextIO tio) -> {
-                            symptomService.createSymptom(new Symptom(null,
-                                    name,
-                                    selectedScale,
-                                    selectedBodyPart));
+                            try {
+                                symptomService.createSymptom(new Symptom(null,
+                                        name,
+                                        selectedScale,
+                                        selectedBodyPart));
+                            } catch (Exception e) {
+                                if (e instanceof JdbiException
+                                        && e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+                                    terminal.println("Error: A symptom with the selected name, scale, and body part already exists.");
+                                } else {
+                                    throw e;
+                                }
+                            }
                             return this;
                         }),
                         Pair.of("Go Back", this)))

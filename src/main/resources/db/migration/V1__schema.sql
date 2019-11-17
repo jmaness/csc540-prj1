@@ -465,6 +465,18 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE TRIGGER staff_dob_check
+    BEFORE INSERT OR UPDATE ON staff
+    FOR EACH ROW
+BEGIN
+    IF( :new.dob >= CURRENT_DATE )
+    THEN
+        RAISE_APPLICATION_ERROR( -20001,
+                                 'Invalid date' );
+    END IF;
+END;
+/
+
 CREATE OR REPLACE TRIGGER referral_status_referred_check
     BEFORE INSERT ON referral_statuses
     FOR EACH ROW

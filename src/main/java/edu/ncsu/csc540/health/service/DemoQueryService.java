@@ -131,7 +131,8 @@ public class DemoQueryService {
                 "       ORDER BY (g.end_time - g.start_time) DESC\n" +
                 "       ) AS top_rows\n" +
                 "   FROM ( SELECT f.name, p.id, p.first_name,\n" +
-                "               p.last_name, c.start_time, c.end_time,\n" +
+                "               p.last_name, c.start_time,\n" +
+                "               COALESCE(c.end_time, CURRENT_TIMESTAMP) as end_time,\n" +
                 "               s.name AS sname\n"+
                 "          FROM facilities f, patients p, patient_checkins c,\n" +
                 "               checkin_symptoms cs, symptoms s\n" +

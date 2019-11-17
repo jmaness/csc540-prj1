@@ -90,6 +90,7 @@ public class PatientCheckInPage implements Action {
 
     private Action completeCheckin(TextIO textIO) {
         patientService.checkIn(new PatientCheckIn(null, patient.getId(), LocalDateTime.now(), null, checkInSymptoms));
+        textIO.getTextTerminal().println("\nYou have successfully checked in.");
         return homePage;
     }
 }

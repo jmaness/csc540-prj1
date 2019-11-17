@@ -96,7 +96,7 @@ public class SignInPage implements Action {
             Patient patient = patientService.signIn(selectedFacility.getId(), lastName, dob, city);
 
             if (patient == null) {
-                terminal.println("\nError: Patient not found. Please try again.\n");
+                terminal.println("\nError: Patient not found. Please try again.");
                 return this;
             } else {
                 return actionFactory.getPatientRoutingPage(patient);
@@ -105,7 +105,7 @@ public class SignInPage implements Action {
             Staff staff = staffService.signIn(selectedFacility.getId(), lastName, city);
 
             if (staff == null) {
-                terminal.println("\nError: Staff not found. Please try again.\n");
+                terminal.println("\nError: Staff not found. Please try again.");
                 return this;
             }
             else {

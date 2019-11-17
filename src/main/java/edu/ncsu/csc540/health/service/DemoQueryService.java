@@ -50,8 +50,8 @@ public class DemoQueryService {
     }
 
     public void findFacilitiesMostReferred(ResultSetScanner<Void> scanner) {
-        runQuery(scanner, "SELECT f1.name,\n" +
-                "       f2.name\n" +
+        runQuery(scanner, "SELECT f1.name \"FACILITY\",\n" +
+                "       f2.name \"MOST REFERRED FACILITY\"\n" +
                 "FROM facilities f1,\n" +
                 "     facilities f2,\n" +
                 "     (SELECT f.id,\n" +

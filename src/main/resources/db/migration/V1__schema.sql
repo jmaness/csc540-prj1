@@ -463,3 +463,18 @@ BEGIN
     END IF;
 END;
 /
+
+CREATE OR REPLACE TRIGGER referral_status_referred_check
+    BEFORE INSERT ON referral_statuses
+    FOR EACH ROW
+DECLARE
+    discharge_status VARCHAR2(100);
+BEGIN
+    SELECT discharge_status INTO discharge_status FROM outcome_reports WHERE outcome_reports.checkin_id = :new.checkin_id;
+    IF( discharge_status <> 'REFERRED' )
+    THEN
+        RAISE_APPLICATION_ERROR( -20001,
+                                 'Discharged status for this Outcome Report is not REFERRED' );
+    END IF;
+END;
+/

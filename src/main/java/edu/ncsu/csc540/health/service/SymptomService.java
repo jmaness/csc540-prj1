@@ -27,22 +27,44 @@ public class SymptomService {
         severityScaleDAO = jdbi.onDemand(SeverityScaleDAO.class);
     }
 
+    /**
+     * Returns all symptoms
+     * @return A List containing all symptoms
+     */
     public List<Symptom> findAllSymptoms() {
         return symptomDAO.findAll();
     }
 
+    /**
+     * Returns all body parts
+     * @return A List containing all body parts
+     */
     public List<BodyPart> findAllBodyParts() {
         return bodyPartDAO.findAllBodyParts();
     }
 
+    /**
+     * Returns all severity scales
+     * @return A List containing all severity scales
+     */
     public List<SeverityScale> findAllSeverityScales() {
         return severityScaleDAO.findAllSeverityScales();
     }
 
+    /**
+     * Returns all severity scale values associated to a given severity scale
+     * @param severityScaleId The ID of the desired severity scale
+     * @return A List containing all matching severity scale values
+     */
     public List<SeverityScaleValue> findSeverityScaleValues(Integer severityScaleId) {
         return severityScaleDAO.findSeverityScaleValues(severityScaleId);
     }
 
+    /**
+     * Adds a symptom to the system
+     * @param symptom The symptom being added
+     * @return An object representing the information associated with the added symptom
+     */
     @Transactional
     public Symptom createSymptom(Symptom symptom) {
         String symptomCode = symptomDAO.create(symptom);

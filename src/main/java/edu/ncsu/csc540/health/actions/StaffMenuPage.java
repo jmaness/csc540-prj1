@@ -64,6 +64,11 @@ public class StaffMenuPage implements Action {
         this.severityScaleService = severityScaleService;
     }
 
+    /**
+     * Displays the landing menu of the Staff Menu Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
@@ -79,6 +84,11 @@ public class StaffMenuPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Begins the creation of a new severity scale
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action addScale(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         scaleValues.clear();
@@ -94,6 +104,11 @@ public class StaffMenuPage implements Action {
         return this::scaleMenu;
     }
 
+    /**
+     * Displays a menu for modifying/confirming a severity scale that is being created
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action scaleMenu(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
@@ -105,6 +120,11 @@ public class StaffMenuPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Adds a severity scale value to a given severity scale
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action addScaleValue(TextIO textIO) {
         String name = textIO.newStringInputReader()
                 .read("\nEnter the severity scale value: ");
@@ -114,6 +134,11 @@ public class StaffMenuPage implements Action {
         return this::scaleMenu;
     }
 
+    /**
+     * Adds the newly created severity scale to the database
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action writeScale(TextIO textIO) {
         int id = severityScaleService.addSeverityScale(this.scale);
 
@@ -130,6 +155,11 @@ public class StaffMenuPage implements Action {
         return this;
     }
 
+    /**
+     * Provides a menu for the user to process a patient by either entering their vitals or attempting to treat them
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action processPatient(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
@@ -149,6 +179,12 @@ public class StaffMenuPage implements Action {
                 .getValue();
     }
 
+    /**
+     * User interface for entering a given patient's vitals. The patient's vitals are written to the database and their
+     * check-in is updated with an end-time, then their symptoms are assessed and the patient is moved onto a priority list.
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action enterVitals(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
@@ -193,6 +229,12 @@ public class StaffMenuPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Interface for treating patients. If a staff member belongs to a department that can treat the patient, the patient
+     * is moved off of the priority list and prepares them for the check-out process.
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action treatPatient(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
@@ -240,6 +282,11 @@ public class StaffMenuPage implements Action {
         return this;
     }
 
+    /**
+     * Displays a menu for dealing with treated patients
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action treatedPatientListMenu(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
                 .withNumberedPossibleValues(Arrays.asList(
@@ -250,6 +297,11 @@ public class StaffMenuPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Begins the check-out process for a selected patient
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action treatedPatientList(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
@@ -268,6 +320,11 @@ public class StaffMenuPage implements Action {
         return actionFactory.getStaffPatientReportPage(staff, selectedPatient, this);
     }
 
+    /**
+     * Interface for adding a new symptom into the system
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action addSymptoms(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 
@@ -321,6 +378,11 @@ public class StaffMenuPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Interface for adding a new assessment rule (and associated assessment symptoms) into the system
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action addAssessmentRule(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 

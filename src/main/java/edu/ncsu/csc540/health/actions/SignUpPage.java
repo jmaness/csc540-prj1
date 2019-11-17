@@ -35,6 +35,11 @@ public class SignUpPage implements Action {
         this.facilityService = facilityService;
     }
 
+    /**
+     * Displays the landing menu for the Sign Up Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();

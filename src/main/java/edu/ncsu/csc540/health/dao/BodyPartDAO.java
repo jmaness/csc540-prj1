@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface BodyPartDAO {
 
+    /**
+     * Finds all body parts in the database
+     * @return A List containing all of the body parts
+     */
     @SqlQuery("select * from body_parts " +
             "order by code")
     @RegisterConstructorMapper(BodyPart.class)

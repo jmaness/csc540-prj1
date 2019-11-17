@@ -38,6 +38,11 @@ public class PatientCheckInPage implements Action {
         this.patient = patient;
     }
 
+    /**
+     * Displays the landing menu for the Patient Check-In Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         List<Symptom> symptoms = symptomService.findAllSymptoms();
@@ -55,6 +60,12 @@ public class PatientCheckInPage implements Action {
                     .apply(textIO);
     }
 
+    /**
+     * Menu to allow user to fill in meta information for a selected symptom
+     * @param symptom The selected symptom
+     * @param next A reference to the next page the user will see
+     * @return An Action object containing a reference to a page
+     */
     private Action getSymptomMeta(Symptom symptom, Action next) {
         return (TextIO textIO) -> {
             BodyPart bodyPart = symptom.getBodyPart();
@@ -88,6 +99,11 @@ public class PatientCheckInPage implements Action {
         };
     }
 
+    /**
+     * Checks the patient in with all described symptoms and sets the start time for their check-in
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action completeCheckin(TextIO textIO) {
         patientService.checkIn(new PatientCheckIn(null, patient.getId(), LocalDateTime.now(), null, checkInSymptoms));
         textIO.getTextTerminal().println("\nYou have successfully checked in.");

@@ -60,6 +60,11 @@ public class StaffPatientReportPage implements Action {
         this.patientCheckIn = patientService.findActivePatientCheckIn(patient);
     }
 
+    /**
+     * Displays the landing menu for the Staff Patient Report Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
@@ -118,6 +123,11 @@ public class StaffPatientReportPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Interface for selecting a facility to refer the patient to
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action selectFacility(TextIO textIO) {
         List<Facility> facilities = facilityService.findAllFacilities();
         List<Optional<Facility>> facilityOptions = facilities.stream()
@@ -143,6 +153,11 @@ public class StaffPatientReportPage implements Action {
         return this::addReferralStatus;
     }
 
+    /**
+     * Interface for selecting the staff member who is responsible for referring the patient to another facility
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action selectReferrer(TextIO textIO) {
         List<Staff> medicalStaff = staffService.findAllMedicalStaffByFacility(staff.getFacilityId());
 
@@ -164,6 +179,11 @@ public class StaffPatientReportPage implements Action {
         return this::addReferralStatus;
     }
 
+    /**
+     * Interface for adding a reason for why the patient was referred to another facility
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action addReferralStatusReason(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
 

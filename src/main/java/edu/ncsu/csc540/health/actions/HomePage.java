@@ -29,6 +29,11 @@ public class HomePage implements Action {
         this.signInPage = signInPage;
     }
 
+    /**
+     * Displays the landing menu for the Home Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)

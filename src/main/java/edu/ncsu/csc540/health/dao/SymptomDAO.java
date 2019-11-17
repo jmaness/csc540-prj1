@@ -17,17 +17,31 @@ public interface SymptomDAO {
             "b.code sb_code, b.name sb_name " +
             "from symptoms s, severity_scales c, body_parts b " +
             "where s.severity_scale_id = c.id and s.body_part_code = b.code";
-
+  
     String ORDER_BY = " order by s.code ";
-
+    
+    /**
+     * Finds all symptoms in the database
+     * @return A List containing all of the symptoms
+     */
     @SqlQuery(FIND_SYMPTOMS + ORDER_BY)
     @RegisterConstructorMapper(value = Symptom.class, prefix = "s")
     List<Symptom> findAll();
 
+    /**
+     * Finds the symptom matching the code provided
+     * @param code The code of the desired symptom
+     * @return The matching symptom
+     */
     @SqlQuery(FIND_SYMPTOMS + " and s.code = :code " + ORDER_BY)
     @RegisterConstructorMapper(value = Symptom.class, prefix = "s")
     Symptom findByCode(@Bind("code") String code);
 
+    /**
+     * Inserts a new symptom into the database
+     * @param symptom The symptom being inserted
+     * @return The generated code of the inserted symptom
+     */
     @SqlUpdate("insert into symptoms (name, severity_scale_id, body_part_code) " +
             "values (:name, :severityScale.id, :bodyPart.code)")
     @GetGeneratedKeys("code")

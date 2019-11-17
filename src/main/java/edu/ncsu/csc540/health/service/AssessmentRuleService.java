@@ -17,10 +17,19 @@ public class AssessmentRuleService {
         this.assessmentRuleDAO = jdbi.onDemand(AssessmentRuleDAO.class);
     }
 
+    /**
+     * Creates an assessment rule
+     * @param assessmentRule The assessment rule being created
+     * @return The generated ID of the created assessment rule
+     */
     public Integer createAssessmentRule(AssessmentRule assessmentRule) {
         return assessmentRuleDAO.createAssessmentRule(assessmentRule);
     }
 
+    /**
+     * Returns all assessment rules
+     * @return A List containing all assessment rules
+     */
     public List<AssessmentRule> findAllAssessmentRules() {
         List<AssessmentRule> tempRules = assessmentRuleDAO.findAllAssessmentRules();
         List<AssessmentRule> rules = new ArrayList<>();

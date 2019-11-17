@@ -28,6 +28,11 @@ public class PatientRoutingPage implements Action {
         this.patient = patient;
     }
 
+    /**
+     * Display the landing page for the Patient Routing Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();

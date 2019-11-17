@@ -32,6 +32,11 @@ public class DemoQueryPage implements Action {
         this.demoQueryService = demoQueryService;
     }
 
+    /**
+     * The landing menu for the DemoQueryPage
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
@@ -56,6 +61,11 @@ public class DemoQueryPage implements Action {
                 .getValue();
     }
 
+    /**
+     *
+     * @param action
+     * @return
+     */
     private Action safelyRun(Action action) {
         return (TextIO textIO) -> {
             TextTerminal<?> terminal = textIO.getTextTerminal();
@@ -74,6 +84,11 @@ public class DemoQueryPage implements Action {
         };
     }
 
+    /**
+     * Runs a query that finds all patients with negative experiences
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action findPatientsWithNegativeExperiences(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
@@ -81,6 +96,11 @@ public class DemoQueryPage implements Action {
         return this;
     }
 
+    /**
+     * Runs a query that finds all facilities with no negative experiences associated with them
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action findFacilitiesWithNoNegativeExperiences(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
@@ -101,6 +121,11 @@ public class DemoQueryPage implements Action {
         return this;
     }
 
+    /**
+     * Runs a query that finds the most referred facility for each facility
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action findFacilitiesMostReferred(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
@@ -108,6 +133,12 @@ public class DemoQueryPage implements Action {
         return this;
     }
 
+    /**
+     * Runs a query that finds all facilities that had no negative experience reports from patients with cardiac-related
+     * symptoms
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action findFacilitiesWithNoNegativeCardiacExperiences(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
@@ -115,6 +146,11 @@ public class DemoQueryPage implements Action {
         return this;
     }
 
+    /**
+     * Runs a query that finds the facility with the most negative experiences
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action findFacilitiesWithMostNegativeExperiences(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
@@ -122,6 +158,11 @@ public class DemoQueryPage implements Action {
         return this;
     }
 
+    /**
+     * Runs a query that finds the five longest check-in phases for each facility
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action findLongestCheckinPhases(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
@@ -129,6 +170,11 @@ public class DemoQueryPage implements Action {
         return this;
     }
 
+    /**
+     * Runs another unspecified query that does not match the six explicitly defined queries
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action runOtherQuery(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         terminal.println();
@@ -141,6 +187,11 @@ public class DemoQueryPage implements Action {
         return this;
     }
 
+    /**
+     * Returns a ResultSetScanner object containing the results of a given query
+     * @param terminal A reference to the program terminal
+     * @return A ResultSetScanner object containing the results of a given query
+     */
     private ResultSetScanner<Void> getResultSetScanner(TextTerminal<?> terminal) {
         return (Supplier<ResultSet> supplier, StatementContext ctx) -> {
             try (ResultSet rs = supplier.get()) {

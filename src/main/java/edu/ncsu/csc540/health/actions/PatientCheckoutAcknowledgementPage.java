@@ -41,6 +41,11 @@ public class PatientCheckoutAcknowledgementPage implements Action {
         this.patientCheckIn = patientService.findActivePatientCheckIn(patient);
     }
 
+    /**
+     * Displays the landing menu for the Patient Check-Out Acknowledgement Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
@@ -64,6 +69,11 @@ public class PatientCheckoutAcknowledgementPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Prints the patient's outcome report
+     * @param terminal A reference to the program terminal
+     * @param outcomeReport A reference to the patient's outcome report
+     */
     private void printOutcomeReportSummary(TextTerminal<?> terminal, OutcomeReport outcomeReport) {
 
         terminal.println("\nOutcome Report\n-----------------------------------");
@@ -99,12 +109,22 @@ public class PatientCheckoutAcknowledgementPage implements Action {
         }
     }
 
+    /**
+     * Acknowledge (as the patient) the outcome report to complete the check-out
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action acknowledge(TextIO textIO) {
         patientService.acknowledgeOutcomeReport(patientCheckIn.getId());
         textIO.getTextTerminal().println("\nYou have successfully acknowledged the Patient Outcome Report.");
         return patientRoutingPage;
     }
 
+    /**
+     * Reject (as the patient) the outcome report
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action reject(TextIO textIO) {
         String reason = textIO.newStringInputReader()
                 .withMaxLength(1000)

@@ -51,6 +51,11 @@ public class SignInPage implements Action {
         this.facilityService = facilityService;
     }
 
+    /**
+     * Display the landing menu for the Sign In Page
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     @Override
     public Action apply(TextIO textIO) {
         return textIO.<Pair<String, Action>>newGenericInputReader(null)
@@ -63,6 +68,12 @@ public class SignInPage implements Action {
                 .getValue();
     }
 
+    /**
+     * Signs the user into their account based on information entered. If the user is a patient, they are taken to the Patient
+     * Routing Page. If the user is a staff member, they are taken to the Staff Menu Page.
+     * @param textIO A reference to the terminal controller
+     * @return An Action object containing a reference to a page
+     */
     private Action signIn(TextIO textIO) {
         TextTerminal<?> terminal = textIO.getTextTerminal();
         List<Facility> facilities = facilityService.findAllFacilities();

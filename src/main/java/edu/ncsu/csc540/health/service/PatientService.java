@@ -328,4 +328,11 @@ public class PatientService {
         addPatientToPriorityList(checkIn, priority, new Timestamp(System.currentTimeMillis()));
         return priority;
     }
+
+    @Transactional
+    public void treatPatient(Staff staff, Patient patient) {
+        Integer checkInId = findPriorityListCheckInId(patient.getId());
+        patientDAO.updateTreatedBy(patient.getId(), staff.getId());
+        updatePriorityListEndtime(checkInId, new Timestamp(System.currentTimeMillis()));
+    }
 }

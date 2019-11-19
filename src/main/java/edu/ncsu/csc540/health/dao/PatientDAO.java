@@ -219,6 +219,9 @@ public interface PatientDAO {
             "values (:checkInId, :temperature, :systolicBloodPressure, :diastolicBloodPressure)")
     void addPatientVitals(@BindBean PatientVitals vitals);
 
+    @SqlUpdate("update patient_checkins set treated_by = :staffId where id = :checkInId")
+    void updateTreatedBy(@Bind("checkInId") Integer checkInId, @Bind("staffId") Integer staffId);
+
     /**
      * Updates a check-in matching the provided ID to mark it as inactive
      * @param checkInId The ID of the desired check-in

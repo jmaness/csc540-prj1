@@ -272,8 +272,7 @@ public class StaffMenuPage implements Action {
             return this;
         }
 
-        Integer checkInId = patientService.findPriorityListCheckInId(selectedPatient.getId());
-        patientService.updatePriorityListEndtime(checkInId, new Timestamp(System.currentTimeMillis()));
+        patientService.treatPatient(staff, selectedPatient);
 
         terminal.println("Treating patient...");
         terminal.println("...");

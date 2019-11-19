@@ -172,8 +172,10 @@ CREATE TABLE patient_checkins (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP,
     active NUMBER(1) DEFAULT 1 NOT NULL,
+    treated_by INTEGER,
     PRIMARY KEY (id),
-    FOREIGN KEY (patient_id) REFERENCES patients (id)
+    FOREIGN KEY (patient_id) REFERENCES patients (id),
+    FOREIGN KEY (treated_by) REFERENCES staff (id)
 );
 
 CREATE TABLE symptoms (

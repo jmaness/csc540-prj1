@@ -27,3 +27,11 @@ HEALTH_DB_USER=[username] HEALTH_DB_PASSWORD=[password] HEALTH_DB_URL=jdbc:oracl
 ```
 
 (Replace the parts in brackets with the appropriate values)
+
+# SQL files
+
+* `V1__schema.sql` - DDL (tables, sequences, triggers, etc.)
+* `V2__data.sql` - sample data
+
+The `V1__schema.sql` and `V2__data.sql` files are automatically loaded as part of application 
+startup through the use of Flyway database migrations, so you do not need to separately load these files.
